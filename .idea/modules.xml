@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://C:\Users\Ryun\AndroidStudioProjects\Spot_A_Bee_Team_4\SpotABee.iml" filepath="C:\Users\Ryun\AndroidStudioProjects\Spot_A_Bee_Team_4\SpotABee.iml" />
       <module fileurl="file://$PROJECT_DIR$/Spot_A_Bee_Team_4.iml" filepath="$PROJECT_DIR$/Spot_A_Bee_Team_4.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
