@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Spot A Bee</string>
-    <string name="action_settings">Settings</string>
+    <string name="title_activity_maps">Map</string>
+
+    <string name="bee_sighting">Bee Sighting</string>
+    <string name="location">Location</string>
+    <string name="flower_type">Flower type</string>
+    <string name="any_further_details">Any further details?</string>
+    <string name="submit">Submit</string>
+
 </resources>
