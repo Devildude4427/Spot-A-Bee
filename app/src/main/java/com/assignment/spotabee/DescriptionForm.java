@@ -1,4 +1,4 @@
-package assignment.com.spotabee;
+package com.assignment.spotabee;
 
 
 import android.content.SharedPreferences;
