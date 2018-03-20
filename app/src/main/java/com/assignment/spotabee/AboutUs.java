@@ -1,4 +1,4 @@
-package assignment.com.spotabee;
+package com.assignment.spotabee;
 
 /**
  * Created by Ryun on 3/18/2018.
