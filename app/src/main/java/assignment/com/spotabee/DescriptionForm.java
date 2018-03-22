@@ -1,7 +1,10 @@
 package assignment.com.spotabee;
 
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.arch.persistence.room.Room;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,7 +19,6 @@ import java.util.List;
 
 import assignment.com.spotabee.database.Description;
 import assignment.com.spotabee.database.AppDatabase;
-import assignment.com.spotabee.database.DescriptionDao;
 
 
 public class DescriptionForm extends AppCompatActivity implements View.OnClickListener {
@@ -28,12 +30,16 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
 
     private AppDatabase db;
 
+    private Context context;
+
     private static final String TAG = "DESCRIPTION_FORM";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.description);
+
+        context = this;
 
         AppCompatButton submit = findViewById(R.id.submit);
         submit.setOnClickListener(this);
@@ -44,10 +50,13 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
                 "App Database"
         ).build();
 
-        AppCompatEditText flower = findViewById(R.id.flowerField);
-        AppCompatEditText location = findViewById(R.id.locationField);
-        AppCompatEditText description = findViewById(R.id.descriptionField);
+        flower = findViewById(R.id.flowerField);
+        location = findViewById(R.id.locationField);
+        description = findViewById(R.id.descriptionField);
+
+
     }
+
 
     @Override
     public void onClick(View view) {
@@ -55,25 +64,36 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
 
         switch (viewId) {
             case R.id.submit:
+
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
-                        db.descriptionDao()
-                                .insertDescriptions(
-                                        new Description("Bute Park",
-                                                "Sunflower",
-                                                "No comment"));
 
-                        List<Description> allDescriptions = db.descriptionDao()
-                                .getAllDescriptions();
+                        try {
 
-                        for(Description description : allDescriptions){
-                            Log.d(TAG, description.getFlowerType().toString());
+                            db.descriptionDao()
+                                    .insertDescriptions(new Description(
+                                            location.getText().toString(),
+                                            flower.getText().toString(),
+                                            description.getText().toString()
+                                    ));
+
+                            List<Description> allDescriptions = db.descriptionDao()
+                                    .getAllDescriptions();
+
+                            for(Description description : allDescriptions){
+                                Log.d(TAG, description.getFlowerType().toString());
+                            }
+
+                            finish();
+
+                        } catch (Exception e){
+                            Log.e(TAG, "Error: " + e.getMessage());
                         }
+
                     }
                 });
                 break;
         }
     }
 }
-
