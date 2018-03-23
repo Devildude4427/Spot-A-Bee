@@ -21,16 +21,21 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.891" />
 
-    <TextView
+    <EditText
         android:id="@+id/textView2"
-        android:layout_width="361dp"
-        android:layout_height="209dp"
-        android:layout_marginTop="152dp"
+        android:layout_width="330dp"
+        android:layout_height="192dp"
+        android:layout_marginTop="156dp"
+        android:background="@null"
+        android:cursorVisible="false"
+        android:editable="false"
         android:gravity="center"
+        android:maxLines="5"
+        android:scrollbars="vertical"
         android:text='Einstein said "If the bee disappeared off the surface of the globe then man would only have  four years of life left. No more bees, no  more pollination, no more plants, no  more animals, no more man" This single quote captures the key role  that bees play in the survival of planet earth. '
         android:textAlignment="center"
         android:textSize="24sp"
-        app:layout_constraintHorizontal_bias="0.68"
+        app:layout_constraintHorizontal_bias="0.509"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
