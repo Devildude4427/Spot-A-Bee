@@ -58,11 +58,13 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
         //Open the camera HOPEFULLY
         if ( id == R.id.button2){
             dispatchTakePictureIntent();
-        }else {
+        }else{
             //Go back to main button
             intent = new Intent(this, Home.class);
             startActivity(intent);
         }
+
+
     }
 
     static final int REQUEST_IMAGE_CAPTURE = 10;
