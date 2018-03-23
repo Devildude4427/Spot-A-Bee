@@ -2,6 +2,8 @@
     <string name="app_name">Spot A Bee</string>
     <string name="title_activity_maps">Map</string>
 
+    <string name="button">Button</string>
+
     <string name="bee_sighting">Bee Sighting</string>
     <string name="location">Location</string>
     <string name="flower_type">Flower type</string>
