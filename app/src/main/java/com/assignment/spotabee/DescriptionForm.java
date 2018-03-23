@@ -17,8 +17,8 @@ import android.widget.EditText;
 
 import java.util.List;
 
-import assignment.com.spotabee.database.Description;
-import assignment.com.spotabee.database.AppDatabase;
+import com.assignment.spotabee.database.Description;
+import com.assignment.spotabee.database.AppDatabase;
 
 
 public class DescriptionForm extends AppCompatActivity implements View.OnClickListener {
