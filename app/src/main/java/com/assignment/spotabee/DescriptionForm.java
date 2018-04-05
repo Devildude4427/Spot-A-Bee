@@ -30,6 +30,7 @@ import java.util.List;
 
 import com.assignment.spotabee.database.Description;
 import com.assignment.spotabee.database.AppDatabase;
+import com.google.android.gms.maps.model.LatLng;
 
 
 public class DescriptionForm extends AppCompatActivity implements View.OnClickListener {
@@ -43,11 +44,14 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
     private AppDatabase db;
 
     private Context context;
+    private List<Address> possibleUserAddresses;
 //    private PlaceAutocompleteFragment autocompleteFragment;
 
     private static final String TAG = "DESCRIPTION_FORM";
     private Geocoder geocoder;
     private Spinner addressSpinner;
+    private LatLng userLocation;
+    //private List<String> addressLines;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,10 +61,13 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
 
         context = this;
 
+        this.userLocation = null;
+
         this.search = findViewById(R.id.search_location);
         this.search.setOnClickListener(this);
 
         this.addressSpinner = (Spinner) findViewById(R.id.addressSpinner);
+        this.addressSpinner.setVisibility(View.GONE);
 
         this.geocoder  = new Geocoder(DescriptionForm.this);
 
@@ -71,7 +78,7 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
                 getApplicationContext(),
                 AppDatabase.class,
                 "App Database"
-        ).build();
+        ).fallbackToDestructiveMigration().build();
 
         flower = findViewById(R.id.flowerField);
         location = findViewById(R.id.locationField);
@@ -87,6 +94,12 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
 
         switch (viewId) {
             case R.id.submit:
+                if(this.userLocation == null){
+                    Toast.makeText(DescriptionForm.this,
+                            "You need to select a location first",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 AsyncTask.execute(new Runnable() {
                     @Override
@@ -96,7 +109,8 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
 
                             db.descriptionDao()
                                     .insertDescriptions(new Description(
-                                            location.getText().toString(),
+                                            ((Double) userLocation.latitude),
+                                            (Double) userLocation.longitude,
                                             flower.getText().toString(),
                                             description.getText().toString()
                                     ));
@@ -106,6 +120,8 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
 
                             for(Description description : allDescriptions){
                                 Log.d(TAG, description.getFlowerType().toString());
+                                Log.d(TAG, description.getLatitude().toString());
+                                Log.d(TAG, description.getLongitude().toString());
                             }
 
                             finish();
@@ -120,15 +136,16 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
 
             case R.id.search_location:
                 Log.d(TAG, "search icon has been selected");
+                this.addressSpinner.setVisibility(View.VISIBLE);
                 try {
                     String locationToSearch = location.getText().toString();
-                    List<Address> possibleUserAddresses = geocoder.getFromLocationName(locationToSearch,  5);
-                    for(Address address : possibleUserAddresses){
+                    this.possibleUserAddresses = geocoder.getFromLocationName(locationToSearch,  5);
+                    for(Address address : this.possibleUserAddresses){
                         Log.d(TAG,  address.getLatitude() + ", " + address.getLongitude());
                     }
 
                     List<String> addressLines= new ArrayList<>();
-                    for(Address address : possibleUserAddresses){
+                    for(Address address : this.possibleUserAddresses){
                         addressLines.add(address.getAddressLine(0));
                     }
 
@@ -143,15 +160,22 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
                             addressLines
                     );
 
+                    if (possibleUserAddresses.size() > 0){
+                        this.location.setText(possibleUserAddresses.get(0).getAddressLine(0));
+                    } else {
+                        Toast.makeText(DescriptionForm.this,
+                                "Please change hyour search",
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-                    this.location.setText(possibleUserAddresses.get(0).getAddressLine(0));
-//                    addressSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
-//                    addressSpinner.setAdapter(addressSpinnerAdapter);
                     stringAddressAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
                     addressSpinner.setAdapter(stringAddressAdapter);
                     addressSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                             location.setText(parent.getItemAtPosition(position).toString());
+                            setCoOrdinatesToStore(parent, view, position, id);
+
                         }
                         public void onNothingSelected(AdapterView<?> parent) {
                         }
@@ -162,5 +186,24 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
                 }
 
         }
+    }
+
+    private Address setCoOrdinatesToStore(AdapterView<?> parent, View view, int position, long id){
+        String addressLineToMatch = parent.getItemAtPosition(position).toString();
+        Address addressToFind = null;
+
+        for (Address address : this.possibleUserAddresses){
+            if(address.getAddressLine(0).equals(addressLineToMatch)){
+                addressToFind = address;
+            }
+        }
+
+        if(addressToFind == null){
+            return addressToFind;
+        } else {
+            this.userLocation = new LatLng(addressToFind.getLatitude(), addressToFind.getLongitude());
+            return addressToFind;
+        }
+
     }
 }
