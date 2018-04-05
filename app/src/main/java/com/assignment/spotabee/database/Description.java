@@ -4,6 +4,8 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import com.google.android.gms.maps.model.LatLng;
+
 
 @Entity
 public class Description {
@@ -11,8 +13,11 @@ public class Description {
     @PrimaryKey(autoGenerate = true)
     private int uid;
 
-    @ColumnInfo(name = "location")
-    private String location;
+    @ColumnInfo(name = "latitude")
+    private Double latitude;
+
+    @ColumnInfo(name = "longitude")
+    private Double longitude;
 
     @ColumnInfo(name = "flower_type")
     private String flowerType;
@@ -20,8 +25,9 @@ public class Description {
     @ColumnInfo(name = "further_details")
     private String furtherDetails;
 
-    public Description(String location, String flowerType, String furtherDetails){
-        this.location = location;
+    public Description(Double latitude, Double longitude, String flowerType, String furtherDetails){
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.flowerType = flowerType;
         this.furtherDetails = furtherDetails;
     }
@@ -34,12 +40,26 @@ public class Description {
         this.uid = uid;
     }
 
-    public String getLocation() {
-        return location;
+    public Double getLatitude() {
+        return latitude;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+
+
+    public void setFlowerType(String flowerType) {
+        this.flowerType = flowerType;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
     public String getFlowerType() {
