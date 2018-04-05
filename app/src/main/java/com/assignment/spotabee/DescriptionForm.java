@@ -35,56 +35,64 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class DescriptionForm extends AppCompatActivity implements View.OnClickListener {
 
+    // Widgets
     private AppCompatButton submit;
     private AppCompatEditText location;
     private AppCompatEditText flower;
     private AppCompatEditText description;
     private ImageView search;
+    private Spinner addressSpinner;
 
+    // Database
     private AppDatabase db;
 
+    // Outside helpers
+    private Geocoder geocoder;
+
+    // Activity specific values
     private Context context;
     private List<Address> possibleUserAddresses;
-//    private PlaceAutocompleteFragment autocompleteFragment;
-
-    private static final String TAG = "DESCRIPTION_FORM";
-    private Geocoder geocoder;
-    private Spinner addressSpinner;
     private LatLng userLocation;
-    //private List<String> addressLines;
+    private static final String TAG = "DESCRIPTION_FORM";
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.description);
 
-
-        context = this;
-
-        this.userLocation = null;
-
+        // Initialisation of widgets
         this.search = findViewById(R.id.search_location);
         this.search.setOnClickListener(this);
-
         this.addressSpinner = (Spinner) findViewById(R.id.addressSpinner);
         this.addressSpinner.setVisibility(View.GONE);
-
-        this.geocoder  = new Geocoder(DescriptionForm.this);
-
-        AppCompatButton submit = findViewById(R.id.submit);
+        flower = findViewById(R.id.flowerField);
+        location = findViewById(R.id.locationField);
+        description = findViewById(R.id.descriptionField);
+        this.submit = findViewById(R.id.submit);
         submit.setOnClickListener(this);
 
+        // Database build
         db = Room.databaseBuilder(
                 getApplicationContext(),
                 AppDatabase.class,
                 "App Database"
         ).fallbackToDestructiveMigration().build();
 
-        flower = findViewById(R.id.flowerField);
-        location = findViewById(R.id.locationField);
-        description = findViewById(R.id.descriptionField);
 
+        context = this;
+        this.userLocation = null;
+        this.geocoder  = new Geocoder(DescriptionForm.this);
 
+        addressSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                location.setText(parent.getItemAtPosition(position).toString());
+                setCoOrdinatesToStore(parent, view, position, id);
+
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
 
@@ -94,98 +102,108 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
 
         switch (viewId) {
             case R.id.submit:
-                if(this.userLocation == null){
-                    Toast.makeText(DescriptionForm.this,
-                            "You need to select a location first",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                if (userLocationIsNull()) return;
 
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        try {
-
-                            db.descriptionDao()
-                                    .insertDescriptions(new Description(
-                                            ((Double) userLocation.latitude),
-                                            (Double) userLocation.longitude,
-                                            flower.getText().toString(),
-                                            description.getText().toString()
-                                    ));
-
-                            List<Description> allDescriptions = db.descriptionDao()
-                                    .getAllDescriptions();
-
-                            for(Description description : allDescriptions){
-                                Log.d(TAG, description.getFlowerType().toString());
-                                Log.d(TAG, description.getLatitude().toString());
-                                Log.d(TAG, description.getLongitude().toString());
-                            }
-
-                            finish();
-
-                        } catch (Exception e){
-                            Log.e(TAG, "Error: " + e.getMessage());
-                        }
-
-                    }
-                });
+                commitFormDataToDB();
                 break;
 
             case R.id.search_location:
-                Log.d(TAG, "search icon has been selected");
+                Log.d(TAG, "Search icon has been selected");
                 this.addressSpinner.setVisibility(View.VISIBLE);
+
                 try {
-                    String locationToSearch = location.getText().toString();
-                    this.possibleUserAddresses = geocoder.getFromLocationName(locationToSearch,  5);
-                    for(Address address : this.possibleUserAddresses){
-                        Log.d(TAG,  address.getLatitude() + ", " + address.getLongitude());
-                    }
+                    ArrayAdapter<String> stringAddressAdapter = getStringArrayAdapter();
+                    if (stringAddressAdapter == null) return;
 
-                    List<String> addressLines= new ArrayList<>();
-                    for(Address address : this.possibleUserAddresses){
-                        addressLines.add(address.getAddressLine(0));
-                    }
-
-
-                    ArrayAdapter<Address> addressSpinnerAdapter = new ArrayAdapter<Address>(
-                            DescriptionForm.this, android.R.layout.simple_spinner_item,
-                            possibleUserAddresses
-                    );
-
-                    ArrayAdapter<String> stringAddressAdapter = new ArrayAdapter<String>(
-                            DescriptionForm.this, android.R.layout.simple_spinner_item,
-                            addressLines
-                    );
-
-                    if (possibleUserAddresses.size() > 0){
-                        this.location.setText(possibleUserAddresses.get(0).getAddressLine(0));
-                    } else {
-                        Toast.makeText(DescriptionForm.this,
-                                "Please change hyour search",
-                                Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    stringAddressAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
-                    addressSpinner.setAdapter(stringAddressAdapter);
-                    addressSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            location.setText(parent.getItemAtPosition(position).toString());
-                            setCoOrdinatesToStore(parent, view, position, id);
-
-                        }
-                        public void onNothingSelected(AdapterView<?> parent) {
-                        }
-                    });
+                    updateSpinner(stringAddressAdapter);
                 } catch (IOException e){
-                    Toast.makeText(this, "Woops! Couldn't find your address..." +
-                            "Maybe try a different search?", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,
+                            "Woops! Couldn't find your address..."
+                            + "Maybe try a different search?",
+                            Toast.LENGTH_SHORT).show();
                 }
 
         }
+    }
+
+    private boolean userLocationIsNull() {
+        if(this.userLocation == null){
+            Toast.makeText(DescriptionForm.this,
+                    "You need to select a location first",
+                    Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return false;
+    }
+
+    private void updateSpinner(ArrayAdapter<String> stringAddressAdapter) {
+        stringAddressAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
+        addressSpinner.setAdapter(stringAddressAdapter);
+    }
+
+    @Nullable
+    private ArrayAdapter<String> getStringArrayAdapter() throws IOException {
+        String locationToSearch = location.getText().toString();
+        this.possibleUserAddresses = geocoder.getFromLocationName(locationToSearch,  5);
+
+
+        List<String> addressLines= new ArrayList<>();
+        for(Address address : this.possibleUserAddresses){
+            addressLines.add(address.getAddressLine(0));
+        }
+
+
+        ArrayAdapter<String> stringAddressAdapter = new ArrayAdapter<String>(
+                DescriptionForm.this, android.R.layout.simple_spinner_item,
+                addressLines
+        );
+
+        if (possibleUserAddresses.size() > 0){
+            this.location.setText(possibleUserAddresses.get(0).getAddressLine(0));
+        } else {
+            Toast.makeText(DescriptionForm.this,
+                    "Please change your search",
+                    Toast.LENGTH_SHORT).show();
+            return null;
+        }
+        return stringAddressAdapter;
+    }
+
+    private void commitFormDataToDB() {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+
+                    db.descriptionDao()
+                            .insertDescriptions(new Description(
+                                    ((Double) userLocation.latitude),
+                                    (Double) userLocation.longitude,
+                                    flower.getText().toString(),
+                                    description.getText().toString()
+                            ));
+
+                    List<Description> allDescriptions = db.descriptionDao()
+                            .getAllDescriptions();
+
+                    for(Description description : allDescriptions){
+                        Log.d(TAG, description.getFlowerType().toString());
+                        Log.d(TAG, description.getLatitude().toString());
+                        Log.d(TAG, description.getLongitude().toString());
+                    }
+
+                    finish();
+
+                } catch (Exception e){
+                    Toast.makeText(context,
+                            "Sorry. An error occurred. We can't save your information right now...",
+                            Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error: " + e.getMessage());
+                }
+
+            }
+        });
     }
 
     private Address setCoOrdinatesToStore(AdapterView<?> parent, View view, int position, long id){
