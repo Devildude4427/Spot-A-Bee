@@ -23,18 +23,13 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.Places;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.assignment.spotabee.database.Description;
 import com.assignment.spotabee.database.AppDatabase;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
 
 public class DescriptionForm extends AppCompatActivity implements View.OnClickListener {
@@ -59,29 +54,13 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.description);
 
-//        this.autocompleteFragment = (PlaceAutocompleteFragment)
-//                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-//
-//        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-//            @Override
-//            public void onPlaceSelected(Place place) {
-//                // TODO: Get info about the selected place.
-//                Log.i(TAG, "Place: " + place.getName());
-//            }
-//
-//            @Override
-//            public void onError(Status status) {
-//                // TODO: Handle the error.
-//                Log.i(TAG, "An error occurred: " + status);
-//            }
-//        });
 
         context = this;
 
         this.search = findViewById(R.id.search_location);
         this.search.setOnClickListener(this);
 
-        this.addressSpinner = new Spinner(this);
+        this.addressSpinner = (Spinner) findViewById(R.id.addressSpinner);
 
         this.geocoder  = new Geocoder(DescriptionForm.this);
 
@@ -148,22 +127,38 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
                         Log.d(TAG,  address.getLatitude() + ", " + address.getLongitude());
                     }
 
+                    List<String> addressLines= new ArrayList<>();
+                    for(Address address : possibleUserAddresses){
+                        addressLines.add(address.getAddressLine(0));
+                    }
+
+
                     ArrayAdapter<Address> addressSpinnerAdapter = new ArrayAdapter<Address>(
-                            this, android.R.layout.simple_spinner_item,
+                            DescriptionForm.this, android.R.layout.simple_spinner_item,
                             possibleUserAddresses
                     );
 
+                    ArrayAdapter<String> stringAddressAdapter = new ArrayAdapter<String>(
+                            DescriptionForm.this, android.R.layout.simple_spinner_item,
+                            addressLines
+                    );
+
+
+                    this.location.setText(possibleUserAddresses.get(0).getAddressLine(0));
 //                    addressSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
 //                    addressSpinner.setAdapter(addressSpinnerAdapter);
-//                    addressSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                        @Override
-//                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                            Log.d(TAG, "onItemClick... works");
-//                        }
-//                    });
+                    stringAddressAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
+                    addressSpinner.setAdapter(stringAddressAdapter);
+                    addressSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            location.setText(parent.getItemAtPosition(position).toString());
+                        }
+                        public void onNothingSelected(AdapterView<?> parent) {
+                        }
+                    });
                 } catch (IOException e){
                     Toast.makeText(this, "Woops! Couldn't find your address..." +
-                            "Maybe try a different search?", Toast.LENGTH_SHORT);
+                            "Maybe try a different search?", Toast.LENGTH_SHORT).show();
                 }
 
         }
