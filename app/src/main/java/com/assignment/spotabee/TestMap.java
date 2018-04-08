@@ -5,7 +5,8 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-
+import android.view.View;
+import android.view.ViewTreeObserver;
 import com.assignment.spotabee.database.AppDatabase;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,7 +22,7 @@ import java.util.List;
 
 public class TestMap extends AppCompatActivity implements OnMapReadyCallback{
     private HashMap<String, LatLng> markersMvcDemo;
-    private static final String TAG = "my debug";
+    private static final String TAG = "my_debug";
     private AppDatabase db;
     private List<Double> latitudes;
     private List<Double> longitudes;
@@ -37,6 +38,7 @@ public class TestMap extends AppCompatActivity implements OnMapReadyCallback{
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        this.coOrdinates = new HashMap<>();
         mapIsReady = false;
 
         db = Room.databaseBuilder(
@@ -75,15 +77,15 @@ public class TestMap extends AppCompatActivity implements OnMapReadyCallback{
         googleMap = map;
         mapIsReady = true;
         initialise();
-//        setMarkers(this.coOrdinates, this.googleMap);
-        //setMarkers();
+
+        readyMapLayout();
     }
 
-//    public void setMarkers(HashMap<String, LatLng> coOrdinates, GoogleMap googleMap) {
+
 public void setMarkers() {
 
 
-    if(this.coOrdinates.isEmpty()){
+    if(coOrdinates.isEmpty()){
             Log.d(TAG, "setMarkers: co-ordinates HashMap is empty.");
             return;
         }
@@ -104,5 +106,20 @@ public void setMarkers() {
         }
         LatLngBounds bounds = bld.build();
         googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 70));
+    }
+
+    public void readyMapLayout(){
+        final View mapFragment = findViewById(R.id.map);
+        ViewTreeObserver vto = mapFragment.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mapFragment.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                int width  = mapFragment.getMeasuredWidth();
+                int height = mapFragment.getMeasuredHeight();
+                setMarkers();
+
+            }
+        });
     }
 }
