@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Markers extends AppCompatActivity implements OnMapReadyCallback{
-    private static final String TAG = "my_debug";
+    private static final String TAG = "markers_debug";
     private AppDatabase db;
     private List<Double> latitudes;
     private List<Double> longitudes;
@@ -54,27 +54,6 @@ public class Markers extends AppCompatActivity implements OnMapReadyCallback{
 
     }
 
-//    public void initialise(){
-//
-//        AsyncTask.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                latitudes = db.descriptionDao()
-//                        .getAllLatitudes();
-//
-//                longitudes = db.descriptionDao()
-//                        .getAllLongitudes();
-//
-//                for (int i = 0; i < latitudes.size(); i++){
-//                    Log.d(TAG, "IN DATABASE: " + i + " " + latitudes.get(i) + longitudes.get(i));
-//                    coOrdinates.put(String.format("marker %d", i), new LatLng(latitudes.get(i), longitudes.get(i)));
-//                }
-//            }
-//        });
-//        for(String key : coOrdinates.keySet()){
-//            Log.d(TAG, "IN CO-ORDINATES:" + coOrdinates.get(key).toString());
-//        }
-//    }
 public void initialise(){
 
     AsyncTask.execute(new Runnable() {
@@ -84,7 +63,6 @@ public void initialise(){
                     .getAllDescriptions();
 
             for (int i = 0; i < descriptions.size(); i++){
-//                Log.d(TAG, "IN DATABASE: " + i + " " + latitudes.get(i) + longitudes.get(i));
                 Description currentDescription = descriptions.get(i);
                 coOrdinates.put(currentDescription.getLocation(),
                         new LatLng(currentDescription.getLatitude(),
@@ -133,6 +111,8 @@ public void setMarkers(int width, int height) {
     googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height, 70));
     }
 
+
+    // Adapted from: https://stackoverflow.com/questions/7733813/how-can-you-tell-when-a-layout-has-been-drawn?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
     public void readyMapLayout(){
         final View mapFragment = findViewById(R.id.map);
         ViewTreeObserver vto = mapFragment.getViewTreeObserver();
