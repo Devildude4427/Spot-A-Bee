@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class TestMap extends AppCompatActivity implements OnMapReadyCallback{
-    private HashMap<String, LatLng> markersMvcDemo;
     private static final String TAG = "my_debug";
     private AppDatabase db;
     private List<Double> latitudes;
@@ -65,11 +64,14 @@ public class TestMap extends AppCompatActivity implements OnMapReadyCallback{
                         .getAllLongitudes();
 
                 for (int i = 0; i < latitudes.size(); i++){
-                    Log.d(TAG, i + " " + latitudes.get(i) + longitudes.get(i));
-                    coOrdinates.put("marker", new LatLng(latitudes.get(i), longitudes.get(i)));
+                    Log.d(TAG, "IN DATABASE: " + i + " " + latitudes.get(i) + longitudes.get(i));
+                    coOrdinates.put(String.format("marker %d", i), new LatLng(latitudes.get(i), longitudes.get(i)));
                 }
             }
         });
+        for(String key : coOrdinates.keySet()){
+            Log.d(TAG, "IN CO-ORDIATES:" + coOrdinates.get(key).toString());
+        }
     }
 
     @Override
@@ -82,7 +84,7 @@ public class TestMap extends AppCompatActivity implements OnMapReadyCallback{
     }
 
 
-public void setMarkers() {
+public void setMarkers(int width, int height) {
 
 
     if(coOrdinates.isEmpty()){
@@ -105,7 +107,7 @@ public void setMarkers() {
             bld.include(ll);
         }
         LatLngBounds bounds = bld.build();
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 70));
+    googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height, 70));
     }
 
     public void readyMapLayout(){
@@ -117,7 +119,7 @@ public void setMarkers() {
                 mapFragment.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 int width  = mapFragment.getMeasuredWidth();
                 int height = mapFragment.getMeasuredHeight();
-                setMarkers();
+                setMarkers(width, height);
 
             }
         });
