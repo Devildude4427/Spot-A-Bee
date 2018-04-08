@@ -8,7 +8,7 @@ import com.assignment.spotabee.DescriptionForm;
 import com.assignment.spotabee.database.Description;
 import com.assignment.spotabee.database.DescriptionDao;
 
-@Database(entities = {Description.class}, version = 2)
+@Database(entities = {Description.class}, version = 3)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract DescriptionDao descriptionDao();
 
