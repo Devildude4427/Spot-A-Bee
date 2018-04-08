@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import com.assignment.spotabee.database.AppDatabase;
+import com.assignment.spotabee.database.Description;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -20,11 +21,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class TestMap extends AppCompatActivity implements OnMapReadyCallback{
+public class Markers extends AppCompatActivity implements OnMapReadyCallback{
     private static final String TAG = "my_debug";
     private AppDatabase db;
     private List<Double> latitudes;
     private List<Double> longitudes;
+    private List<Description> descriptions;
     private HashMap<String, LatLng> coOrdinates;
     private boolean mapIsReady;
     private GoogleMap googleMap;
@@ -52,27 +54,48 @@ public class TestMap extends AppCompatActivity implements OnMapReadyCallback{
 
     }
 
-    public void initialise(){
+//    public void initialise(){
+//
+//        AsyncTask.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                latitudes = db.descriptionDao()
+//                        .getAllLatitudes();
+//
+//                longitudes = db.descriptionDao()
+//                        .getAllLongitudes();
+//
+//                for (int i = 0; i < latitudes.size(); i++){
+//                    Log.d(TAG, "IN DATABASE: " + i + " " + latitudes.get(i) + longitudes.get(i));
+//                    coOrdinates.put(String.format("marker %d", i), new LatLng(latitudes.get(i), longitudes.get(i)));
+//                }
+//            }
+//        });
+//        for(String key : coOrdinates.keySet()){
+//            Log.d(TAG, "IN CO-ORDINATES:" + coOrdinates.get(key).toString());
+//        }
+//    }
+public void initialise(){
 
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                latitudes = db.descriptionDao()
-                        .getAllLatitudes();
+    AsyncTask.execute(new Runnable() {
+        @Override
+        public void run() {
+            descriptions = db.descriptionDao()
+                    .getAllDescriptions();
 
-                longitudes = db.descriptionDao()
-                        .getAllLongitudes();
-
-                for (int i = 0; i < latitudes.size(); i++){
-                    Log.d(TAG, "IN DATABASE: " + i + " " + latitudes.get(i) + longitudes.get(i));
-                    coOrdinates.put(String.format("marker %d", i), new LatLng(latitudes.get(i), longitudes.get(i)));
-                }
+            for (int i = 0; i < descriptions.size(); i++){
+//                Log.d(TAG, "IN DATABASE: " + i + " " + latitudes.get(i) + longitudes.get(i));
+                Description currentDescription = descriptions.get(i);
+                coOrdinates.put(currentDescription.getLocation(),
+                        new LatLng(currentDescription.getLatitude(),
+                                currentDescription.getLongitude()));
             }
-        });
-        for(String key : coOrdinates.keySet()){
-            Log.d(TAG, "IN CO-ORDIATES:" + coOrdinates.get(key).toString());
         }
+    });
+    for(String key : coOrdinates.keySet()){
+        Log.d(TAG, "IN CO-ORDINATES:" + coOrdinates.get(key).toString());
     }
+}
 
     @Override
     public void onMapReady(GoogleMap map) {

@@ -19,15 +19,19 @@ public class Description {
     @ColumnInfo(name = "longitude")
     private Double longitude;
 
+    @ColumnInfo(name = "location")
+    private String location;
+
     @ColumnInfo(name = "flower_type")
     private String flowerType;
 
     @ColumnInfo(name = "further_details")
     private String furtherDetails;
 
-    public Description(Double latitude, Double longitude, String flowerType, String furtherDetails){
+    public Description(Double latitude, Double longitude, String location, String flowerType, String furtherDetails){
         this.latitude = latitude;
         this.longitude = longitude;
+        this.location = location;
         this.flowerType = flowerType;
         this.furtherDetails = furtherDetails;
     }
@@ -52,7 +56,13 @@ public class Description {
         this.longitude = longitude;
     }
 
+    public String getLocation() {
+        return location;
+    }
 
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
     public void setFlowerType(String flowerType) {
         this.flowerType = flowerType;
