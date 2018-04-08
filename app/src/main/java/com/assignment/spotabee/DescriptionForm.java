@@ -180,6 +180,7 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
                             .insertDescriptions(new Description(
                                     ((Double) userLocation.latitude),
                                     (Double) userLocation.longitude,
+                                    location.getText().toString(),
                                     flower.getText().toString(),
                                     description.getText().toString()
                             ));
