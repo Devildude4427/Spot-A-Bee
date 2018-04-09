@@ -23,6 +23,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.assignment.spotabee.database.AppDatabase;
+import com.assignment.spotabee.database.Description;
 
 import java.io.IOException;
 import java.util.ArrayList;

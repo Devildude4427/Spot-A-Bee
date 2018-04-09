@@ -5,21 +5,21 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-//import com.assignment.spotabee.Home.R;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+
+//import com.assignment.spotabee.Home.R;
 
 public class Home extends AppCompatActivity implements View.OnClickListener {
 
