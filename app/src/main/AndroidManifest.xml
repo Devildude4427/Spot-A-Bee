@@ -31,9 +31,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DescriptionForm" />
-        <activity android:name=".Map" />
         <activity android:name=".AboutUs" />
+        <activity android:name=".Map" />
+        <activity android:name=".Home" />
+        <activity android:name=".DescriptionForm"/>
 
     </application>
 
