@@ -27,10 +27,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class Map extends FragmentActivity
         implements OnMapReadyCallback {
 
-    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS = 0;
+//    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS = 0;
     private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private static final int PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS = 2;
-    private static final int CHOOSE_ACCOUNT = 99;
+//    private static final int PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS = 2;
+//    private static final int CHOOSE_ACCOUNT = 99;
     private GoogleMap googleMap;
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -50,8 +50,8 @@ public class Map extends FragmentActivity
         locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
 
-        accountManager = (AccountManager)
-                getSystemService(Context.ACCOUNT_SERVICE);
+//        accountManager = (AccountManager)
+//                getSystemService(Context.ACCOUNT_SERVICE);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -64,51 +64,48 @@ public class Map extends FragmentActivity
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void checkIfPermissionsGiven() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.GET_ACCOUNTS)
-                        != PackageManager.PERMISSION_GRANTED) {
-            requestLocationAccountPermission();
-        } else if (ContextCompat.checkSelfPermission(this,
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+//                != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
+//                        Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+//            requestLocationAccountPermission(); }
+           if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            requestLocationPermission();
-        } else {
-            requestAccountPermission();
-        }
+            requestLocationPermission(); }
+//        else {
+//            requestAccountPermission();
+//        }
 
         try {
             locationListener = new Map.MyLocationListener();
             locationManager.requestLocationUpdates(LocationManager
                     .GPS_PROVIDER, 5000, 10,locationListener);
-            Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null,
-                    null);
-            startActivityForResult(intent, CHOOSE_ACCOUNT);
+//            Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null,
+//                    null);
+//            startActivityForResult(intent, CHOOSE_ACCOUNT);
         } catch (Exception e) {
             Log.d(TAG, "Exception" + e);
         }
     }
 
-    protected void onActivityResult(final int requestCode, final int resultCode,
-                                    final Intent data){
-        if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
-            String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-            Log.v(TAG, accountName);
-        } else {
-            Log.v(TAG, "There was an error in the account picker");
-        }
-    }
+//    protected void onActivityResult(final int requestCode, final int resultCode,
+//                                    final Intent data){
+//        if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
+//            String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+//            Log.v(TAG, accountName);
+//        } else {
+//            Log.v(TAG, "There was an error in the account picker");
+//        }
+//    }
 
-    private void requestLocationAccountPermission() {
-        // Permission has not been granted and must be requested.
-        // Request the permission. The result will be received in onRequestPermissionResult().
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.GET_ACCOUNTS},
-                PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS);
-    }
+//    private void requestLocationAccountPermission() {
+//        // Permission has not been granted and must be requested.
+//        // Request the permission. The result will be received in onRequestPermissionResult().
+//        ActivityCompat.requestPermissions(this,
+//                new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+//                        Manifest.permission.GET_ACCOUNTS},
+//                PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS);
+//    }
 
     private void requestLocationPermission() {
         // Permission has not been granted and must be requested.
@@ -118,13 +115,13 @@ public class Map extends FragmentActivity
                 PERMISSION_REQUEST_ACCESS_FINE_LOCATION);
     }
 
-    private void requestAccountPermission() {
-        // Permission has not been granted and must be requested.
-        // Request the permission. The result will be received in onRequestPermissionResult().
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.GET_ACCOUNTS},
-                PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS);
-    }
+//    private void requestAccountPermission() {
+//        // Permission has not been granted and must be requested.
+//        // Request the permission. The result will be received in onRequestPermissionResult().
+//        ActivityCompat.requestPermissions(this,
+//                new String[]{Manifest.permission.GET_ACCOUNTS},
+//                PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS);
+//    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -132,17 +129,17 @@ public class Map extends FragmentActivity
                                            String permissions[],
                                            int[] grantResults) {
         switch (requestCode) {
-            case PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    checkIfPermissionsGiven();
-                } else {
-                    setUpMap(51.481581, -3.179090);
-                    Log.v(TAG, "User needs to make an account");
-                }
-                return;
-            }
+//            case PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS: {
+//                // If request is cancelled, the result arrays are empty.
+//                if (grantResults.length > 0
+//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    checkIfPermissionsGiven();
+//                } else {
+//                    setUpMap(51.481581, -3.179090);
+//                    Log.v(TAG, "User needs to make an account");
+//                }
+//                return;
+//            }
             case PERMISSION_REQUEST_ACCESS_FINE_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
@@ -152,15 +149,15 @@ public class Map extends FragmentActivity
                 }
                 return;
             }
-            case PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                } else {
-                    //Redirect to force user to create an account
-                    Log.v(TAG, "User needs to make an account");
-                }
-            }
+//            case PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS: {
+//                // If request is cancelled, the result arrays are empty.
+//                if (grantResults.length > 0
+//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                } else {
+//                    //Redirect to force user to create an account
+//                    Log.v(TAG, "User needs to make an account");
+//                }
+//            }
             // other 'case' lines to check for other
             // permissions this app might request.
         }
