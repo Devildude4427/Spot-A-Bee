@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -23,6 +24,13 @@ import java.io.InputStream;
 
 public class Home extends AppCompatActivity implements View.OnClickListener {
 
+    //------------------------Adding the menu bar-----------------------------------
+    //Adding the menu bar will allow the user to navigate easily througout the app.
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.opt_menu, menu);
+        return true;
+    }
 
     //--------------------------------UPLOADING A PICTURE AND CONNECTING TO GALLERY-----------------------------------
     public static final int IMAGE_GALLERY_REQUEST = 20;
@@ -101,8 +109,9 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
 
         startActivityForResult(photoPickerIntent, IMAGE_GALLERY_REQUEST);
     }
-    //--------------------------------------------------------------------------------------------
 
+
+    //--------------------------------------------------------------------------------------------
     //NOW we need to get the request code
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
