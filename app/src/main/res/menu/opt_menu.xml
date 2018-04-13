@@ -2,7 +2,10 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="Form" />
-    <item android:title="How to" />
-    <item android:title="About Us" />
+    <item android:title="@string/form" />
+    <item android:title="@string/upload_picture" />
+    <item android:title="@string/flowers_in_cardiff" />
+    <item android:title="@string/how_to_menu" />
+    <item android:title="@string/about_us" />
+    <item android:title="@string/donate" />
 </menu>
