@@ -12,5 +12,11 @@
     <string name="einstein_quote">Einstein said If the bee disappeared off the surface of the globe then man would only have  four years of life left. No more bees, no  more pollination, no more plants, no  more animals, no more manThis single quote captures the key role that bees play in the survival of planet earth.</string>
     <string name="about_us_title">About Us!</string>
     <string name="how_to">How #to</string>
+    <string name="form">Form</string>
+    <string name="donate">DONATE</string>
+    <string name="about_us">About Us</string>
+    <string name="how_to_menu">How to</string>
+    <string name="upload_picture">Upload Picture</string>
+    <string name="flowers_in_cardiff">Flowers in Cardiff</string>
 
 </resources>
