@@ -8,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -52,6 +54,7 @@ public class Map extends FragmentActivity
                 getSystemService(Context.ACCOUNT_SERVICE);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
@@ -59,6 +62,7 @@ public class Map extends FragmentActivity
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void checkIfPermissionsGiven() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -88,7 +92,7 @@ public class Map extends FragmentActivity
     }
 
     protected void onActivityResult(final int requestCode, final int resultCode,
-                                     final Intent data){
+                                    final Intent data){
         if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
             String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
             Log.v(TAG, accountName);
@@ -102,7 +106,7 @@ public class Map extends FragmentActivity
         // Request the permission. The result will be received in onRequestPermissionResult().
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                             Manifest.permission.GET_ACCOUNTS},
+                        Manifest.permission.GET_ACCOUNTS},
                 PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS);
     }
 
@@ -122,6 +126,7 @@ public class Map extends FragmentActivity
                 PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[],
