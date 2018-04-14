@@ -138,13 +138,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
                     Toast.makeText(this, "Unnabble to find the image or it is unavailable", Toast.LENGTH_LONG).show();
                 }
             }
-
-
-
         }
-
-
-
     }
 
 

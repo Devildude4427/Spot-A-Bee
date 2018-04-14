@@ -2,6 +2,8 @@ package com.assignment.spotabee;
 
 import android.Manifest;
 import android.accounts.AccountManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,6 +15,8 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -31,10 +35,12 @@ public class Map extends FragmentActivity
     private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 1;
 //    private static final int PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS = 2;
 //    private static final int CHOOSE_ACCOUNT = 99;
+    private static final String CHANNEL_ID = "One";
     private GoogleMap googleMap;
     private LocationManager locationManager;
     private LocationListener locationListener;
     private AccountManager accountManager;
+    private NotificationManager notificationManager;
 
     private static final String TAG = "Debug";
 
@@ -50,8 +56,34 @@ public class Map extends FragmentActivity
         locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
 
+        initChannels();
+
 //        accountManager = (AccountManager)
 //                getSystemService(Context.ACCOUNT_SERVICE);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.camera_button)
+                .setContentTitle("Spot-A-Bee")
+                .setContentText("This is a notification")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+    // notificationId is a unique int for each notification that you must define
+        notificationManager.notify(1, mBuilder.build());
+    }
+
+    public void initChannels() {
+        if (Build.VERSION.SDK_INT < 26) {
+            return;
+        }
+        notificationManager = (NotificationManager)
+                getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                getString(R.string.channel_name),
+                NotificationManager.IMPORTANCE_DEFAULT);
+        channel.setDescription(getString(R.string.channel_description));
+        notificationManager.createNotificationChannel(channel);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
