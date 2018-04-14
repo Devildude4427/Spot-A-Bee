@@ -56,10 +56,10 @@ public class Map extends FragmentActivity
         locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
 
-        initChannels();
+        //        accountManager = (AccountManager)
+        //           getSystemService(Context.ACCOUNT_SERVICE);
 
-//        accountManager = (AccountManager)
-//                getSystemService(Context.ACCOUNT_SERVICE);
+        initChannels();
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.camera_button)
@@ -69,10 +69,11 @@ public class Map extends FragmentActivity
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
-    // notificationId is a unique int for each notification that you must define
+        // notificationId is a unique int for each notification
         notificationManager.notify(1, mBuilder.build());
     }
 
+    /*Creates the channels for notifications to use*/
     public void initChannels() {
         if (Build.VERSION.SDK_INT < 26) {
             return;
@@ -120,6 +121,7 @@ public class Map extends FragmentActivity
         }
     }
 
+    /*Has the user select a Google account that this app can then see and use*/
 //    protected void onActivityResult(final int requestCode, final int resultCode,
 //                                    final Intent data){
 //        if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
@@ -130,6 +132,7 @@ public class Map extends FragmentActivity
 //        }
 //    }
 
+    /*Method for requesting permission to both Location and Account Permissions*/
 //    private void requestLocationAccountPermission() {
 //        // Permission has not been granted and must be requested.
 //        // Request the permission. The result will be received in onRequestPermissionResult().
@@ -139,6 +142,7 @@ public class Map extends FragmentActivity
 //                PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS);
 //    }
 
+    /*Method for requesting permission to Location Permission*/
     private void requestLocationPermission() {
         // Permission has not been granted and must be requested.
         // Request the permission. The result will be received in onRequestPermissionResult().
@@ -147,6 +151,7 @@ public class Map extends FragmentActivity
                 PERMISSION_REQUEST_ACCESS_FINE_LOCATION);
     }
 
+    /*Method for requesting permission to Account Permission*/
 //    private void requestAccountPermission() {
 //        // Permission has not been granted and must be requested.
 //        // Request the permission. The result will be received in onRequestPermissionResult().
@@ -155,6 +160,8 @@ public class Map extends FragmentActivity
 //                PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS);
 //    }
 
+
+    /*Method handles what happens after account permissions are requested*/
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onRequestPermissionsResult(int requestCode,
