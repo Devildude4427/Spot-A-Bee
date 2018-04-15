@@ -41,6 +41,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
     private static final int PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS = 2;
     static final int PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE = 3;
     public static final int PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY = 4;
+    private static final int PERMISSION_REQUEST_CAMERA = 5;
     private static final int CHOOSE_ACCOUNT = 99;
     private AccountManager accountManager;
     private static final String TAG = "Debug";
@@ -100,6 +101,11 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
 //                != PackageManager.PERMISSION_GRANTED) {
 //            requestAccountPermission();
 //            Log.v(TAG, "Only requesting account Permission"); }
+        else if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED){
+            requestCameraPermission();
+            Log.v(TAG, "Requesting camera Permission");}
         else {
             Log.v(TAG, "No permissions requested");
         }
@@ -143,9 +149,9 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
             } else if (requestCode == CHOOSE_ACCOUNT) {
                 Log.v(TAG, "There was an error in the account picker");
             } else if (requestCode == PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY) {
-                Log.v(TAG, "There was an error in the image gallery");
+                Log.v(TAG, "There was an error in the image gallery" + resultCode);
             } else {
-                Log.v(TAG, "Nothing exists to handle that request code");
+                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
             }
         } catch (Exception e) {
             Log.v(TAG, "Exception " + e);
@@ -186,6 +192,17 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
 //                PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS);
 //    }
 
+    /**
+     * Requests permission to use device camera.
+     */
+    private void requestCameraPermission() {
+        // Permission has not been granted and must be requested.
+        // Request the permission. The result will be received in onRequestPermissionResult().
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.CAMERA},
+                PERMISSION_REQUEST_CAMERA);
+    }
+
 
     /**
      * Checks the results of the permission requests.
@@ -212,6 +229,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
 //                        Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
 //                        startActivityForResult(intent, CHOOSE_ACCOUNT);
 //                        Log.v(TAG, "Intent to Choose Account go");
+//                        checkifPermissionsGiven();
 //
 //                    } catch (Exception e) {
 //                        Log.v(TAG, "Exception " + e);
@@ -228,6 +246,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.v(TAG, "Permission to only location granted");
+                    checkIfPermissionsGiven();
                 }
             }
             return;
@@ -251,6 +270,14 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
 //                }
 //            }
 //            return;
+
+            case PERMISSION_REQUEST_CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.v(TAG, "Permission to use camera granted");
+                }
+            }
 
             // other 'case' lines to check for other
             // permissions this app might request.
