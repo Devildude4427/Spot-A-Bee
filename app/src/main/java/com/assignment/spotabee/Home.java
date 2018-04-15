@@ -113,20 +113,44 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
      * @param resultCode If the result succeeded or failed
      * @param data The intent that is being requested
      */
-//    protected void onActivityResult(final int requestCode, final int resultCode,
-//                                    final Intent data){
-//        Log.v(TAG, "Found method Activity Result");
-//        try {
-//            if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
-//                String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-//                Log.v(TAG, accountName);
-//            } else {
-//                Log.v(TAG, "There was an error in the account picker");
-//            }
-//        } catch (Exception e) {
-//            Log.v(TAG, "Exception " + e);
-//        }
-//    }
+    protected void onActivityResult(final int requestCode, final int resultCode,
+                                    final Intent data){
+        try {
+            if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
+                String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                Log.v(TAG, accountName);
+            } else if (requestCode == PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY && resultCode == RESULT_OK) {
+                //What will happen if yes??
+                Uri galleryUri = data.getData();
+
+                //Create a Stream to read the image data for the memory
+                //If we are unable to catch information from the data for any reasy, try/catch it
+                //re edit the exception or put it in the catch block
+                InputStream inputStream;
+                try {
+                    inputStream = getContentResolver().openInputStream(galleryUri);
+
+                    // Get Bitmap, get an instance of the image view. Catch info, Tell the users that the image was unable to find.
+                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+                    //Show the gallery or image to user:
+                    imgGallery.setImageBitmap(bitmap);
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Unnabble to find the image or it is unavailable", Toast.LENGTH_LONG).show();
+                }
+            } else if (requestCode == CHOOSE_ACCOUNT) {
+                Log.v(TAG, "There was an error in the account picker");
+            } else if (requestCode == PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY) {
+                Log.v(TAG, "There was an error in the image gallery");
+            } else {
+                Log.v(TAG, "Nothing exists to handle that request code");
+            }
+        } catch (Exception e) {
+            Log.v(TAG, "Exception " + e);
+        }
+    }
 
     /**
      * Requests permissions to use device location and access accounts.
@@ -228,35 +252,6 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
 //            }
 //            return;
 
-            case PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    //What will happen if yes??
-                    Uri galleryUri = takePictureIntent.getData();
-
-                    //Create a Stream to read the image data for the memory
-                    //If we are unable to catch information from the data for any reasy, try/catch it
-                    //re edit the exception or put it in the catch block
-                    InputStream inputStream;
-                    try {
-                        inputStream = getContentResolver().openInputStream(galleryUri);
-
-                        // Get Bitmap, get an instance of the image view. Catch info, Tell the users that the image was unable to find.
-                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-                        //Show the gallery or image to user:
-                        imgGallery.setImageBitmap(bitmap);
-
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                        Log.v(TAG, "Exception " + e);
-                        Toast.makeText(this, "Unnabble to find the image or it is unavailable", Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-
             // other 'case' lines to check for other
             // permissions this app might request.
         }
@@ -265,17 +260,33 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
     //Override onclick to open the camera on button 2
     @Override
     public void onClick(View v) {
+
         int id = v.getId();
+        //Open the camera HOPEFULLY
         if ( id == R.id.button2){
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA},
-                    PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE);
-        }
-        else{
+            dispatchTakePictureIntent();
+        }else{
             //Go back to main button
             intent = new Intent(this, Home.class);
             startActivity(intent);
         }
+
+
+    }
+
+    private void dispatchTakePictureIntent() {
+
+        Log.d("TEST", "HELLO THERE");
+
+        try {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            //if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE);
+            //}
+        } catch (Exception e){
+            Log.v(TAG, "Exception " + e);
+        }
+
     }
 
     //------------------------------------------------------------------------------------------
@@ -298,17 +309,4 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
 
         startActivityForResult(photoPickerIntent, PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY);
     }
-
-
-    //--------------------------------------------------------------------------------------------
-    //NOW we need to get the request code
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        if (resultCode == RESULT_OK) {
-            if (requestCode == PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY){
-
-            }
-        }
-    }
-
-
 }
