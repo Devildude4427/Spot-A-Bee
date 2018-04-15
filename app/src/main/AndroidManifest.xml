@@ -8,7 +8,7 @@
     <!-- //Addd permissions to access location -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.CAMERA" />
+    <!--<uses-permission android:name="android.permission.CAMERA" />-->
 
 
     <application
