@@ -42,17 +42,15 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
     static final int PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE = 3;
     public static final int PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY = 4;
     private static final int CHOOSE_ACCOUNT = 99;
-    private LocationManager locationManager;
     private AccountManager accountManager;
     private static final String TAG = "Debug";
-    private Map.MyLocationListener myLocationListener = new Map().new MyLocationListener();
 
     AppCompatButton button;
     AppCompatButton button2;
     AppCompatButton button3;
     private ImageView imgGallery;
     //declare the intent so that you can use it later as a global object
-//    Intent intent;
+    Intent intent;
 
 
     @SuppressLint("WrongViewCast")
@@ -71,9 +69,6 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
 
         checkIfPermissionsGiven();
 
-        locationManager = (LocationManager)
-                getSystemService(Context.LOCATION_SERVICE);
-
         accountManager = (AccountManager)
                 getSystemService(Context.ACCOUNT_SERVICE);
     }
@@ -90,49 +85,60 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void checkIfPermissionsGiven() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
-            requestLocationAccountPermission();
-        } else if (ContextCompat.checkSelfPermission(this,
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+//                != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
+//                        Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+//            requestLocationAccountPermission();
+//            Log.v(TAG, "Requesting account and location Permissions");}
+        if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             requestLocationPermission();
-        } else if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.GET_ACCOUNTS)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestAccountPermission();
-            Log.v(TAG, "Only requesting account Permissions");
-        }
-    }
-
-    /*Has the user select a Google account that this app can then see and use*/
-    protected void onActivityResult(final int requestCode, final int resultCode,
-                                    final Intent data){
-        Log.v(TAG, "Found method Activity Result");
-        try {
-            if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
-                String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                Log.v(TAG, accountName);
-            } else {
-                Log.v(TAG, "There was an error in the account picker");
-            }
-        } catch (Exception e) {
-            Log.v(TAG, "Exception " + e);
+            Log.v(TAG, "Only requesting location Permission");}
+//        else if (ContextCompat.checkSelfPermission(this,
+//                Manifest.permission.GET_ACCOUNTS)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            requestAccountPermission();
+//            Log.v(TAG, "Only requesting account Permission"); }
+        else {
+            Log.v(TAG, "No permissions requested");
         }
     }
 
     /**
+     * Creates gets details and confirms operation from account picker
+     *
+     * @param requestCode An integer that relates to the permission. So
+     *                    location might be 1, account access 2, and so on.
+     * @param resultCode If the result succeeded or failed
+     * @param data The intent that is being requested
+     */
+//    protected void onActivityResult(final int requestCode, final int resultCode,
+//                                    final Intent data){
+//        Log.v(TAG, "Found method Activity Result");
+//        try {
+//            if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
+//                String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+//                Log.v(TAG, accountName);
+//            } else {
+//                Log.v(TAG, "There was an error in the account picker");
+//            }
+//        } catch (Exception e) {
+//            Log.v(TAG, "Exception " + e);
+//        }
+//    }
+
+    /**
      * Requests permissions to use device location and access accounts.
      */
-    private void requestLocationAccountPermission() {
-        // Permission has not been granted and must be requested.
-        // Request the permission. The result will be received in onRequestPermissionResult().
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.GET_ACCOUNTS},
-                PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS);
-    }
+//    private void requestLocationAccountPermission() {
+//        // Permission has not been granted and must be requested.
+//        // Request the permission. The result will be received in onRequestPermissionResult().
+//        ActivityCompat.requestPermissions(this,
+//                new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+//                        Manifest.permission.GET_ACCOUNTS},
+//                PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS);
+//    }
 
     /**
      * Requests permission to use device location.
@@ -148,13 +154,13 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
     /**
      * Requests permission to use accounts.
      */
-    private void requestAccountPermission() {
-        // Permission has not been granted and must be requested.
-        // Request the permission. The result will be received in onRequestPermissionResult().
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.GET_ACCOUNTS},
-                PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS);
-    }
+//    private void requestAccountPermission() {
+//        // Permission has not been granted and must be requested.
+//        // Request the permission. The result will be received in onRequestPermissionResult().
+//        ActivityCompat.requestPermissions(this,
+//                new String[]{Manifest.permission.GET_ACCOUNTS},
+//                PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS);
+//    }
 
 
     /**
@@ -172,70 +178,55 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
                                            String permissions[],
                                            int[] grantResults) {
         switch (requestCode) {
-            case PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.v(TAG, "Permission to both granted");
-
-                    try {
-                        if (ContextCompat.checkSelfPermission(this,
-                                Manifest.permission.ACCESS_FINE_LOCATION)
-                                == PackageManager.PERMISSION_GRANTED) {
-                            LocationListener locationListener = myLocationListener;
-                            locationManager.requestLocationUpdates(LocationManager
-                                    .GPS_PROVIDER, 5000, 10, locationListener);
-                            Log.v(TAG, "Location services are a go");
-                        }
-
-                        Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
-                        startActivityForResult(intent, CHOOSE_ACCOUNT);
-                        Log.v(TAG, "Intent to Choose Account go");
-
-                    } catch (Exception e) {
-                        Log.v(TAG, "Exception " + e);
-                    }
-
-                } else {
-                    Log.v(TAG, "User needs to make an account");
-                }
-            }
+//            case PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS: {
+//                // If request is cancelled, the result arrays are empty.
+//                if (grantResults.length > 0
+//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    Log.v(TAG, "Permission to both granted");
+//
+//                    try {
+//                        Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
+//                        startActivityForResult(intent, CHOOSE_ACCOUNT);
+//                        Log.v(TAG, "Intent to Choose Account go");
+//
+//                    } catch (Exception e) {
+//                        Log.v(TAG, "Exception " + e);
+//                    }
+//
+//                } else {
+//                    Log.v(TAG, "User needs to make an account");
+//                }
+//            }
+//            return;
 
             case PERMISSION_REQUEST_ACCESS_FINE_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.ACCESS_FINE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED) {
-
-                        LocationListener locationListener = myLocationListener;
-                        locationManager.requestLocationUpdates(LocationManager
-                                .GPS_PROVIDER, 5000, 10,locationListener);
-                    }
-                } else {
-                    setUpMap(51.481581, -3.179090);
+                    Log.v(TAG, "Permission to only location granted");
                 }
             }
+            return;
 
-            case PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.v(TAG, "Permission to account granted");
-                    try {
-                        Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
-                        startActivityForResult(intent, CHOOSE_ACCOUNT);
-                        Log.v(TAG, "Intent to choose just account a go");
-                    } catch (Exception e) {
-                        Log.v(TAG, "Exception " + e);
-                    }
-
-                } else {
-                    //Redirect to force user to create an account
-                    Log.v(TAG, "User needs to make an account");
-                }
-            }
+//            case PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS: {
+//                // If request is cancelled, the result arrays are empty.
+//                if (grantResults.length > 0
+//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    Log.v(TAG, "Permission to only account granted");
+//                    try {
+//                        Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
+//                        startActivityForResult(intent, CHOOSE_ACCOUNT);
+//                        Log.v(TAG, "Intent to choose just account a go");
+//                    } catch (Exception e) {
+//                        Log.v(TAG, "Exception " + e);
+//                    }
+//
+//                } else {
+//                    //Redirect to force user to create an account
+//                    Log.v(TAG, "User needs to make an account");
+//                }
+//            }
+//            return;
 
             case PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE: {
                 // If request is cancelled, the result arrays are empty.
@@ -280,51 +271,44 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
                     new String[]{Manifest.permission.CAMERA},
                     PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE);
         }
-//        else{
-//            //Go back to main button
-//            intent = new Intent(this, Home.class);
-//            startActivity(intent);
-//        }
+        else{
+            //Go back to main button
+            intent = new Intent(this, Home.class);
+            startActivity(intent);
+        }
     }
-
-//    private void dispatchTakePictureIntent() {
-//        //if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-//        startActivityForResult(takePictureIntent, PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE);
-//        //}
-//    }
-
 
     //------------------------------------------------------------------------------------------
     //GALLERY OF IMAGES:
     //Add the method to invoke the Gallery of the phone
-//    public void onImageGallery(View v) {
-//
-//        //Add the image Gallery using an implicit intent.
-//        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-//
-//        //Create a variable File, with name: galleryDir. Link the Gallery to the Directory
-//        File galleryDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-//        String galleryDirPath = galleryDir.getPath();
-//
-//        //Especify URI
-//        Uri data = Uri.parse(galleryDirPath);
-//
-//        //What is the data type? I want all images , includes all extentions for images:
-//        photoPickerIntent.setDataAndType(data, "image/*");
-//
-//        startActivityForResult(photoPickerIntent, PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY);
-//    }
+    public void onImageGallery(View v) {
+
+        //Add the image Gallery using an implicit intent.
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+
+        //Create a variable File, with name: galleryDir. Link the Gallery to the Directory
+        File galleryDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        String galleryDirPath = galleryDir.getPath();
+
+        //Especify URI
+        Uri data = Uri.parse(galleryDirPath);
+
+        //What is the data type? I want all images , includes all extentions for images:
+        photoPickerIntent.setDataAndType(data, "image/*");
+
+        startActivityForResult(photoPickerIntent, PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY);
+    }
 
 
     //--------------------------------------------------------------------------------------------
     //NOW we need to get the request code
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-//        if (resultCode == RESULT_OK) {
-//            if (requestCode == PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY){
-//
-//            }
-//        }
-//    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if (resultCode == RESULT_OK) {
+            if (requestCode == PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY){
+
+            }
+        }
+    }
 
 
 }
