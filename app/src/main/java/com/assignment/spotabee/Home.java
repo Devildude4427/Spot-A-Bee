@@ -43,7 +43,6 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
     public static final int PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY = 4;
     private static final int CHOOSE_ACCOUNT = 99;
     private LocationManager locationManager;
-    private LocationListener locationListener;
     private AccountManager accountManager;
     private static final String TAG = "Debug";
     private Map.MyLocationListener myLocationListener = new Map().new MyLocationListener();
@@ -53,7 +52,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
     AppCompatButton button3;
     private ImageView imgGallery;
     //declare the intent so that you can use it later as a global object
-    Intent intent;
+//    Intent intent;
 
 
     @SuppressLint("WrongViewCast")
@@ -99,7 +98,9 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             requestLocationPermission();
-        } else {
+        } else if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.GET_ACCOUNTS)
+                != PackageManager.PERMISSION_GRANTED) {
             requestAccountPermission();
             Log.v(TAG, "Only requesting account Permissions");
         }
@@ -108,6 +109,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
     /*Has the user select a Google account that this app can then see and use*/
     protected void onActivityResult(final int requestCode, final int resultCode,
                                     final Intent data){
+        Log.v(TAG, "Found method Activity Result");
         try {
             if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
                 String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
@@ -174,16 +176,24 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.v(TAG, "Permission to both granted");
 
-                    Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
-                    startActivityForResult(intent, CHOOSE_ACCOUNT);
+                    try {
+                        if (ContextCompat.checkSelfPermission(this,
+                                Manifest.permission.ACCESS_FINE_LOCATION)
+                                == PackageManager.PERMISSION_GRANTED) {
+                            LocationListener locationListener = myLocationListener;
+                            locationManager.requestLocationUpdates(LocationManager
+                                    .GPS_PROVIDER, 5000, 10, locationListener);
+                            Log.v(TAG, "Location services are a go");
+                        }
 
-                    locationListener = myLocationListener;
-                    if (ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.ACCESS_FINE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED) {
-                        locationManager.requestLocationUpdates(LocationManager
-                                .GPS_PROVIDER, 5000, 10, locationListener);
+                        Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
+                        startActivityForResult(intent, CHOOSE_ACCOUNT);
+                        Log.v(TAG, "Intent to Choose Account go");
+
+                    } catch (Exception e) {
+                        Log.v(TAG, "Exception " + e);
                     }
 
                 } else {
@@ -199,7 +209,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
                             Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
 
-                        locationListener = myLocationListener;
+                        LocationListener locationListener = myLocationListener;
                         locationManager.requestLocationUpdates(LocationManager
                                 .GPS_PROVIDER, 5000, 10,locationListener);
                     }
@@ -212,10 +222,11 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.v(TAG, "Permission to account granted");
                     try {
                         Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
                         startActivityForResult(intent, CHOOSE_ACCOUNT);
-
+                        Log.v(TAG, "Intent to choose just account a go");
                     } catch (Exception e) {
                         Log.v(TAG, "Exception " + e);
                     }
