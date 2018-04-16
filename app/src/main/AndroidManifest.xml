@@ -27,5 +27,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".DescriptionForm"/>
+        <activity android:name=".Map"/>
+        <activity android:name=".Markers"/>
+        <activity android:name=".Camera"/>
+        <activity android:name=".AboutUs"/>
     </application>
 </manifest>

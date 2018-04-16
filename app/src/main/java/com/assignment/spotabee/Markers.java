@@ -42,6 +42,12 @@ public class Markers extends AppCompatActivity implements OnMapReadyCallback{
         this.coOrdinates = new HashMap<>();
         mapIsReady = false;
 
+        // Database build
+
+        // fallBackToDestructiveMigration() will DROP all tables and recreate them
+        // when the version number of the database is updated.
+        // Necessary since migration has not been put in place.
+
         db = Room.databaseBuilder(
                 getApplicationContext(),
                 AppDatabase.class,
@@ -54,6 +60,8 @@ public class Markers extends AppCompatActivity implements OnMapReadyCallback{
 
     }
 
+    // Retrieve latitude, longitudes and location titles from the database
+    // to make a HashMap of titled co-ordinates from which to place on the map
 public void initialise(){
 
     AsyncTask.execute(new Runnable() {
@@ -81,6 +89,7 @@ public void initialise(){
         mapIsReady = true;
         initialise();
 
+        // Ensure that the layout size is ready for LatLng bounds to be applied
         readyMapLayout();
     }
 
@@ -102,6 +111,8 @@ public void setMarkers(int width, int height) {
             arrayListLatLang.add(coOrdinates.get(title));
         }
 
+        // Builder calculates the area of the map it needs to show on screen
+    // to include all markers
         LatLngBounds.Builder bld = new LatLngBounds.Builder();
         for (int i = 0; i < arrayListLatLang.size(); i++) {
             LatLng ll = arrayListLatLang.get(i);
@@ -113,6 +124,11 @@ public void setMarkers(int width, int height) {
 
 
     // Adapted from: https://stackoverflow.com/questions/7733813/how-can-you-tell-when-a-layout-has-been-drawn?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+
+    // Global layout listener retrieves the map's width and height and passes that to setMarkers()
+    // so that LatLng bounds can be created with map dimensions given.
+    // Otherwise the activity crashes
+
     public void readyMapLayout(){
         final View mapFragment = findViewById(R.id.map);
         ViewTreeObserver vto = mapFragment.getViewTreeObserver();

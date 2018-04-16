@@ -75,6 +75,10 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
         submit.setOnClickListener(this);
 
         // Database build
+
+        // fallBackToDestructiveMigration() will DROP all tables and recreate them
+        // when the verison number of the database is updated.
+        // Necessary since migration has not been put in place.
         db = Room.databaseBuilder(
                 getApplicationContext(),
                 AppDatabase.class,
@@ -84,8 +88,11 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
 
         context = this;
         this.userLocation = null;
+        // Used to search for a list of addresses from user input
         this.geocoder  = new Geocoder(DescriptionForm.this);
 
+        // Up to five addresses will e displayed to the user from their input for them to
+        // choose from. The location co-ordinates are set from their choice
         addressSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 location.setText(parent.getItemAtPosition(position).toString());
@@ -146,6 +153,8 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
     @Nullable
     private ArrayAdapter<String> getStringArrayAdapter() throws IOException {
         String locationToSearch = location.getText().toString();
+
+        // Retrieve up to five address items
         this.possibleUserAddresses = geocoder.getFromLocationName(locationToSearch,  5);
 
 
@@ -154,12 +163,13 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
             addressLines.add(address.getAddressLine(0));
         }
 
-
+        // Create a drop down options from user search
         ArrayAdapter<String> stringAddressAdapter = new ArrayAdapter<String>(
                 DescriptionForm.this, android.R.layout.simple_spinner_item,
                 addressLines
         );
 
+        // User search has not found an address item. Should try a different search.
         if (possibleUserAddresses.size() > 0){
             this.location.setText(possibleUserAddresses.get(0).getAddressLine(0));
         } else {
@@ -189,6 +199,7 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
 
                     List<Description> allDescriptions = db.descriptionDao()
                             .getAllDescriptions();
+
 
                     for(Description description : allDescriptions){
                         Log.d(TAG, description.getFlowerType().toString());
