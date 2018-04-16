@@ -30,8 +30,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import static com.assignment.spotabee.Map.setUpMap;
-
 //import com.assignment.spotabee.Home.R;
 
 public class Home extends AppCompatActivity implements View.OnClickListener {
