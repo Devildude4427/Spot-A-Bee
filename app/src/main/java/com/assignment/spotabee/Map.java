@@ -32,7 +32,7 @@ public class Map extends FragmentActivity
 
     private static final String CHANNEL_ID = "One";
     private static final String TAG = "Debug";
-    private static GoogleMap googleMap;
+    private GoogleMap googleMap;
     private NotificationManager notificationManager;
     private LocationListener locationListener;
     private LocationManager locationManager;
@@ -47,20 +47,13 @@ public class Map extends FragmentActivity
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        Log.v(TAG, "Check 1");
         locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
+        Log.v(TAG, "Check 2");
 
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
 
-            locationListener = new Map.MyLocationListener();
-            locationManager.requestLocationUpdates(LocationManager
-                    .GPS_PROVIDER, 5000, 10, locationListener);
 
-        } else {
-            setUpMap(51.481581, -3.179090);
-        }
 
         initChannel();
 
@@ -103,10 +96,28 @@ public class Map extends FragmentActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
+
+        try {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+
+                Log.v(TAG, "Check 3");
+                locationListener = new Map.MyLocationListener();
+                locationManager.requestLocationUpdates(LocationManager
+                        .GPS_PROVIDER, 5000, 10, locationListener);
+
+            } else {
+                setUpMap(55.481581, -3.179090);
+                Log.v(TAG, "Running setUpMap with default coords");
+            }
+        } catch (Exception e) {
+            Log.v(TAG, "Exception " + e);
+        }
     }
 
     /*Method to create a marker at positions*/
-    public static void setUpMap(Double Latitude, Double Longitude) {
+    public void setUpMap(Double Latitude, Double Longitude) {
         LatLng newMarker = new LatLng(Latitude, Longitude);
         googleMap.addMarker(new MarkerOptions().position(newMarker)
                 .title("Marker"));
