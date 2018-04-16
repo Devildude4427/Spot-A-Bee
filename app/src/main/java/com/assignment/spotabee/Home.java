@@ -16,12 +16,18 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -32,7 +38,7 @@ import java.io.InputStream;
 
 //import com.assignment.spotabee.Home.R;
 
-public class Home extends AppCompatActivity implements View.OnClickListener {
+public class Home extends AppCompatActivity  {
 
     private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS = 0;
     private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -48,20 +54,21 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
     AppCompatButton button2;
     AppCompatButton button3;
     private ImageView imgGallery;
-    //declare the intent so that you can use it later as a global object
+    private DrawerLayout mDrawerLayout;
     Intent intent;
 
 
     @SuppressLint("WrongViewCast")
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_home);
+        setContentView(R.layout.activity_home);
 
         //Set the button to a listener
-        button = (AppCompatButton) findViewById(R.id.button2);
-        button.setOnClickListener(this);
+//        button = (AppCompatButton) findViewById(R.id.button2);
+//        button.setOnClickListener(this);
 
         //Create a view/reference for the Gallery
         imgGallery = (ImageView) findViewById(R.id.imgGallery);
@@ -70,13 +77,42 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
 
         accountManager = (AccountManager)
                 getSystemService(Context.ACCOUNT_SERVICE);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // set item as selected to persist highlight
+                        menuItem.setChecked(true);
+                        // close drawer when item is tapped
+                        mDrawerLayout.closeDrawers();
+
+                        // Add code here to update the UI based on the item selected
+                        // For example, swap UI fragments here
+
+                        return true;
+                    }
+                });
     }
 
-    //Adding the menu bar will allow the user to navigate easily througout the app.
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.opt_menu, menu);
-        return true;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -283,7 +319,6 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
     }
 
     //Override onclick to open the camera on button 2
-    @Override
     public void onClick(View v) {
 
         int id = v.getId();
