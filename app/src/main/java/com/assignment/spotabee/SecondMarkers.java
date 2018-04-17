@@ -1,19 +1,20 @@
 package com.assignment.spotabee;
 
 import android.Manifest;
-import android.app.Fragment;
 import android.arch.persistence.room.Room;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -21,7 +22,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -30,19 +30,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Markers extends Fragment
-        implements OnMapReadyCallback{
 
-
-
-    //To test this, go to "MainActivity" and look for method "displaySelectedScreen"
-    //Swap out "fragment = new Map();" for "fragment = new Markers();
-    
-
-
-
-
-
+public class SecondMarkers extends Fragment implements OnMapReadyCallback {
+private View rootView;
     private static final String TAG = "markers_debug";
     private AppDatabase db;
     private List<Double> latitudes;
@@ -52,14 +42,31 @@ public class Markers extends Fragment
     private boolean mapIsReady;
     private GoogleMap googleMap;
     MapView mapView;
-    private View rootView;
 
-    @Nullable
+    public SecondMarkers() {
+        // Required empty public constructor
+    }
+
+
+    // TODO: Rename and change types and number of parameters
+    public static SecondMarkers newInstance(String param1, String param2) {
+        SecondMarkers fragment = new SecondMarkers();
+        Bundle args = new Bundle();
+        return fragment;
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //returning our layout file
-        //change R.layout.yourlayoutfilename for each of your fragments
-        rootView = inflater.inflate(R.layout.fragment_menu_map, container, false);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_second_markers, container, false);
 
         mapView = (MapView) rootView.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
@@ -89,12 +96,10 @@ public class Markers extends Fragment
         });
 
         this.coOrdinates = new HashMap<>();
-        this.coOrdinates.put("Newport", new LatLng(51.5842, 2.9977));
-        this.coOrdinates.put("Cardiff", new LatLng(51.4816, 3.1791));
         mapIsReady = false;
 
         db = Room.databaseBuilder(
-                getActivity(),
+                getContext(),
                 AppDatabase.class,
                 "App Database"
         ).fallbackToDestructiveMigration().build();
@@ -108,21 +113,20 @@ public class Markers extends Fragment
 
     public void initialise(){
 
-//        AsyncTask.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                descriptions = db.descriptionDao()
-//                        .getAllDescriptions();
-//
-//                for (int i = 0; i < descriptions.size(); i++){
-//                    Description currentDescription = descriptions.get(i);
-//                    coOrdinates.put(currentDescription.getLocation(),
-//                            new LatLng(currentDescription.getLatitude(),
-//                                    currentDescription.getLongitude()));
-//                }
-//            }
-//        });
-//
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                descriptions = db.descriptionDao()
+                        .getAllDescriptions();
+
+                for (int i = 0; i < descriptions.size(); i++){
+                    Description currentDescription = descriptions.get(i);
+                    coOrdinates.put(currentDescription.getLocation(),
+                            new LatLng(currentDescription.getLatitude(),
+                                    currentDescription.getLongitude()));
+                }
+            }
+        });
         for(String key : coOrdinates.keySet()){
             Log.d(TAG, "IN CO-ORDINATES:" + coOrdinates.get(key).toString());
         }
@@ -138,10 +142,10 @@ public class Markers extends Fragment
     }
 
 
-public void setMarkers(int width, int height) {
+    public void setMarkers(int width, int height) {
 
 
-    if(coOrdinates.isEmpty()){
+        if(coOrdinates.isEmpty()){
             Log.d(TAG, "setMarkers: co-ordinates HashMap is empty.");
             return;
         }
@@ -161,7 +165,7 @@ public void setMarkers(int width, int height) {
             bld.include(ll);
         }
         LatLngBounds bounds = bld.build();
-    googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height, 70));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height, 70));
     }
 
 
