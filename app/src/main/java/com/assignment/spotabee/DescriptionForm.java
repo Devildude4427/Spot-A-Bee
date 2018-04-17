@@ -1,11 +1,8 @@
 package com.assignment.spotabee;
 
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.arch.persistence.room.Room;
 import android.content.Context;
-import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -18,7 +15,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -30,8 +26,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.assignment.spotabee.database.Description;
-import com.assignment.spotabee.database.AppDatabase;
 import com.google.android.gms.maps.model.LatLng;
 
 
@@ -61,7 +55,7 @@ public class DescriptionForm extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.description);
+        setContentView(R.layout.activity_description_form);
 
         // Initialisation of widgets
         this.search = findViewById(R.id.search_location);

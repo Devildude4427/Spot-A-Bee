@@ -8,7 +8,7 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start"
     tools:context="com.assignment.spotabee.Home"
-    android:background="@drawable/new_2_background">
+    android:background="@drawable/background">
 
     <FrameLayout
         layout="@+id/content_frame"
