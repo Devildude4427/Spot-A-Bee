@@ -18,6 +18,8 @@ import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -29,7 +31,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -66,6 +70,8 @@ public class Home extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        displaySelectedScreen(R.id.nav_aboutus);
+
         //Set the button to a listener
 //        button = (AppCompatButton) findViewById(R.id.button2);
 //        button.setOnClickListener(this);
@@ -92,6 +98,9 @@ public class Home extends AppCompatActivity  {
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        displaySelectedScreen(menuItem.getItemId());
+
+
                         // set item as selected to persist highlight
                         menuItem.setChecked(true);
                         // close drawer when item is tapped
@@ -103,6 +112,35 @@ public class Home extends AppCompatActivity  {
                         return true;
                     }
                 });
+    }
+
+    private void displaySelectedScreen(int itemId) {
+
+        //creating fragment object
+        Fragment fragment = null;
+
+        //initializing the fragment object which is selected
+        switch (itemId) {
+//            case R.id.nav_home:
+//                fragment = new Menu1();
+//                break;
+            case R.id.nav_howto:
+                fragment = new HowTo();
+                break;
+            case R.id.nav_aboutus:
+                fragment = new AboutUs();
+                break;
+        }
+
+        //replacing the fragment
+        if (fragment != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, fragment);
+            ft.commit();
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
     }
 
     @Override
@@ -330,8 +368,6 @@ public class Home extends AppCompatActivity  {
             intent = new Intent(this, Home.class);
             startActivity(intent);
         }
-
-
     }
 
     private void dispatchTakePictureIntent() {
