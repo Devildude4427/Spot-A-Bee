@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class FragmentDescriptionForm extends Fragment implements View.OnClickListener{
+public class FragmentDescriptionForm extends Fragment implements View.OnClickListener {
 
 
     private View rootView;
@@ -52,7 +52,7 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
     private Context context;
     private List<Address> possibleUserAddresses;
     private LatLng userLocation;
-    private static final String TAG = "DESCRIPTION_FORM";
+    private static final String TAG = "Description_form_debug";
 
     public FragmentDescriptionForm() {
         // Required empty public constructor
@@ -97,7 +97,7 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
 
         context = getActivity();
         this.userLocation = null;
-        this.geocoder  = new Geocoder(context);
+        this.geocoder = new Geocoder(context);
 
         addressSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -105,6 +105,7 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
                 setCoOrdinatesToStore(parent, view, position, id);
 
             }
+
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
@@ -132,19 +133,22 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
                     if (stringAddressAdapter == null) return;
 
                     updateSpinner(stringAddressAdapter);
-                } catch (IOException e){
+                } catch (IOException e) {
                     Toast.makeText(context,
                             "Woops! Couldn't find your address..."
                                     + "Maybe try a different search?",
                             Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "onClick: Error");
+                    Log.d(TAG, e.getMessage());
+                    this.userLocation = new LatLng(51.5842, 2.9977);
                 }
 
         }
     }
 
     private boolean userLocationIsNull() {
-        if(this.userLocation == null){
+        Log.d(TAG, "We are in setCoOrdinatesToStore");
+        if (this.userLocation == null) {
             Toast.makeText(context,
                     "You need to select a location first",
                     Toast.LENGTH_SHORT).show();
@@ -155,28 +159,37 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
     }
 
     private void updateSpinner(ArrayAdapter<String> stringAddressAdapter) {
+        Log.d(TAG, "We are in updateSpinner");
         stringAddressAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
         addressSpinner.setAdapter(stringAddressAdapter);
     }
 
     @Nullable
     private ArrayAdapter<String> getStringArrayAdapter() throws IOException {
+        Log.d(TAG, "We are in getStringArrayAdapter");
         String locationToSearch = location.getText().toString();
-        this.possibleUserAddresses = geocoder.getFromLocationName(locationToSearch,  5);
+        if (geocoder.isPresent()) {
+            Log.d(TAG, "Geocoder is present");
+        } else {
+            Log.d(TAG, "Geocode is NOT present");
+        }
+        this.possibleUserAddresses = geocoder.getFromLocationName(locationToSearch, 5);
+        Log.d(TAG, "geocoder has finished search results");
 
-
-        List<String> addressLines= new ArrayList<>();
-        for(Address address : this.possibleUserAddresses){
+        List<String> addressLines = new ArrayList<>();
+        for (Address address : this.possibleUserAddresses) {
             addressLines.add(address.getAddressLine(0));
         }
-
+        Log.d(TAG, "Have stored addresses in array");
 
         ArrayAdapter<String> stringAddressAdapter = new ArrayAdapter<String>(
                 context, android.R.layout.simple_spinner_item,
                 addressLines
         );
+        Log.d(TAG, "Have made an array adapter");
 
-        if (possibleUserAddresses.size() > 0){
+        if (possibleUserAddresses.size() > 0) {
+            Log.d(TAG, "At least one address detected");
             this.location.setText(possibleUserAddresses.get(0).getAddressLine(0));
         } else {
             Toast.makeText(context,
@@ -188,6 +201,7 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
     }
 
     private void commitFormDataToDB() {
+        Log.d(TAG, "We are in commitFormToDB");
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
@@ -206,14 +220,14 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
                     List<Description> allDescriptions = db.descriptionDao()
                             .getAllDescriptions();
 
-                    for(Description description : allDescriptions){
+                    for (Description description : allDescriptions) {
                         Log.d(TAG, description.getFlowerType().toString());
                         Log.d(TAG, description.getLatitude().toString());
                         Log.d(TAG, description.getLongitude().toString());
                     }
 
 
-                } catch (Exception e){
+                } catch (Exception e) {
                     Toast.makeText(context,
                             "Sorry. An error occurred. We can't save your information right now...",
                             Toast.LENGTH_SHORT).show();
@@ -224,20 +238,23 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
         });
     }
 
-    private Address setCoOrdinatesToStore(AdapterView<?> parent, View view, int position, long id){
+    private Address setCoOrdinatesToStore(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(TAG, "We are in setCoOrdinatesToStore");
         String addressLineToMatch = parent.getItemAtPosition(position).toString();
         Address addressToFind = null;
 
-        for (Address address : this.possibleUserAddresses){
-            if(address.getAddressLine(0).equals(addressLineToMatch)){
+        for (Address address : this.possibleUserAddresses) {
+            if (address.getAddressLine(0).equals(addressLineToMatch)) {
                 addressToFind = address;
+                Log.d(TAG, "We are have found an address");
             }
         }
 
-        if(addressToFind == null){
+        if (addressToFind == null) {
             return addressToFind;
         } else {
             this.userLocation = new LatLng(addressToFind.getLatitude(), addressToFind.getLongitude());
+            Log.d(TAG, "new user location has been made");
             return addressToFind;
         }
 

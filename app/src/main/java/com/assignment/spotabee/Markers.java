@@ -68,29 +68,33 @@ public class Markers extends Fragment
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
+            Log.d(TAG, "Have initialized map");
         } catch (Exception e) {
+            Log.d(TAG, "Failed to initialize map");
             e.printStackTrace();
         }
 
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap mMap) {
-                googleMap = mMap;
-
-                if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
-                        Manifest.permission.ACCESS_FINE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED) {
-                    // For showing a move to my location button
-                    googleMap.setMyLocationEnabled(true);
-                } else {
-                    googleMap.setMyLocationEnabled(false);
-                }
-            }
-        });
+//        mapView.getMapAsync(new OnMapReadyCallback() {
+//            @Override
+//            public void onMapReady(GoogleMap mMap) {
+//                googleMap = mMap;
+//
+//                if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
+//                        Manifest.permission.ACCESS_FINE_LOCATION)
+//                        == PackageManager.PERMISSION_GRANTED) {
+//                    // For showing a move to my location button
+//                    Log.d(TAG, "Location's enabled");
+//                    googleMap.setMyLocationEnabled(true);
+//                } else {
+//                    googleMap.setMyLocationEnabled(false);
+//                    Log.d(TAG, "Location permissions denied");
+//                }
+//            }
+//        });
 
         this.coOrdinates = new HashMap<>();
-        this.coOrdinates.put("Newport", new LatLng(51.5842, 2.9977));
-        this.coOrdinates.put("Cardiff", new LatLng(51.4816, 3.1791));
+//        this.coOrdinates.put("Newport", new LatLng(51.5842, 2.9977));
+//        this.coOrdinates.put("Cardiff", new LatLng(51.4816, 3.1791));
         mapIsReady = false;
 
         db = Room.databaseBuilder(
@@ -107,22 +111,22 @@ public class Markers extends Fragment
     }
 
     public void initialise(){
+        Log.d(TAG, "We are in initialise");
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                descriptions = db.descriptionDao()
+                        .getAllDescriptions();
 
-//        AsyncTask.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                descriptions = db.descriptionDao()
-//                        .getAllDescriptions();
-//
-//                for (int i = 0; i < descriptions.size(); i++){
-//                    Description currentDescription = descriptions.get(i);
-//                    coOrdinates.put(currentDescription.getLocation(),
-//                            new LatLng(currentDescription.getLatitude(),
-//                                    currentDescription.getLongitude()));
-//                }
-//            }
-//        });
-//
+                for (int i = 0; i < descriptions.size(); i++){
+                    Description currentDescription = descriptions.get(i);
+                    coOrdinates.put(currentDescription.getLocation(),
+                            new LatLng(currentDescription.getLatitude(),
+                                    currentDescription.getLongitude()));
+                }
+            }
+        });
+
         for(String key : coOrdinates.keySet()){
             Log.d(TAG, "IN CO-ORDINATES:" + coOrdinates.get(key).toString());
         }
@@ -130,6 +134,7 @@ public class Markers extends Fragment
 
     @Override
     public void onMapReady(GoogleMap map) {
+        Log.d(TAG, "we are in onMapReady");
         googleMap = map;
         mapIsReady = true;
         initialise();
@@ -139,7 +144,7 @@ public class Markers extends Fragment
 
 
 public void setMarkers(int width, int height) {
-
+Log.d(TAG, "We are in set markers");
 
     if(coOrdinates.isEmpty()){
             Log.d(TAG, "setMarkers: co-ordinates HashMap is empty.");
@@ -167,6 +172,7 @@ public void setMarkers(int width, int height) {
 
     // Adapted from: https://stackoverflow.com/questions/7733813/how-can-you-tell-when-a-layout-has-been-drawn?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
     public void readyMapLayout(){
+        Log.d(TAG, "We are in readyMapLayout");
         final View mapFragment = rootView.findViewById(R.id.map);
         ViewTreeObserver vto = mapFragment.getViewTreeObserver();
         vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
