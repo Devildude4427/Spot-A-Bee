@@ -62,6 +62,24 @@ public class Home extends Fragment  {
                 }
         });
 
+        buttonUploadPictures = (AppCompatButton) view.findViewById(R.id.button_upload_picture);
+        buttonUploadPictures.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                int id = v.getId();
+                //Open the camera HOPEFULLY
+                if (id == R.id.button_upload_picture){
+                    onImageGallery();
+                }else{
+                    //Go back to main button
+                    intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
+
+
+
         //Create a view/reference for the Gallery
         imgGallery = (ImageView) view.findViewById(R.id.imgGallery);
 
