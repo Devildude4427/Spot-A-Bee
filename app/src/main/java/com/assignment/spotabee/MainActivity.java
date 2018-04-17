@@ -18,7 +18,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -42,7 +41,6 @@ public class MainActivity extends AppCompatActivity
     private static final int PERMISSION_REQUEST_CAMERA = 5;
     private static final int CHOOSE_ACCOUNT = 99;
     private AccountManager accountManager;
-    private ImageView imgGallery;
     private DrawerLayout mDrawerLayout;
     private static final String TAG = "Debug";
 
@@ -53,12 +51,13 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        contextOfApplication = getApplicationContext();
 
+        checkIfPermissionsGiven();
 
-//        checkIfPermissionsGiven();
-//
-//        accountManager = (AccountManager)
-//                getSystemService(Context.ACCOUNT_SERVICE);
+        accountManager = (AccountManager)
+                getSystemService(Context.ACCOUNT_SERVICE);
+
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -70,7 +69,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        displaySelectedScreen(R.id.nav_aboutus);
+        displaySelectedScreen(R.id.nav_home);
     }
 
     @Override
@@ -118,6 +117,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_howto:
                 fragment = new HowTo();
                 break;
+            case R.id.nav_map:
+                fragment = new HowTo();
+                break;
             case R.id.nav_aboutus:
                 fragment = new AboutUs();
                 break;
@@ -144,7 +146,12 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-
+    // a static variable to get a reference of our application context
+    public static Context contextOfApplication;
+    public static Context getContextOfApplication()
+    {
+        return contextOfApplication;
+    }
 
     /**
      * Checks each permission if it is given, and, if not, requests them.
@@ -190,31 +197,8 @@ public class MainActivity extends AppCompatActivity
             if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
                 String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
                 Log.v(TAG, accountName);
-            } else if (requestCode == PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY && resultCode == RESULT_OK) {
-                //What will happen if yes??
-                Uri galleryUri = data.getData();
-
-                //Create a Stream to read the image data for the memory
-                //If we are unable to catch information from the data for any reasy, try/catch it
-                //re edit the exception or put it in the catch block
-                InputStream inputStream;
-                try {
-                    inputStream = getContentResolver().openInputStream(galleryUri);
-
-                    // Get Bitmap, get an instance of the image view. Catch info, Tell the users that the image was unable to find.
-                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-                    //Show the gallery or image to user:
-                    imgGallery.setImageBitmap(bitmap);
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    Toast.makeText(this, "Unnabble to find the image or it is unavailable", Toast.LENGTH_LONG).show();
-                }
             } else if (requestCode == CHOOSE_ACCOUNT) {
                 Log.v(TAG, "There was an error in the account picker");
-            } else if (requestCode == PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY) {
-                Log.v(TAG, "There was an error in the image gallery" + resultCode);
             } else {
                 Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
             }
