@@ -49,7 +49,6 @@
         android:layout_alignTop="@+id/button2"
         android:layout_marginEnd="28dp"
         android:background="@color/colorTranparentOrange"
-        android:onClick="onImageGallery"
         android:text="Upload Picture"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
