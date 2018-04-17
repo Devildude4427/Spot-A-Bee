@@ -1,16 +1,25 @@
 package com.assignment.spotabee;
 
+import android.Manifest;
+import android.app.Fragment;
 import android.arch.persistence.room.Room;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -21,7 +30,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Markers extends AppCompatActivity implements OnMapReadyCallback{
+public class Markers extends Fragment
+        implements OnMapReadyCallback{
+
+
+
+    //To test this, go to "MainActivity" and look for method "displaySelectedScreen"
+    //Swap out "fragment = new Map();" for "fragment = new Markers();
+    
+
+
+
+
+
     private static final String TAG = "markers_debug";
     private AppDatabase db;
     private List<Double> latitudes;
@@ -30,14 +51,41 @@ public class Markers extends AppCompatActivity implements OnMapReadyCallback{
     private HashMap<String, LatLng> coOrdinates;
     private boolean mapIsReady;
     private GoogleMap googleMap;
+    MapView mapView;
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate called");
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.map);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //returning our layout file
+        //change R.layout.yourlayoutfilename for each of your fragments
+        View rootView = inflater.inflate(R.layout.fragment_menu_map, container, false);
+
+        mapView = (MapView) rootView.findViewById(R.id.map);
+        mapView.onCreate(savedInstanceState);
+
+        mapView.onResume();
+
+        try {
+            MapsInitializer.initialize(getActivity().getApplicationContext());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap mMap) {
+                googleMap = mMap;
+
+                if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    // For showing a move to my location button
+                    googleMap.setMyLocationEnabled(true);
+                } else {
+                    googleMap.setMyLocationEnabled(false);
+                }
+            }
+        });
 
         this.coOrdinates = new HashMap<>();
         mapIsReady = false;
@@ -52,28 +100,29 @@ public class Markers extends AppCompatActivity implements OnMapReadyCallback{
         initialise();
         Log.d(TAG, "initialise finished");
 
+        return rootView;
     }
 
-public void initialise(){
+    public void initialise(){
 
-    AsyncTask.execute(new Runnable() {
-        @Override
-        public void run() {
-            descriptions = db.descriptionDao()
-                    .getAllDescriptions();
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                descriptions = db.descriptionDao()
+                        .getAllDescriptions();
 
-            for (int i = 0; i < descriptions.size(); i++){
-                Description currentDescription = descriptions.get(i);
-                coOrdinates.put(currentDescription.getLocation(),
-                        new LatLng(currentDescription.getLatitude(),
-                                currentDescription.getLongitude()));
+                for (int i = 0; i < descriptions.size(); i++){
+                    Description currentDescription = descriptions.get(i);
+                    coOrdinates.put(currentDescription.getLocation(),
+                            new LatLng(currentDescription.getLatitude(),
+                                    currentDescription.getLongitude()));
+                }
             }
+        });
+        for(String key : coOrdinates.keySet()){
+            Log.d(TAG, "IN CO-ORDINATES:" + coOrdinates.get(key).toString());
         }
-    });
-    for(String key : coOrdinates.keySet()){
-        Log.d(TAG, "IN CO-ORDINATES:" + coOrdinates.get(key).toString());
     }
-}
 
     @Override
     public void onMapReady(GoogleMap map) {
