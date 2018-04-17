@@ -134,6 +134,7 @@ private View rootView;
 
     @Override
     public void onMapReady(GoogleMap map) {
+        Log.d(TAG, "onMapReady called");
         googleMap = map;
         mapIsReady = true;
         initialise();

@@ -52,7 +52,7 @@ public class DescriptionForm extends Fragment implements View.OnClickListener {
     private Context context;
     private List<Address> possibleUserAddresses;
     private LatLng userLocation;
-    private static final String TAG = "DESCRIPTION_FORM";
+    private static final String TAG = "description_form_debug";
     private View v;
 
 //    @Override
@@ -97,7 +97,7 @@ public class DescriptionForm extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        v = inflater.inflate(R.layout.activity_description_form, container, false);
+        v = inflater.inflate(R.layout.fragment_description_form, container, false);
 
         this.search = v.findViewById(R.id.search_location);
         this.search.setOnClickListener(this);
@@ -184,6 +184,7 @@ public class DescriptionForm extends Fragment implements View.OnClickListener {
 
     @Nullable
     private ArrayAdapter<String> getStringArrayAdapter() throws IOException {
+        Log.d(TAG, "we are in getStringArrayAdapter");
         String locationToSearch = location.getText().toString();
         this.possibleUserAddresses = geocoder.getFromLocationName(locationToSearch,  5);
 
@@ -211,6 +212,7 @@ public class DescriptionForm extends Fragment implements View.OnClickListener {
     }
 
     private void commitFormDataToDB() {
+        Log.d(TAG, "We are in commitFormDataToDB");
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
@@ -248,6 +250,7 @@ public class DescriptionForm extends Fragment implements View.OnClickListener {
     }
 
     private Address setCoOrdinatesToStore(AdapterView<?> parent, View view, int position, long id){
+        Log.d(TAG, "We are in setCoOrdinatesToStore");
         String addressLineToMatch = parent.getItemAtPosition(position).toString();
         Address addressToFind = null;
 
