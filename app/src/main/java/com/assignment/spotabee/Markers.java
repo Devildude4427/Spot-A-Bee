@@ -145,7 +145,7 @@ public void setMarkers(int width, int height) {
             Log.d(TAG, "setMarkers: co-ordinates HashMap is empty.");
             return;
         }
-
+// a comment to push
         final ArrayList<LatLng> arrayListLatLang = new ArrayList<>();
         for (String title : coOrdinates.keySet()){
             googleMap.addMarker(new MarkerOptions()
