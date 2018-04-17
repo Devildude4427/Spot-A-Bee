@@ -11,7 +11,7 @@
 
         <fragment
             android:id="@+id/fragment"
-            android:name="assignment.com.spotabee.DescriptionForm"
+            android:name="com.assignment.spotabee.DescriptionForm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
