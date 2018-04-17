@@ -9,5 +9,31 @@
     <string name="flower_type">Flower type</string>
     <string name="any_further_details">Any further details?</string>
     <string name="submit">Submit</string>
+    <string name="einstein_quote">Einstein said If the bee disappeared off the surface of the globe then man would only have  four years of life left. No more bees, no  more pollination, no more plants, no  more animals, no more manThis single quote captures the key role that bees play in the survival of planet earth.</string>
+    <string name="about_us_title">About Us!</string>
+    <string name="how_to">How #to</string>
+    <string name="form">Form</string>
+    <string name="donate">DONATE</string>
+    <string name="about_us">About Us</string>
+    <string name="how_to_menu">How to</string>
+    <string name="upload_picture">Upload Picture</string>
+    <string name="flowers_in_cardiff">Flowers in Cardiff</string>
+
+    <string name="channel_name">First Notification</string>
+    <string name="channel_description">Notification for X</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="drawer_menu_item_home">Home</string>
+    <string name="drawer_menu_item_howto">How To</string>
+    <string name="drawer_menu_item_map">Map</string>
+    <string name="drawer_menu_item_aboutus">About Us</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nav_form">Form</string>
 
 </resources>
