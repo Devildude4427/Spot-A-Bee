@@ -56,9 +56,8 @@ public class Home extends Fragment  {
                         dispatchTakePictureIntent();
                     }else{
                         //Go back to main button
-                        //intent = new Intent(getActivity(), MainActivity.class);
-                        //startActivity(intent);
-                        onImageGallery();
+                        intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
                     }
                 }
         });
