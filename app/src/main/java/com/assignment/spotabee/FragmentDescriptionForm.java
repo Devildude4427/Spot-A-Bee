@@ -1,15 +1,14 @@
 package com.assignment.spotabee;
 
-
-import android.app.Fragment;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.util.Log;
@@ -24,16 +23,17 @@ import android.widget.Toast;
 
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.android.gms.maps.model.LatLng;
+
+public class FragmentDescriptionForm extends Fragment implements View.OnClickListener{
 
 
-public class DescriptionForm extends Fragment implements View.OnClickListener {
-
+    private View rootView;
     // Widgets
     private AppCompatButton submit;
     private AppCompatEditText location;
@@ -53,60 +53,38 @@ public class DescriptionForm extends Fragment implements View.OnClickListener {
     private List<Address> possibleUserAddresses;
     private LatLng userLocation;
     private static final String TAG = "DESCRIPTION_FORM";
-    private View v;
 
-//    @Override
-//    protected void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_description_form);
-//
-//        // Initialisation of widgets
-//        this.search = findViewById(R.id.search_location);
-//        this.search.setOnClickListener(this);
-//        this.addressSpinner = (Spinner) findViewById(R.id.addressSpinner);
-//        this.addressSpinner.setVisibility(View.GONE);
-//        flower = findViewById(R.id.flowerField);
-//        location = findViewById(R.id.locationField);
-//        description = findViewById(R.id.descriptionField);
-//        this.submit = findViewById(R.id.submit);
-//        submit.setOnClickListener(this);
-//
-//        // Database build
-//        db = Room.databaseBuilder(
-//                getApplicationContext(),
-//                AppDatabase.class,
-//                "App Database"
-//        ).fallbackToDestructiveMigration().build();
-//
-//
-//        context = this;
-//        this.userLocation = null;
-//        this.geocoder  = new Geocoder(DescriptionForm.this);
-//
-//        addressSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                location.setText(parent.getItemAtPosition(position).toString());
-//                setCoOrdinatesToStore(parent, view, position, id);
-//
-//            }
-//            public void onNothingSelected(AdapterView<?> parent) {
-//            }
-//        });
-//    }
+    public FragmentDescriptionForm() {
+        // Required empty public constructor
+    }
+
+    // TODO: Rename and change types and number of parameters
+    public static FragmentDescriptionForm newInstance(String param1, String param2) {
+        FragmentDescriptionForm fragment = new FragmentDescriptionForm();
+        Bundle args = new Bundle();
+
+        return fragment;
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        v = inflater.inflate(R.layout.activity_description_form, container, false);
+    }
 
-        this.search = v.findViewById(R.id.search_location);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        rootView = inflater.inflate(R.layout.fragment_description_form, container, false);
+        this.search = rootView.findViewById(R.id.search_location);
         this.search.setOnClickListener(this);
-        this.addressSpinner = (Spinner) v.findViewById(R.id.addressSpinner);
+        this.addressSpinner = (Spinner) rootView.findViewById(R.id.addressSpinner);
         this.addressSpinner.setVisibility(View.GONE);
-        flower = v.findViewById(R.id.flowerField);
-        location = v.findViewById(R.id.locationField);
-        description = v.findViewById(R.id.descriptionField);
-        this.submit = v.findViewById(R.id.submit);
+        flower = rootView.findViewById(R.id.flowerField);
+        location = rootView.findViewById(R.id.locationField);
+        description = rootView.findViewById(R.id.descriptionField);
+        this.submit = rootView.findViewById(R.id.submit);
         submit.setOnClickListener(this);
 
         // Database build
@@ -130,8 +108,7 @@ public class DescriptionForm extends Fragment implements View.OnClickListener {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-
-        return v;
+        return rootView;
     }
 
 
@@ -158,7 +135,7 @@ public class DescriptionForm extends Fragment implements View.OnClickListener {
                 } catch (IOException e){
                     Toast.makeText(context,
                             "Woops! Couldn't find your address..."
-                            + "Maybe try a different search?",
+                                    + "Maybe try a different search?",
                             Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "onClick: Error");
                 }
@@ -265,4 +242,5 @@ public class DescriptionForm extends Fragment implements View.OnClickListener {
         }
 
     }
+
 }
