@@ -1,308 +1,99 @@
 package com.assignment.spotabee;
 
-import android.Manifest;
-import android.accounts.AccountManager;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
-import android.view.Menu;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-//import com.assignment.spotabee.Home.R;
+import static android.app.Activity.RESULT_OK;
+import static com.assignment.spotabee.MainActivity.PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE;
+import static com.assignment.spotabee.MainActivity.PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY;
 
-public class Home extends AppCompatActivity implements View.OnClickListener {
 
-    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS = 0;
-    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private static final int PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS = 2;
-    static final int PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE = 3;
-    public static final int PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY = 4;
-    private static final int PERMISSION_REQUEST_CAMERA = 5;
-    private static final int CHOOSE_ACCOUNT = 99;
-    private AccountManager accountManager;
+public class Home extends Fragment  {
+
     private static final String TAG = "Debug";
 
-    AppCompatButton button;
-    AppCompatButton button2;
-    AppCompatButton button3;
+    AppCompatButton buttonCamera;
+    AppCompatButton Button2;
+    AppCompatButton buttonUploadPictures;
     private ImageView imgGallery;
-    //declare the intent so that you can use it later as a global object
+
     Intent intent;
 
 
-    @SuppressLint("WrongViewCast")
-
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_home);
-
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //returning our layout file
+        //change R.layout.yourlayoutfilename for each of your fragments
         //Set the button to a listener
-        button = (AppCompatButton) findViewById(R.id.button2);
-        button.setOnClickListener(this);
+        View view = inflater.inflate(R.layout.fragment_menu_home, container, false);
+
+        buttonCamera = (AppCompatButton) view.findViewById(R.id.button_camera);
+        buttonCamera.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    int id = v.getId();
+                    //Open the camera HOPEFULLY
+
+                    if (id == R.id.button_camera){
+                        dispatchTakePictureIntent();
+                    }else{
+                        //Go back to main button
+                        intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                    }
+                }
+        });
+
+        buttonUploadPictures = (AppCompatButton) view.findViewById(R.id.button_upload_picture);
+        buttonUploadPictures.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                int id = v.getId();
+                //Open the camera HOPEFULLY
+                if (id == R.id.button_upload_picture){
+                    onImageGallery();
+                }else{
+                    //Go back to main button
+                    intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
+
+
 
         //Create a view/reference for the Gallery
-        imgGallery = (ImageView) findViewById(R.id.imgGallery);
+        imgGallery = (ImageView) view.findViewById(R.id.imgGallery);
 
-        checkIfPermissionsGiven();
+        return view;
+        }
 
-        accountManager = (AccountManager)
-                getSystemService(Context.ACCOUNT_SERVICE);
-    }
-
-    //Adding the menu bar will allow the user to navigate easily througout the app.
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.opt_menu, menu);
-        return true;
-    }
-
-    /**
-     * Checks each permission if it is given, and, if not, requests them.
-     */
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public void checkIfPermissionsGiven() {
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-//                != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
-//                        Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
-//            requestLocationAccountPermission();
-//            Log.v(TAG, "Requesting account and location Permissions");}
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestLocationPermission();
-            Log.v(TAG, "Only requesting location Permission");}
-//        else if (ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.GET_ACCOUNTS)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            requestAccountPermission();
-//            Log.v(TAG, "Only requesting account Permission"); }
-        else if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED){
-            requestCameraPermission();
-            Log.v(TAG, "Requesting camera Permission");}
-        else {
-            Log.v(TAG, "No permissions requested");
-        }
-    }
-
-    /**
-     * Creates gets details and confirms operation from account picker
-     *
-     * @param requestCode An integer that relates to the permission. So
-     *                    location might be 1, account access 2, and so on.
-     * @param resultCode If the result succeeded or failed
-     * @param data The intent that is being requested
-     */
-    protected void onActivityResult(final int requestCode, final int resultCode,
-                                    final Intent data){
-        try {
-            if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
-                String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                Log.v(TAG, accountName);
-            } else if (requestCode == PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY && resultCode == RESULT_OK) {
-                //What will happen if yes??
-                Uri galleryUri = data.getData();
-
-                //Create a Stream to read the image data for the memory
-                //If we are unable to catch information from the data for any reasy, try/catch it
-                //re edit the exception or put it in the catch block
-                InputStream inputStream;
-                try {
-                    inputStream = getContentResolver().openInputStream(galleryUri);
-
-                    // Get Bitmap, get an instance of the image view. Catch info, Tell the users that the image was unable to find.
-                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-                    //Show the gallery or image to user:
-                    imgGallery.setImageBitmap(bitmap);
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    Toast.makeText(this, "Unnabble to find the image or it is unavailable", Toast.LENGTH_LONG).show();
-                }
-            } else if (requestCode == CHOOSE_ACCOUNT) {
-                Log.v(TAG, "There was an error in the account picker");
-            } else if (requestCode == PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY) {
-                Log.v(TAG, "There was an error in the image gallery" + resultCode);
-            } else {
-                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
-            }
-        } catch (Exception e) {
-            Log.v(TAG, "Exception " + e);
-        }
-    }
-
-    /**
-     * Requests permissions to use device location and access accounts.
-     */
-//    private void requestLocationAccountPermission() {
-//        // Permission has not been granted and must be requested.
-//        // Request the permission. The result will be received in onRequestPermissionResult().
-//        ActivityCompat.requestPermissions(this,
-//                new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-//                        Manifest.permission.GET_ACCOUNTS},
-//                PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS);
-//    }
-
-    /**
-     * Requests permission to use device location.
-     */
-    private void requestLocationPermission() {
-        // Permission has not been granted and must be requested.
-        // Request the permission. The result will be received in onRequestPermissionResult().
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                PERMISSION_REQUEST_ACCESS_FINE_LOCATION);
-    }
-
-    /**
-     * Requests permission to use accounts.
-     */
-//    private void requestAccountPermission() {
-//        // Permission has not been granted and must be requested.
-//        // Request the permission. The result will be received in onRequestPermissionResult().
-//        ActivityCompat.requestPermissions(this,
-//                new String[]{Manifest.permission.GET_ACCOUNTS},
-//                PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS);
-//    }
-
-    /**
-     * Requests permission to use device camera.
-     */
-    private void requestCameraPermission() {
-        // Permission has not been granted and must be requested.
-        // Request the permission. The result will be received in onRequestPermissionResult().
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.CAMERA},
-                PERMISSION_REQUEST_CAMERA);
-    }
-
-
-    /**
-     * Checks the results of the permission requests.
-     *
-     * @param requestCode An integer that relates to the permission. So
-     *                    location might be 1, account access 2, and so on.
-     * @param permissions The permission being requested.
-     * @param grantResults What the result of result of the request is. The result
-     *                     of whether or not the user allowed this permission.
-     */
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[],
-                                           int[] grantResults) {
-        switch (requestCode) {
-//            case PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS: {
-//                // If request is cancelled, the result arrays are empty.
-//                if (grantResults.length > 0
-//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    Log.v(TAG, "Permission to both granted");
-//
-//                    try {
-//                        Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
-//                        startActivityForResult(intent, CHOOSE_ACCOUNT);
-//                        Log.v(TAG, "Intent to Choose Account go");
-//                        checkifPermissionsGiven();
-//
-//                    } catch (Exception e) {
-//                        Log.v(TAG, "Exception " + e);
-//                    }
-//
-//                } else {
-//                    Log.v(TAG, "User needs to make an account");
-//                }
-//            }
-//            return;
-
-            case PERMISSION_REQUEST_ACCESS_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.v(TAG, "Permission to only location granted");
-                    checkIfPermissionsGiven();
-                }
-            }
-            return;
-
-//            case PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS: {
-//                // If request is cancelled, the result arrays are empty.
-//                if (grantResults.length > 0
-//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    Log.v(TAG, "Permission to only account granted");
-//                    try {
-//                        Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
-//                        startActivityForResult(intent, CHOOSE_ACCOUNT);
-//                        Log.v(TAG, "Intent to choose just account a go");
-//                    } catch (Exception e) {
-//                        Log.v(TAG, "Exception " + e);
-//                    }
-//
-//                } else {
-//                    //Redirect to force user to create an account
-//                    Log.v(TAG, "User needs to make an account");
-//                }
-//            }
-//            return;
-
-            case PERMISSION_REQUEST_CAMERA: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.v(TAG, "Permission to use camera granted");
-                }
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request.
-        }
-    }
-
-    //Override onclick to open the camera on button 2
-    @Override
-    public void onClick(View v) {
-
-        int id = v.getId();
-        //Open the camera HOPEFULLY
-        if ( id == R.id.button2){
-            dispatchTakePictureIntent();
-        }else{
-            //Go back to main button
-            intent = new Intent(this, Home.class);
-            startActivity(intent);
-        }
-
-
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //you can set the title for your toolbar here for different fragments different titles
+        getActivity().setTitle("Home");
     }
 
     private void dispatchTakePictureIntent() {
-
-        Log.d("TEST", "HELLO THERE");
-
         try {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             //if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -311,13 +102,12 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
         } catch (Exception e){
             Log.v(TAG, "Exception " + e);
         }
-
     }
 
     //------------------------------------------------------------------------------------------
     //GALLERY OF IMAGES:
     //Add the method to invoke the Gallery of the phone
-    public void onImageGallery(View v) {
+    public void onImageGallery() {
 
         //Add the image Gallery using an implicit intent.
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
@@ -334,4 +124,40 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
 
         startActivityForResult(photoPickerIntent, PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY);
     }
+
+    public void onActivityResult(final int requestCode, final int resultCode,
+                                    final Intent data){
+        try {
+            if (requestCode == PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY && resultCode == RESULT_OK) {
+                //What will happen if yes??
+                Uri galleryUri = data.getData();
+
+                //Create a Stream to read the image data for the memory
+                //If we are unable to catch information from the data for any reasy, try/catch it
+                //re edit the exception or put it in the catch block
+                InputStream inputStream;
+                try {
+                    Context applicationContext = MainActivity.getContextOfApplication();
+                    inputStream = applicationContext.getContentResolver().openInputStream(galleryUri);
+
+                    // Get Bitmap, get an instance of the image view. Catch info, Tell the users that the image was unable to find.
+                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+                    //Show the gallery or image to user:
+                    imgGallery.setImageBitmap(bitmap);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.v(TAG, "Exception " + e);
+                }
+            } else if (requestCode == PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY) {
+                Log.v(TAG, "There was an error in the image gallery" + resultCode);
+            } else {
+                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
+            }
+        } catch (Exception e) {
+            Log.v(TAG, "Exception " + e);
+        }
+    }
+
 }
