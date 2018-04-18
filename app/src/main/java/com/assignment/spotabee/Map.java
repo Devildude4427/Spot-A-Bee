@@ -43,7 +43,7 @@ public class Map extends Fragment
     private NotificationManager notificationManager;
     private LocationListener locationListener;
     private LocationManager locationManager;
-    MapView mapView;
+    private MapView mapView;
 
     @Nullable
     @Override
@@ -71,7 +71,6 @@ public class Map extends Fragment
                 if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
                         Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
-                    // For showing a move to my location button
                     googleMap.setMyLocationEnabled(true);
                 } else {
                     googleMap.setMyLocationEnabled(false);
@@ -139,7 +138,6 @@ public class Map extends Fragment
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
 
-                Log.v(TAG, "Check 3");
                 locationListener = new Map.MyLocationListener();
                 locationManager.requestLocationUpdates(LocationManager
                         .GPS_PROVIDER, 5000, 10, locationListener);

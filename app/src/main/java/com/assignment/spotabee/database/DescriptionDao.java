@@ -9,6 +9,7 @@ import android.arch.persistence.room.Update;
 
 import com.assignment.spotabee.database.Description;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Dao
