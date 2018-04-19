@@ -2,13 +2,9 @@ package com.assignment.spotabee;
 
 import android.Manifest;
 import android.accounts.AccountManager;
-import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -25,13 +21,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.assignment.spotabee.database.AppDatabase;
-
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import com.assignment.spotabee.database.DatabaseInitializer;
+import com.assignment.spotabee.database.Description;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -43,10 +36,10 @@ public class MainActivity extends AppCompatActivity
     public static final int PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY = 4;
     private static final int PERMISSION_REQUEST_CAMERA = 5;
     private static final int CHOOSE_ACCOUNT = 99;
+    private AppDatabase db;
     private AccountManager accountManager;
     private DrawerLayout mDrawerLayout;
-    private AppDatabase db;
-    private static final String TAG = "Debug";
+    private static final String TAG = "Main Activity Debug";
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +55,18 @@ public class MainActivity extends AppCompatActivity
         accountManager = (AccountManager)
                 getSystemService(Context.ACCOUNT_SERVICE);
 
-        db = Room.databaseBuilder(
-                this.getApplicationContext(),
-                AppDatabase.class,
-                "App Database"
-        ).fallbackToDestructiveMigration().build();
+
+        db = AppDatabase.getAppDatabase(this);
+
+        //This clears out the database, and is called every time! Remove if you need persistence!
+        db.descriptionDao().nukeTable();
+        //This clears out the database, and is called every time! Remove if you need persistence!
+
+        DatabaseInitializer.populateAsync(db);
+
+        Description description = new Description(51.4816,3.1791,"Cardiff", "Rose", "None");
+        db.descriptionDao().insertDescriptions(description);
+
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -77,11 +77,10 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
         displaySelectedScreen(R.id.nav_home);
     }
 
-    public AppDatabase getDb(){
+    public AppDatabase getDb() {
         return db;
     }
 
@@ -347,5 +346,11 @@ public class MainActivity extends AppCompatActivity
             // other 'case' lines to check for other
             // permissions this app might request.
         }
+    }
+
+    @Override
+    protected void onDestroy(){
+        AppDatabase.destroyInstance();
+        super.onDestroy();
     }
 }

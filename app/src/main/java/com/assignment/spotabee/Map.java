@@ -38,7 +38,7 @@ public class Map extends Fragment
         implements OnMapReadyCallback {
 
     private static final String CHANNEL_ID = "One";
-    private static final String TAG = "Debug";
+    private static final String TAG = "Map Debug";
     private GoogleMap googleMap;
     private NotificationManager notificationManager;
     private LocationListener locationListener;
@@ -191,10 +191,10 @@ public class Map extends Fragment
 //            Toast.makeText(getBaseContext(),"Location changed : Lat: "
 //                            + loc.getLatitude() + " Lng: " + loc.getLongitude(),
 //                    Toast.LENGTH_SHORT).show();
-            String longitude = "Longitude: " + loc.getLongitude();
-            Log.v(TAG, longitude);
-            String latitude = "Latitude: " + loc.getLatitude();
-            Log.v(TAG, latitude);
+//            String longitude = "Longitude: " + loc.getLongitude();
+//            Log.v(TAG, longitude);
+//            String latitude = "Latitude: " + loc.getLatitude();
+//            Log.v(TAG, latitude);
         }
 
         @Override

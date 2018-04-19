@@ -35,7 +35,7 @@ public class Markers extends Fragment
 
     private static final String TAG = "markers_debug";
     private AppDatabase db;
-    private List<Description> descriptions;
+    private List<Description> allDescriptions;
     private ArrayList<LatLng> allMarkers = new ArrayList<>();
     private GoogleMap googleMap;
     private MapView mapView;
@@ -48,6 +48,10 @@ public class Markers extends Fragment
         //returning our layout file
         View rootView = inflater.inflate(R.layout.fragment_menu_map, container, false);
 
+        db = AppDatabase.getAppDatabase(getContext());
+        allDescriptions = db.descriptionDao()
+                .getAllDescriptions();
+
         locationManager = (LocationManager)
                 getActivity().getSystemService(Context.LOCATION_SERVICE);
 
@@ -58,8 +62,6 @@ public class Markers extends Fragment
         mapView.onCreate(savedInstanceState);
 
         mapView.onResume();
-
-        db = MainActivity.getDb();
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -81,17 +83,7 @@ public class Markers extends Fragment
                 } else {
                     googleMap.setMyLocationEnabled(false);
                 }
-                setMarkers(descriptions);
-            }
-        });
-
-
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                descriptions = db.descriptionDao().getAllDescriptions();
-                descriptions.add(new Description(52.4816, -4.17909));
-                descriptions.add(new Description(50.4816, -3.57909));
+                setMarkers(allDescriptions);
             }
         });
 
@@ -131,10 +123,14 @@ public class Markers extends Fragment
         try {
             for (Description location:descriptions){
                 LatLng newMarker = new LatLng(location.getLatitude(), location.getLongitude());
-                Log.v(TAG, "Marker" + newMarker);
-                googleMap.addMarker(new MarkerOptions()
-                        .position(newMarker));
-
+                if (location.getLocation() != null) {
+                    googleMap.addMarker(new MarkerOptions()
+                            .position(newMarker)
+                            .title(location.getLocation()));
+                } else {
+                    googleMap.addMarker(new MarkerOptions()
+                            .position(newMarker));
+                }
                 allMarkers.add(newMarker);
             }
 
