@@ -48,6 +48,12 @@ public class Markers extends Fragment
         //returning our layout file
         View rootView = inflater.inflate(R.layout.fragment_menu_map, container, false);
 
+        locationManager = (LocationManager)
+                getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        Map.MyLocationListener listener = new Map().new MyLocationListener();
+        locationListener = listener;
+
         mapView = (MapView) rootView.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
 
@@ -68,6 +74,8 @@ public class Markers extends Fragment
                         Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
                     googleMap.setMyLocationEnabled(true);
+                    locationManager.requestLocationUpdates(LocationManager
+                            .GPS_PROVIDER, 5000, 10, locationListener);
                 } else {
                     googleMap.setMyLocationEnabled(false);
                 }
@@ -98,9 +106,6 @@ public class Markers extends Fragment
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles
         getActivity().setTitle("Map");
-
-        locationManager = (LocationManager)
-                getActivity().getSystemService(Context.LOCATION_SERVICE);
     }
 
     @Override
@@ -136,8 +141,7 @@ public class Markers extends Fragment
                 LatLng newMarker = new LatLng(location.getLatitude(), location.getLongitude());
                 Log.v(TAG, "Marker" + newMarker);
                 googleMap.addMarker(new MarkerOptions()
-                        .position(newMarker)
-                        .title("Marker"));
+                        .position(newMarker));
 
                 allMarkers.add(newMarker);
             }
