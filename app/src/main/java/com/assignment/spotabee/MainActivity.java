@@ -118,14 +118,16 @@ public class MainActivity extends AppCompatActivity
                 fragment = new HowTo();
                 break;
             case R.id.nav_map:
-                fragment = new SecondMarkers();
+                fragment = new Map();
                 break;
             case R.id.nav_aboutus:
                 fragment = new AboutUs();
                 break;
-
             case R.id.nav_description_form:
                 fragment = new FragmentDescriptionForm();
+                break;
+            case R.id.nav_leaderboard:
+                fragment = new FragmentLeaderboard();
                 break;
         }
 
