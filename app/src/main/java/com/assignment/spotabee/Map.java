@@ -195,8 +195,6 @@ public class Map extends Fragment
             Log.v(TAG, longitude);
             String latitude = "Latitude: " + loc.getLatitude();
             Log.v(TAG, latitude);
-
-            setUpMap(loc.getLatitude(), loc.getLongitude());
         }
 
         @Override
