@@ -59,6 +59,8 @@ public class Markers extends Fragment
 
         mapView.onResume();
 
+        db = MainActivity.getDb();
+
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
         } catch (Exception e) {
@@ -83,11 +85,6 @@ public class Markers extends Fragment
             }
         });
 
-        db = Room.databaseBuilder(
-                getActivity().getApplicationContext(),
-                AppDatabase.class,
-                "App Database"
-        ).fallbackToDestructiveMigration().build();
 
         AsyncTask.execute(new Runnable() {
             @Override
@@ -116,11 +113,6 @@ public class Markers extends Fragment
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 googleMap.setMyLocationEnabled(true);
-
-//                locationListener = new Map.MyLocationListener();
-//                locationManager.requestLocationUpdates(LocationManager
-//                        .GPS_PROVIDER, 5000, 10, locationListener);
-
             } else {
                 googleMap.setMyLocationEnabled(false);
             }

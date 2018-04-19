@@ -2,6 +2,7 @@ package com.assignment.spotabee;
 
 import android.Manifest;
 import android.accounts.AccountManager;
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -27,6 +28,8 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.assignment.spotabee.database.AppDatabase;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity
     private static final int CHOOSE_ACCOUNT = 99;
     private AccountManager accountManager;
     private DrawerLayout mDrawerLayout;
+    private AppDatabase db;
     private static final String TAG = "Debug";
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -58,6 +62,11 @@ public class MainActivity extends AppCompatActivity
         accountManager = (AccountManager)
                 getSystemService(Context.ACCOUNT_SERVICE);
 
+        db = Room.databaseBuilder(
+                this.getApplicationContext(),
+                AppDatabase.class,
+                "App Database"
+        ).fallbackToDestructiveMigration().build();
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -70,6 +79,10 @@ public class MainActivity extends AppCompatActivity
 
 
         displaySelectedScreen(R.id.nav_home);
+    }
+
+    public AppDatabase getDb(){
+        return db;
     }
 
     @Override
