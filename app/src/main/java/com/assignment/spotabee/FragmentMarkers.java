@@ -30,7 +30,7 @@ import android.location.LocationManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Markers extends Fragment
+public class FragmentMarkers extends Fragment
         implements OnMapReadyCallback {
 
     private static final String TAG = "markers_debug";

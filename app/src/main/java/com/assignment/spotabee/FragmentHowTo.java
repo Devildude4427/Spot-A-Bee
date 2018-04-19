@@ -17,7 +17,7 @@ import java.util.List;
  * Created by Ryun on 3/18/2018.
  */
 
-public class HowTo extends Fragment {
+public class FragmentHowTo extends Fragment {
 
     private String TAG = "How To Debug";
     private AppDatabase db;

@@ -124,16 +124,16 @@ public class MainActivity extends AppCompatActivity
         //initializing the fragment object which is selected
         switch (itemId) {
             case R.id.nav_home:
-                fragment = new Home();
+                fragment = new FragmentHome();
                 break;
             case R.id.nav_howto:
-                fragment = new HowTo();
+                fragment = new FragmentHowTo();
                 break;
             case R.id.nav_map:
-                fragment = new Markers();
+                fragment = new FragmentMarkers();
                 break;
             case R.id.nav_aboutus:
-                fragment = new AboutUs();
+                fragment = new FragmentAboutUs();
                 break;
             case R.id.nav_description_form:
                 fragment = new FragmentDescriptionForm();
