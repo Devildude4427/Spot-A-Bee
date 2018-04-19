@@ -1,6 +1,7 @@
 package com.assignment.spotabee;
 
 import android.Manifest;
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
 
 import java.io.File;
@@ -42,6 +44,7 @@ public class Home extends Fragment  {
     private AppCompatButton Button2;
     private AppCompatButton buttonUploadPictures;
     private ImageView imgGallery;
+    private AppDatabase db;
 
     Intent intent;
 
@@ -51,6 +54,7 @@ public class Home extends Fragment  {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //returning our layout file
         //change R.layout.yourlayoutfilename for each of your fragments
+
         //Set the button to a listener
         View view = inflater.inflate(R.layout.fragment_menu_home, container, false);
 
@@ -59,6 +63,7 @@ public class Home extends Fragment  {
 
         Map.MyLocationListener listener = new Map().new MyLocationListener();
         locationListener = listener;
+
 
         buttonCamera = (AppCompatButton) view.findViewById(R.id.button_camera);
         buttonCamera.setOnClickListener(new View.OnClickListener(){
@@ -85,7 +90,14 @@ public class Home extends Fragment  {
                             Double lat = locationManager.getLastKnownLocation(GPS_PROVIDER).getLatitude();
                             Double lng = locationManager.getLastKnownLocation(GPS_PROVIDER).getLongitude();
                             Log.v(TAG, "Lat: " + lat + "Lng: " + lng);
-                            Description description = new Description(lat, lng);
+
+                            db.descriptionDao()
+                                    .insertDescriptions(new Description(
+                                            lat,
+                                            lng)
+                                    );
+
+//                            Description description = new Description(lat, lng);
                         }
                     } catch (Exception e) {
                         Log.v(TAG, "Exception " + e);
@@ -116,6 +128,8 @@ public class Home extends Fragment  {
 
         return view;
         }
+
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
