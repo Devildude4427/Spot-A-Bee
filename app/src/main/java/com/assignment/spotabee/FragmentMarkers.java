@@ -1,11 +1,9 @@
 package com.assignment.spotabee;
 
 import android.Manifest;
-import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -25,7 +23,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import android.location.LocationListener;
-import android.location.LocationManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +52,7 @@ public class FragmentMarkers extends Fragment
         locationManager = (LocationManager)
                 getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-        Map.MyLocationListener listener = new Map().new MyLocationListener();
+        OutdatedClassMap.MyLocationListener listener = new OutdatedClassMap().new MyLocationListener();
         locationListener = listener;
 
         mapView = (MapView) rootView.findViewById(R.id.map);
@@ -94,7 +91,7 @@ public class FragmentMarkers extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles
-        getActivity().setTitle("Map");
+        getActivity().setTitle("OutdatedClassMap");
     }
 
     @Override

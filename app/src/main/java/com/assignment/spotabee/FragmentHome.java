@@ -1,7 +1,6 @@
 package com.assignment.spotabee;
 
 import android.Manifest;
-import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -61,7 +60,7 @@ public class FragmentHome extends Fragment  {
         locationManager = (LocationManager)
                 getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-        Map.MyLocationListener listener = new Map().new MyLocationListener();
+        OutdatedClassMap.MyLocationListener listener = new OutdatedClassMap().new MyLocationListener();
         locationListener = listener;
 
         db = AppDatabase.getAppDatabase(getContext());
