@@ -40,6 +40,7 @@ public class Markers extends Fragment
     private GoogleMap googleMap;
     private MapView mapView;
     private LocationManager locationManager;
+    private LocationListener locationListener;
 
     @Nullable
     @Override
@@ -110,6 +111,11 @@ public class Markers extends Fragment
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 googleMap.setMyLocationEnabled(true);
+
+//                locationListener = new Map.MyLocationListener();
+//                locationManager.requestLocationUpdates(LocationManager
+//                        .GPS_PROVIDER, 5000, 10, locationListener);
+
             } else {
                 googleMap.setMyLocationEnabled(false);
             }

@@ -29,7 +29,6 @@ public class Description {
     @ColumnInfo(name = "further_details")
     private String furtherDetails;
 
-
     public Description(Double latitude, Double longitude){
         this.latitude = latitude;
         this.longitude = longitude;
