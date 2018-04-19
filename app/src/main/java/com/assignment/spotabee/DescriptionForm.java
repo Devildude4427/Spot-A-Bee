@@ -230,8 +230,8 @@ public class DescriptionForm extends Fragment implements View.OnClickListener {
 
                     db.descriptionDao()
                             .insertDescriptions(new Description(
-                                    ((Double) userLocation.latitude),
-                                    (Double) userLocation.longitude,
+                                    (userLocation.latitude),
+                                    userLocation.longitude,
                                     location.getText().toString(),
                                     flower.getText().toString(),
                                     description.getText().toString()

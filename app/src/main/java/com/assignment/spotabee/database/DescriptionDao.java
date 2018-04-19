@@ -16,7 +16,7 @@ import java.util.List;
 public interface DescriptionDao {
 
     @Insert
-    void insertDescriptions(Description... users);
+    void insertDescriptions(Description... descriptions);
 
     @Query("SELECT * FROM Description")
     List<Description> getAllDescriptions();
@@ -28,4 +28,7 @@ public interface DescriptionDao {
     @Transaction
     @Query("SELECT longitude FROM Description")
     List<Double> getAllLongitudes();
+
+    @Query("DELETE FROM Description")
+    void nukeTable();
 }

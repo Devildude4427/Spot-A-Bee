@@ -64,6 +64,8 @@ public class Home extends Fragment  {
         Map.MyLocationListener listener = new Map().new MyLocationListener();
         locationListener = listener;
 
+        db = AppDatabase.getAppDatabase(getContext());
+
 
         buttonCamera = (AppCompatButton) view.findViewById(R.id.button_camera);
         buttonCamera.setOnClickListener(new View.OnClickListener(){
@@ -96,8 +98,6 @@ public class Home extends Fragment  {
                                             lat,
                                             lng)
                                     );
-
-//                            Description description = new Description(lat, lng);
                         }
                     } catch (Exception e) {
                         Log.v(TAG, "Exception " + e);
