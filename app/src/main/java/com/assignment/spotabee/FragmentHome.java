@@ -35,7 +35,7 @@ import static com.assignment.spotabee.MainActivity.PERMISSION_REQUEST_ACCESS_IMA
 import static com.assignment.spotabee.MainActivity.PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY;
 
 
-public class Home extends Fragment  {
+public class FragmentHome extends Fragment  {
 
     private static final String TAG = "Debug";
     private LocationManager locationManager;

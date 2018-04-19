@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
-public class AboutUs extends Fragment {
+public class FragmentAboutUs extends Fragment {
 
     @Nullable
     @Override
