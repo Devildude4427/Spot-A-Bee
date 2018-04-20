@@ -2,6 +2,7 @@ package com.assignment.spotabee.database;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -28,12 +29,19 @@ public class Description {
     @ColumnInfo(name = "further_details")
     private String furtherDetails;
 
-    public Description(Double latitude, Double longitude, String location, String flowerType, String furtherDetails){
+    @Ignore
+    public Description(Double latitude, Double longitude, String location,
+                            String flowerType, String furtherDetails) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.location = location;
         this.flowerType = flowerType;
         this.furtherDetails = furtherDetails;
+    }
+
+    public Description(Double latitude, Double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public int getUid() {
@@ -46,6 +54,10 @@ public class Description {
 
     public Double getLatitude() {
         return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
     public Double getLongitude() {
@@ -64,19 +76,11 @@ public class Description {
         this.location = location;
     }
 
-    public void setFlowerType(String flowerType) {
-        this.flowerType = flowerType;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
     public String getFlowerType() {
         return flowerType;
     }
 
-    public void setFlower(String flowerType) {
+    public void setFlowerType(String flowerType) {
         this.flowerType = flowerType;
     }
 

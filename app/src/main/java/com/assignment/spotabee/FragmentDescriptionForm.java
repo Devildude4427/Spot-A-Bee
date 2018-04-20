@@ -97,11 +97,12 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
         submit.setOnClickListener(this);
 
         // Database build
-        db = Room.databaseBuilder(
-                getActivity(),
-                AppDatabase.class,
-                "App Database"
-        ).fallbackToDestructiveMigration().build();
+//        db = Room.databaseBuilder(
+//                getActivity(),
+//                AppDatabase.class,
+//                "App Database"
+//        ).fallbackToDestructiveMigration().build();
+        db = AppDatabase.getAppDatabase(getContext());
 
 
         context = getActivity();

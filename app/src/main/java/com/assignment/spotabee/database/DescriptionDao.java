@@ -9,13 +9,14 @@ import android.arch.persistence.room.Update;
 
 import com.assignment.spotabee.database.Description;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Dao
 public interface DescriptionDao {
 
     @Insert
-    void insertDescriptions(Description... users);
+    void insertDescriptions(Description... descriptions);
 
     @Query("SELECT * FROM Description")
     List<Description> getAllDescriptions();
@@ -27,4 +28,7 @@ public interface DescriptionDao {
     @Transaction
     @Query("SELECT longitude FROM Description")
     List<Double> getAllLongitudes();
+
+    @Query("DELETE FROM Description")
+    void nukeTable();
 }
