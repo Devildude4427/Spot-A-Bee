@@ -119,6 +119,8 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+        getActivity().setTitle(R.string.details_title);
         return rootView;
     }
 
