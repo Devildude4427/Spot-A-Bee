@@ -84,6 +84,7 @@ public class FragmentMarkers extends Fragment
             }
         });
 
+        getActivity().setTitle(getString(R.string.flowers_spotted));
         return rootView;
     }
 

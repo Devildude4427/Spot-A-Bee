@@ -37,6 +37,7 @@
     <string name="drawer_menu_item_form">Form</string>
     <string name="drawer_menu_item_leaderboard">Leaderboard</string>
     <string name="details_title">Details</string>
+    <string name="flowers_spotted">Flowers Spotted</string>
 
 
 </resources>
