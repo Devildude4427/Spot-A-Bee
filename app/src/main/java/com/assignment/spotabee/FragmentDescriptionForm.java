@@ -2,6 +2,7 @@ package com.assignment.spotabee;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -41,6 +43,8 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
     private AppCompatEditText description;
     private ImageView search;
     private Spinner addressSpinner;
+    private ImageView flowerIdentify;
+    private FrameLayout flowerSearch;
 
     // Database
     private AppDatabase db;
@@ -53,6 +57,7 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
     private List<Address> possibleUserAddresses;
     private LatLng userLocation;
     private static final String TAG = "Description_form_debug";
+    private final static String imageIdentifyUrl = "https://www.imageidentify.com/";
 
     public FragmentDescriptionForm() {
         // Required empty public constructor
@@ -85,6 +90,10 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
         location = rootView.findViewById(R.id.locationField);
         description = rootView.findViewById(R.id.descriptionField);
         this.submit = rootView.findViewById(R.id.submit);
+        flowerIdentify = rootView.findViewById(R.id.flowerIdentify);
+        flowerSearch = rootView.findViewById(R.id.flower_search);
+
+        flowerSearch.setOnClickListener(this);
         submit.setOnClickListener(this);
 
         // Database build
@@ -113,19 +122,21 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
         return rootView;
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        //you can set the title for your toolbar here for different fragments different titles
-        getActivity().setTitle("Details");
+    public void goToImageIdentify(){
+        Intent imageIdentify = new Intent(Intent.ACTION_VIEW);
+        imageIdentify.setData(Uri.parse(imageIdentifyUrl));
+        startActivity(imageIdentify);
     }
-
 
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
 
         switch (viewId) {
+            case R.id.flower_search:
+                goToImageIdentify();
+                break;
+
             case R.id.submit:
                 if (userLocationIsNull()) return;
 

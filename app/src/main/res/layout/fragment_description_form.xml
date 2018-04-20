@@ -13,6 +13,43 @@
         android:layout_height="wrap_content"
         android:text="@string/bee_sighting" />
 
+
+    <FrameLayout
+        android:id="@+id/flower_search"
+        android:layout_below="@+id/myTextView"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/flowerIdentify"
+            android:src="@drawable/ic_flowervector"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/myTextView"
+            android:layout_width="wrap_content"
+            android:minHeight="40dp"
+            android:layout_height="wrap_content" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/identifyFlowerMessage"
+            android:layout_marginLeft="50dp"
+            android:textSize="20sp"
+            android:layout_marginTop="15dp"
+            android:layout_width="270dp"
+            android:text="@string/identify_a_flower"
+            android:layout_marginBottom="50dp"
+            android:maxLines="1"
+            android:layout_height="wrap_content"/>
+
+        <Spinner
+            android:id="@+id/addressSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/locationField"
+            android:layout_marginTop="50dp">
+        </Spinner>
+    </FrameLayout>
+
     <FrameLayout
         android:id="@+id/location_n_search"
         android:layout_below="@+id/myTextView"
@@ -32,17 +69,11 @@
             android:layout_marginLeft="30dp"
             android:layout_width="270dp"
             android:hint="@string/location"
+            android:textSize="20sp"
             android:layout_marginBottom="50dp"
             android:maxLines="1"
             android:layout_height="wrap_content"/>
 
-        <Spinner
-            android:id="@+id/addressSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/locationField"
-            android:layout_marginTop="50dp">
-        </Spinner>
     </FrameLayout>
 
     <android.support.v7.widget.AppCompatEditText
