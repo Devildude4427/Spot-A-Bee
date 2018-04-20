@@ -5,9 +5,6 @@ import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -24,11 +21,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.Toast;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import com.assignment.spotabee.database.AppDatabase;
+import com.assignment.spotabee.database.DatabaseInitializer;
+import com.assignment.spotabee.database.Description;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -40,9 +36,10 @@ public class MainActivity extends AppCompatActivity
     public static final int PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY = 4;
     private static final int PERMISSION_REQUEST_CAMERA = 5;
     private static final int CHOOSE_ACCOUNT = 99;
+    private AppDatabase db;
     private AccountManager accountManager;
     private DrawerLayout mDrawerLayout;
-    private static final String TAG = "Debug";
+    private static final String TAG = "Main Activity Debug";
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +56,18 @@ public class MainActivity extends AppCompatActivity
                 getSystemService(Context.ACCOUNT_SERVICE);
 
 
+        db = AppDatabase.getAppDatabase(this);
+
+        //This clears out the database, and is called every time! Remove if you need persistence!
+        db.descriptionDao().nukeTable();
+        //This clears out the database, and is called every time! Remove if you need persistence!
+
+        DatabaseInitializer.populateAsync(db);
+
+        Description description = new Description(51.4816,3.1791,"Cardiff", "Rose", "None");
+        db.descriptionDao().insertDescriptions(description);
+
+
         mDrawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -68,8 +77,11 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
         displaySelectedScreen(R.id.nav_home);
+    }
+
+    public AppDatabase getDb() {
+        return db;
     }
 
     @Override
@@ -112,20 +124,22 @@ public class MainActivity extends AppCompatActivity
         //initializing the fragment object which is selected
         switch (itemId) {
             case R.id.nav_home:
-                fragment = new Home();
+                fragment = new FragmentHome();
                 break;
             case R.id.nav_howto:
-                fragment = new HowTo();
+                fragment = new FragmentHowTo();
                 break;
             case R.id.nav_map:
-                fragment = new SecondMarkers();
+                fragment = new FragmentMarkers();
                 break;
             case R.id.nav_aboutus:
-                fragment = new AboutUs();
+                fragment = new FragmentAboutUs();
                 break;
-
             case R.id.nav_description_form:
                 fragment = new FragmentDescriptionForm();
+                break;
+            case R.id.nav_leaderboard:
+                fragment = new FragmentLeaderboard();
                 break;
         }
 
@@ -162,21 +176,21 @@ public class MainActivity extends AppCompatActivity
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void checkIfPermissionsGiven() {
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-//                != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
-//                        Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
-//            requestLocationAccountPermission();
-//            Log.v(TAG, "Requesting account and location Permissions");}
-        if (ContextCompat.checkSelfPermission(this,
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+            requestLocationAccountPermission();
+            Log.v(TAG, "Requesting account and location Permissions");
+        } else if(ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             requestLocationPermission();
-            Log.v(TAG, "Only requesting location Permission");}
-//        else if (ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.GET_ACCOUNTS)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            requestAccountPermission();
-//            Log.v(TAG, "Only requesting account Permission"); }
+            Log.v(TAG, "Only requesting location Permission");
+        } else if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.GET_ACCOUNTS)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestAccountPermission();
+            Log.v(TAG, "Only requesting account Permission"); }
         else if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED){
@@ -214,14 +228,14 @@ public class MainActivity extends AppCompatActivity
     /**
      * Requests permissions to use device location and access accounts.
      */
-//    private void requestLocationAccountPermission() {
-//        // Permission has not been granted and must be requested.
-//        // Request the permission. The result will be received in onRequestPermissionResult().
-//        ActivityCompat.requestPermissions(this,
-//                new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-//                        Manifest.permission.GET_ACCOUNTS},
-//                PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS);
-//    }
+    private void requestLocationAccountPermission() {
+        // Permission has not been granted and must be requested.
+        // Request the permission. The result will be received in onRequestPermissionResult().
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.GET_ACCOUNTS},
+                PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS);
+    }
 
     /**
      * Requests permission to use device location.
@@ -237,13 +251,13 @@ public class MainActivity extends AppCompatActivity
     /**
      * Requests permission to use accounts.
      */
-//    private void requestAccountPermission() {
-//        // Permission has not been granted and must be requested.
-//        // Request the permission. The result will be received in onRequestPermissionResult().
-//        ActivityCompat.requestPermissions(this,
-//                new String[]{Manifest.permission.GET_ACCOUNTS},
-//                PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS);
-//    }
+    private void requestAccountPermission() {
+        // Permission has not been granted and must be requested.
+        // Request the permission. The result will be received in onRequestPermissionResult().
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.GET_ACCOUNTS},
+                PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS);
+    }
 
     /**
      * Requests permission to use device camera.
@@ -272,27 +286,26 @@ public class MainActivity extends AppCompatActivity
                                            String permissions[],
                                            int[] grantResults) {
         switch (requestCode) {
-//            case PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS: {
-//                // If request is cancelled, the result arrays are empty.
-//                if (grantResults.length > 0
-//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    Log.v(TAG, "Permission to both granted");
-//
-//                    try {
-//                        Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
-//                        startActivityForResult(intent, CHOOSE_ACCOUNT);
-//                        Log.v(TAG, "Intent to Choose Account go");
-//                        checkifPermissionsGiven();
-//
-//                    } catch (Exception e) {
-//                        Log.v(TAG, "Exception " + e);
-//                    }
-//
-//                } else {
-//                    Log.v(TAG, "User needs to make an account");
-//                }
-//            }
-//            return;
+            case PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.v(TAG, "Permission to both granted");
+
+                    try {
+                        Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
+                        startActivityForResult(intent, CHOOSE_ACCOUNT);
+                        checkIfPermissionsGiven();
+
+                    } catch (Exception e) {
+                        Log.v(TAG, "Exception " + e);
+                    }
+
+                } else {
+                    Log.v(TAG, "User needs to make an account");
+                }
+            }
+            return;
 
             case PERMISSION_REQUEST_ACCESS_FINE_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
@@ -304,25 +317,25 @@ public class MainActivity extends AppCompatActivity
             }
             return;
 
-//            case PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS: {
-//                // If request is cancelled, the result arrays are empty.
-//                if (grantResults.length > 0
-//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    Log.v(TAG, "Permission to only account granted");
-//                    try {
-//                        Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
-//                        startActivityForResult(intent, CHOOSE_ACCOUNT);
-//                        Log.v(TAG, "Intent to choose just account a go");
-//                    } catch (Exception e) {
-//                        Log.v(TAG, "Exception " + e);
-//                    }
-//
-//                } else {
-//                    //Redirect to force user to create an account
-//                    Log.v(TAG, "User needs to make an account");
-//                }
-//            }
-//            return;
+            case PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.v(TAG, "Permission to only account granted");
+                    try {
+                        Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
+                        startActivityForResult(intent, CHOOSE_ACCOUNT);
+                        Log.v(TAG, "Intent to choose just account a go");
+                    } catch (Exception e) {
+                        Log.v(TAG, "Exception " + e);
+                    }
+
+                } else {
+                    //Redirect to force user to create an account
+                    Log.v(TAG, "User needs to make an account");
+                }
+            }
+            return;
 
             case PERMISSION_REQUEST_CAMERA: {
                 // If request is cancelled, the result arrays are empty.
@@ -335,5 +348,11 @@ public class MainActivity extends AppCompatActivity
             // other 'case' lines to check for other
             // permissions this app might request.
         }
+    }
+
+    @Override
+    protected void onDestroy(){
+        AppDatabase.destroyInstance();
+        super.onDestroy();
     }
 }
