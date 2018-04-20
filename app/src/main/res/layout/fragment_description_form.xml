@@ -41,18 +41,11 @@
             android:maxLines="1"
             android:layout_height="wrap_content"/>
 
-        <Spinner
-            android:id="@+id/addressSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/locationField"
-            android:layout_marginTop="50dp">
-        </Spinner>
     </FrameLayout>
 
     <FrameLayout
         android:id="@+id/location_n_search"
-        android:layout_below="@+id/myTextView"
+        android:layout_below="@+id/flower_search"
         android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -73,6 +66,14 @@
             android:layout_marginBottom="50dp"
             android:maxLines="1"
             android:layout_height="wrap_content"/>
+
+        <Spinner
+            android:id="@+id/addressSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/locationField"
+            android:layout_marginTop="50dp">
+        </Spinner>
 
     </FrameLayout>
 
