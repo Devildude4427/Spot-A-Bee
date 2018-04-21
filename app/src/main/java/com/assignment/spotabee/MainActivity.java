@@ -80,10 +80,6 @@ public class MainActivity extends AppCompatActivity
         displaySelectedScreen(R.id.nav_home);
     }
 
-    public AppDatabase getDb() {
-        return db;
-    }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -135,9 +131,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_aboutus:
                 fragment = new FragmentAboutUs();
                 break;
-            case R.id.nav_description_form:
-                fragment = new FragmentDescriptionForm();
-                break;
+//            case R.id.nav_description_form:
+//                fragment = new FragmentDescriptionForm();
+//                break;
             case R.id.nav_leaderboard:
                 fragment = new FragmentLeaderboard();
                 break;

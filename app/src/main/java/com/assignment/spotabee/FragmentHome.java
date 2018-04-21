@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
@@ -40,7 +41,7 @@ public class FragmentHome extends Fragment  {
     private LocationManager locationManager;
     private LocationListener locationListener;
     private AppCompatButton buttonCamera;
-    private AppCompatButton Button2;
+    private AppCompatButton buttonDescriptionForm;
     private AppCompatButton buttonUploadPictures;
     private ImageView imgGallery;
     private AppDatabase db;
@@ -104,6 +105,23 @@ public class FragmentHome extends Fragment  {
                 }
         });
 
+        buttonDescriptionForm = (AppCompatButton) view.findViewById(R.id.button_description_form);
+        buttonDescriptionForm.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                //creating fragment object
+                Fragment fragment = null;
+
+                //initializing the fragment object which is selected
+                fragment = new FragmentDescriptionForm();
+
+                //replacing the fragment
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment);
+                ft.commit();
+            }
+        });
+
         buttonUploadPictures = (AppCompatButton) view.findViewById(R.id.button_upload_picture);
         buttonUploadPictures.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -119,6 +137,8 @@ public class FragmentHome extends Fragment  {
                 }
             }
         });
+
+
 
 
 

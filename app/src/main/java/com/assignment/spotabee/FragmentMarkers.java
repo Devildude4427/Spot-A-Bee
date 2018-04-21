@@ -132,7 +132,7 @@ public class FragmentMarkers extends Fragment
                 allMarkers.add(newMarker);
             }
 
-            // Builder calculates the area of the map it needs to show on screen
+            // Builder calculates the area of the fragment_map_outdated it needs to show on screen
             // to include all markers
             LatLngBounds.Builder bld = new LatLngBounds.Builder();
             for (int i = 0; i < allMarkers.size(); i++) {
