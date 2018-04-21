@@ -27,7 +27,7 @@ import android.location.LocationListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentMarkers extends Fragment
+public class FragmentMap extends Fragment
         implements OnMapReadyCallback {
 
     private static final String TAG = "markers_debug";
@@ -43,7 +43,7 @@ public class FragmentMarkers extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //returning our layout file
-        View rootView = inflater.inflate(R.layout.fragment_menu_map, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_menu_map_outdated, container, false);
 
         db = AppDatabase.getAppDatabase(getContext());
         allDescriptions = db.descriptionDao()
@@ -92,7 +92,7 @@ public class FragmentMarkers extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles
-        getActivity().setTitle("OutdatedClassMap");
+        getActivity().setTitle("Map");
     }
 
     @Override
