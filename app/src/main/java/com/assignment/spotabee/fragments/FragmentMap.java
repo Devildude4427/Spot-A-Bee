@@ -1,4 +1,4 @@
-package com.assignment.spotabee;
+package com.assignment.spotabee.fragments;
 
 import android.Manifest;
 import android.content.Context;
@@ -12,6 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.assignment.spotabee.OutdatedClassMap;
+import com.assignment.spotabee.R;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
 import com.google.android.gms.maps.CameraUpdateFactory;
