@@ -1,4 +1,4 @@
-package com.assignment.spotabee;
+package com.assignment.spotabee.fragments;
 
 import android.Manifest;
 import android.content.Context;
@@ -23,6 +23,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.assignment.spotabee.MainActivity;
+import com.assignment.spotabee.OutdatedClassMap;
+import com.assignment.spotabee.R;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
 
@@ -31,8 +34,8 @@ import java.io.InputStream;
 
 import static android.app.Activity.RESULT_OK;
 import static android.location.LocationManager.GPS_PROVIDER;
-import static com.assignment.spotabee.MainActivity.PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE;
-import static com.assignment.spotabee.MainActivity.PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY;
+import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE;
+import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY;
 
 
 public class FragmentHome extends Fragment  {

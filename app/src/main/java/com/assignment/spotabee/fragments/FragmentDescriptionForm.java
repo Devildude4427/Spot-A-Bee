@@ -1,4 +1,4 @@
-package com.assignment.spotabee;
+package com.assignment.spotabee.fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.assignment.spotabee.R;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
 import com.google.android.gms.maps.model.LatLng;
