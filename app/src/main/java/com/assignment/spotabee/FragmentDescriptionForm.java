@@ -225,8 +225,8 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
 
                     db.descriptionDao()
                             .insertDescriptions(new Description(
-                                    ((Double) userLocation.latitude),
-                                    (Double) userLocation.longitude,
+                                    ( userLocation.latitude),
+                                    userLocation.longitude,
                                     location.getText().toString(),
                                     flower.getText().toString(),
                                     description.getText().toString()
