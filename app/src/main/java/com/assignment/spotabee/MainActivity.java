@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new FragmentHowTo();
                 break;
             case R.id.nav_map:
-                fragment = new FragmentMarkers();
+                fragment = new FragmentMap();
                 break;
             case R.id.nav_aboutus:
                 fragment = new FragmentAboutUs();

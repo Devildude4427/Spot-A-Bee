@@ -47,7 +47,7 @@ public class OutdatedClassMap extends Fragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //returning our layout file
         //change R.layout.yourlayoutfilename for each of your fragments
-        View rootView = inflater.inflate(R.layout.fragment_menu_map, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_menu_map_outdated, container, false);
 
         mapView = (MapView) rootView.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);

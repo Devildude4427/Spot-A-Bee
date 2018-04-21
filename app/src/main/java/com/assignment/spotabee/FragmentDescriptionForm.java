@@ -1,6 +1,5 @@
 package com.assignment.spotabee;
 
-import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
@@ -32,19 +31,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class FragmentDescriptionForm extends Fragment implements View.OnClickListener {
+public class FragmentDescriptionForm extends Fragment
+        implements View.OnClickListener {
 
-
-    private View rootView;
     // Widgets
     private AppCompatButton submit;
     private AppCompatEditText location;
     private AppCompatEditText flower;
     private AppCompatEditText description;
-    private ImageView search;
-    private Spinner addressSpinner;
     private ImageView flowerIdentify;
     private FrameLayout flowerSearch;
+    private Spinner addressSpinner;
 
     // Database
     private AppDatabase db;
@@ -59,37 +56,24 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
     private static final String TAG = "Description_form_debug";
     private final static String imageIdentifyUrl = "https://www.imageidentify.com/";
 
-    public FragmentDescriptionForm() {
-        // Required empty public constructor
-    }
-
-    // TODO: Rename and change types and number of parameters
-    public static FragmentDescriptionForm newInstance(String param1, String param2) {
-        FragmentDescriptionForm fragment = new FragmentDescriptionForm();
-        Bundle args = new Bundle();
-
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_description_form, container, false);
-        this.search = rootView.findViewById(R.id.search_location);
-        this.search.setOnClickListener(this);
-        this.addressSpinner = (Spinner) rootView.findViewById(R.id.addressSpinner);
-        this.addressSpinner.setVisibility(View.GONE);
+        View rootView = inflater.inflate(R.layout.fragment_description_form, container, false);
+
+        ImageView search = rootView.findViewById(R.id.search_location);
+        search.setOnClickListener(this);
+
+
+        addressSpinner = (Spinner) rootView.findViewById(R.id.addressSpinner);
+        addressSpinner.setVisibility(View.GONE);
+
         flower = rootView.findViewById(R.id.flowerField);
         location = rootView.findViewById(R.id.locationField);
         description = rootView.findViewById(R.id.descriptionField);
-        this.submit = rootView.findViewById(R.id.submit);
+
+        submit = rootView.findViewById(R.id.submit);
         flowerIdentify = rootView.findViewById(R.id.flowerIdentify);
         flowerSearch = rootView.findViewById(R.id.flower_search);
 
@@ -100,22 +84,36 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
 
 
         context = getActivity();
-        this.userLocation = null;
-        this.geocoder = new Geocoder(context);
+
+        userLocation = null;
+        geocoder = new Geocoder(context);
 
         addressSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 location.setText(parent.getItemAtPosition(position).toString());
-                setCoOrdinatesToStore(parent, view, position, id);
+                setCoordinatesToStore(parent, view, position, id);
 
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-
-        getActivity().setTitle(R.string.details_title);
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //you can set the title for your toolbar here for different fragments different titles
+        getActivity().setTitle(R.string.details_title);
+    }
+
+    // TODO: Rename and change types and number of parameters
+    public static FragmentDescriptionForm newInstance(String param1, String param2) {
+        FragmentDescriptionForm fragment = new FragmentDescriptionForm();
+        Bundle args = new Bundle();
+
+        return fragment;
     }
 
     public void goToImageIdentify(){
@@ -157,12 +155,11 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
                     Log.d(TAG, e.getMessage());
                     this.userLocation = new LatLng(51.5842, 2.9977);
                 }
-
         }
     }
 
     private boolean userLocationIsNull() {
-        Log.d(TAG, "We are in setCoOrdinatesToStore");
+        Log.d(TAG, "We are in setCoordinatesToStore");
         if (this.userLocation == null) {
             Toast.makeText(context,
                     "You need to select a location first",
@@ -253,8 +250,8 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
         });
     }
 
-    private Address setCoOrdinatesToStore(AdapterView<?> parent, View view, int position, long id) {
-        Log.d(TAG, "We are in setCoOrdinatesToStore");
+    private Address setCoordinatesToStore(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(TAG, "We are in setCoordinatesToStore");
         String addressLineToMatch = parent.getItemAtPosition(position).toString();
         Address addressToFind = null;
 
