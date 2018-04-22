@@ -13,9 +13,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import static android.support.v4.provider.FontsContractCompat.FontRequestCallback.RESULT_OK;
-
-public class Permissions extends AppCompatActivity {
+public class Permissions extends AppCompatActivity
+        implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS = 0;
     private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -33,31 +32,30 @@ public class Permissions extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void checkIfPermissionsGiven(Context context) {
 
-        Log.v(TAG, "Got here");
         MainActivity mainActivity = new MainActivity();
+        AppCompatActivity activity = mainActivity.getActivity();
         accountManager = mainActivity.getAccountManager();
-        Log.v(TAG, "Account Manager started");
 
         try {
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
+                    != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(context,
                     Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
-                requestLocationAccountPermission();
+                requestLocationAccountPermission(activity);
                 Log.v(TAG, "Requesting account and location Permissions");
-            } else if(ContextCompat.checkSelfPermission(this,
+            } else if(ContextCompat.checkSelfPermission(context,
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED) {
-                requestLocationPermission();
+                requestLocationPermission(context);
                 Log.v(TAG, "Only requesting location Permission");
-            } else if (ContextCompat.checkSelfPermission(this,
+            } else if (ContextCompat.checkSelfPermission(context,
                     Manifest.permission.GET_ACCOUNTS)
                     != PackageManager.PERMISSION_GRANTED) {
-                requestAccountPermission();
+                requestAccountPermission(context);
                 Log.v(TAG, "Only requesting account Permission"); }
-            else if (ContextCompat.checkSelfPermission(this,
+            else if (ContextCompat.checkSelfPermission(context,
                     Manifest.permission.CAMERA)
                     != PackageManager.PERMISSION_GRANTED){
-                requestCameraPermission();
+                requestCameraPermission(context);
                 Log.v(TAG, "Requesting camera Permission");}
             else {
                 Log.v(TAG, "No permissions requested");
@@ -98,10 +96,11 @@ public class Permissions extends AppCompatActivity {
     /**
      * Requests permissions to use device location and access accounts.
      */
-    private void requestLocationAccountPermission() {
+    private void requestLocationAccountPermission(AppCompatActivity activity) {
         // Permission has not been granted and must be requested.
         // Request the permission. The result will be received in onRequestPermissionResult().
-        ActivityCompat.requestPermissions(this,
+        Log.v(TAG, " " + activity);
+        ActivityCompat.requestPermissions(activity,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.GET_ACCOUNTS},
                 PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS);
@@ -110,10 +109,10 @@ public class Permissions extends AppCompatActivity {
     /**
      * Requests permission to use device location.
      */
-    private void requestLocationPermission() {
+    private static void requestLocationPermission(Context context) {
         // Permission has not been granted and must be requested.
         // Request the permission. The result will be received in onRequestPermissionResult().
-        ActivityCompat.requestPermissions(this,
+        ActivityCompat.requestPermissions((Activity)context,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                 PERMISSION_REQUEST_ACCESS_FINE_LOCATION);
     }
@@ -121,10 +120,10 @@ public class Permissions extends AppCompatActivity {
     /**
      * Requests permission to use accounts.
      */
-    private void requestAccountPermission() {
+    private static void requestAccountPermission(Context context) {
         // Permission has not been granted and must be requested.
         // Request the permission. The result will be received in onRequestPermissionResult().
-        ActivityCompat.requestPermissions(this,
+        ActivityCompat.requestPermissions((Activity)context,
                 new String[]{Manifest.permission.GET_ACCOUNTS},
                 PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS);
     }
@@ -132,10 +131,10 @@ public class Permissions extends AppCompatActivity {
     /**
      * Requests permission to use device camera.
      */
-    private void requestCameraPermission() {
+    private static void requestCameraPermission(Context context) {
         // Permission has not been granted and must be requested.
         // Request the permission. The result will be received in onRequestPermissionResult().
-        ActivityCompat.requestPermissions(this,
+        ActivityCompat.requestPermissions((Activity)context,
                 new String[]{Manifest.permission.CAMERA},
                 PERMISSION_REQUEST_CAMERA);
     }
@@ -155,6 +154,7 @@ public class Permissions extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[],
                                            int[] grantResults) {
+        Log.v(TAG, "UMMM.. hello?");
         switch (requestCode) {
             case PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS: {
                 // If request is cancelled, the result arrays are empty.
@@ -165,7 +165,8 @@ public class Permissions extends AppCompatActivity {
                     try {
                         Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
                         startActivityForResult(intent, CHOOSE_ACCOUNT);
-                        checkIfPermissionsGiven(getApplicationContext());
+
+//                        checkIfPermissionsGiven(this, );
 
                     } catch (Exception e) {
                         Log.v(TAG, "Exception " + e);
@@ -182,7 +183,7 @@ public class Permissions extends AppCompatActivity {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.v(TAG, "Permission to only location granted");
-                    checkIfPermissionsGiven(getApplicationContext());
+//                    checkIfPermissionsGiven(this);
                 }
             }
             return;
@@ -196,6 +197,7 @@ public class Permissions extends AppCompatActivity {
                         Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
                         startActivityForResult(intent, CHOOSE_ACCOUNT);
                         Log.v(TAG, "Intent to choose just account a go");
+//                        checkIfPermissionsGiven(this);
                     } catch (Exception e) {
                         Log.v(TAG, "Exception " + e);
                     }
@@ -212,7 +214,11 @@ public class Permissions extends AppCompatActivity {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.v(TAG, "Permission to use camera granted");
+//                    checkIfPermissionsGiven(this);
                 }
+            }
+            default: {
+                Log.v(TAG, "Unknown permission request");
             }
 
             // other 'case' lines to check for other
