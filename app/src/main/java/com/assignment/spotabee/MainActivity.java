@@ -46,13 +46,13 @@ import clarifai2.api.ClarifaiClient;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-//    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS = 0;
-//    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 1;
-//    private static final int PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS = 2;
-//    public static final int PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE = 3;
-//    public static final int PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY = 4;
-//    private static final int PERMISSION_REQUEST_CAMERA = 5;
-//    private static final int CHOOSE_ACCOUNT = 99;
+    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS = 0;
+    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private static final int PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS = 2;
+    public static final int PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE = 3;
+    public static final int PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY = 4;
+    private static final int PERMISSION_REQUEST_CAMERA = 5;
+    private static final int CHOOSE_ACCOUNT = 99;
     private AccountManager accountManager;
     public static Context contextOfApplication;
     private AppDatabase db;
@@ -71,17 +71,12 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-        contextOfApplication = getApplicationContext();
-
         accountManager = (AccountManager)
                 getSystemService(Context.ACCOUNT_SERVICE);
 
-        Log.v(TAG, "Trying to get permissions");
-        Permissions permission = new Permissions();
-        permission.checkIfPermissionsGiven(this);
+        checkIfPermissionsGiven();
 
-        db = AppDatabase.getAppDatabase(this);
+        db = AppDatabase.getAppDatabase(getApplicationContext());
 
         //This clears out the database, and is called every time! Remove if you need persistence!
         db.descriptionDao().nukeTable();
@@ -111,6 +106,10 @@ public class MainActivity extends AppCompatActivity
 
     public AccountManager getAccountManager() {
         return accountManager;
+    }
+
+    public AppCompatActivity getActivity() {
+        return this;
     }
 
     @Override
@@ -204,184 +203,184 @@ public class MainActivity extends AppCompatActivity
         return contextOfApplication;
     }
 
-//    /**
-//     * Checks each permission if it is given, and, if not, requests them.
-//     */
-//    @RequiresApi(api = Build.VERSION_CODES.M)
-//    public void checkIfPermissionsGiven() {
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-//                != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
-//                        Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
-//            requestLocationAccountPermission();
-//            Log.v(TAG, "Requesting account and location Permissions");
-//        } else if(ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.ACCESS_FINE_LOCATION)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            requestLocationPermission();
-//            Log.v(TAG, "Only requesting location Permission");
-//        } else if (ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.GET_ACCOUNTS)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            requestAccountPermission();
-//            Log.v(TAG, "Only requesting account Permission"); }
-//        else if (ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.CAMERA)
-//                != PackageManager.PERMISSION_GRANTED){
-//            requestCameraPermission();
-//            Log.v(TAG, "Requesting camera Permission");}
-//        else {
-//            Log.v(TAG, "No permissions requested");
-//        }
-//    }
-//
-//    /**
-//     * Creates gets details and confirms operation from account picker
-//     *
-//     * @param requestCode An integer that relates to the permission. So
-//     *                    location might be 1, account access 2, and so on.
-//     * @param resultCode If the result succeeded or failed
-//     * @param data The intent that is being requested
-//     */
-//    protected void onActivityResult(final int requestCode, final int resultCode,
-//                                    final Intent data){
-//        try {
-//            if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
-//                String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-//                Log.v(TAG, accountName);
-//            } else if (requestCode == CHOOSE_ACCOUNT) {
-//                Log.v(TAG, "There was an error in the account picker");
-//            } else {
-//                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
-//            }
-//        } catch (Exception e) {
-//            Log.v(TAG, "Exception " + e);
-//        }
-//    }
-//
-//    /**
-//     * Requests permissions to use device location and access accounts.
-//     */
-//    private void requestLocationAccountPermission() {
-//        // Permission has not been granted and must be requested.
-//        // Request the permission. The result will be received in onRequestPermissionResult().
-//        ActivityCompat.requestPermissions(this,
-//                new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-//                        Manifest.permission.GET_ACCOUNTS},
-//                PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS);
-//    }
-//
-//    /**
-//     * Requests permission to use device location.
-//     */
-//    private void requestLocationPermission() {
-//        // Permission has not been granted and must be requested.
-//        // Request the permission. The result will be received in onRequestPermissionResult().
-//        ActivityCompat.requestPermissions(this,
-//                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-//                PERMISSION_REQUEST_ACCESS_FINE_LOCATION);
-//    }
-//
-//    /**
-//     * Requests permission to use accounts.
-//     */
-//    private void requestAccountPermission() {
-//        // Permission has not been granted and must be requested.
-//        // Request the permission. The result will be received in onRequestPermissionResult().
-//        ActivityCompat.requestPermissions(this,
-//                new String[]{Manifest.permission.GET_ACCOUNTS},
-//                PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS);
-//    }
-//
-//    /**
-//     * Requests permission to use device camera.
-//     */
-//    private void requestCameraPermission() {
-//        // Permission has not been granted and must be requested.
-//        // Request the permission. The result will be received in onRequestPermissionResult().
-//        ActivityCompat.requestPermissions(this,
-//                new String[]{Manifest.permission.CAMERA},
-//                PERMISSION_REQUEST_CAMERA);
-//    }
-//
-//
-//    /**
-//     * Checks the results of the permission requests.
-//     *
-//     * @param requestCode An integer that relates to the permission. So
-//     *                    location might be 1, account access 2, and so on.
-//     * @param permissions The permission being requested.
-//     * @param grantResults What the result of result of the request is. The result
-//     *                     of whether or not the user allowed this permission.
-//     */
-//    @RequiresApi(api = Build.VERSION_CODES.M)
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode,
-//                                           String permissions[],
-//                                           int[] grantResults) {
-//        switch (requestCode) {
-//            case PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS: {
-//                // If request is cancelled, the result arrays are empty.
-//                if (grantResults.length > 0
-//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    Log.v(TAG, "Permission to both granted");
-//
-//                    try {
-//                        Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
-//                        startActivityForResult(intent, CHOOSE_ACCOUNT);
-//                        checkIfPermissionsGiven();
-//
-//                    } catch (Exception e) {
-//                        Log.v(TAG, "Exception " + e);
-//                    }
-//
-//                } else {
-//                    Log.v(TAG, "User needs to make an account");
-//                }
-//            }
-//            return;
-//
-//            case PERMISSION_REQUEST_ACCESS_FINE_LOCATION: {
-//                // If request is cancelled, the result arrays are empty.
-//                if (grantResults.length > 0
-//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    Log.v(TAG, "Permission to only location granted");
-//                    checkIfPermissionsGiven();
-//                }
-//            }
-//            return;
-//
-//            case PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS: {
-//                // If request is cancelled, the result arrays are empty.
-//                if (grantResults.length > 0
-//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    Log.v(TAG, "Permission to only account granted");
-//                    try {
-//                        Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
-//                        startActivityForResult(intent, CHOOSE_ACCOUNT);
-//                        Log.v(TAG, "Intent to choose just account a go");
-//                    } catch (Exception e) {
-//                        Log.v(TAG, "Exception " + e);
-//                    }
-//
-//                } else {
-//                    //Redirect to force user to create an account
-//                    Log.v(TAG, "User needs to make an account");
-//                }
-//            }
-//            return;
-//
-//            case PERMISSION_REQUEST_CAMERA: {
-//                // If request is cancelled, the result arrays are empty.
-//                if (grantResults.length > 0
-//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    Log.v(TAG, "Permission to use camera granted");
-//                }
-//            }
-//
-//            // other 'case' lines to check for other
-//            // permissions this app might request.
-//        }
-//    }
+    /**
+     * Checks each permission if it is given, and, if not, requests them.
+     */
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void checkIfPermissionsGiven() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+            requestLocationAccountPermission();
+            Log.v(TAG, "Requesting account and location Permissions");
+        } else if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestLocationPermission();
+            Log.v(TAG, "Only requesting location Permission");
+        } else if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.GET_ACCOUNTS)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestAccountPermission();
+            Log.v(TAG, "Only requesting account Permission"); }
+        else if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED){
+            requestCameraPermission();
+            Log.v(TAG, "Requesting camera Permission");}
+        else {
+            Log.v(TAG, "No permissions requested");
+        }
+    }
+
+    /**
+     * Creates gets details and confirms operation from account picker
+     *
+     * @param requestCode An integer that relates to the permission. So
+     *                    location might be 1, account access 2, and so on.
+     * @param resultCode If the result succeeded or failed
+     * @param data The intent that is being requested
+     */
+    protected void onActivityResult(final int requestCode, final int resultCode,
+                                    final Intent data){
+        try {
+            if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
+                String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                Log.v(TAG, accountName);
+            } else if (requestCode == CHOOSE_ACCOUNT) {
+                Log.v(TAG, "There was an error in the account picker");
+            } else {
+                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
+            }
+        } catch (Exception e) {
+            Log.v(TAG, "Exception " + e);
+        }
+    }
+
+    /**
+     * Requests permissions to use device location and access accounts.
+     */
+    private void requestLocationAccountPermission() {
+        // Permission has not been granted and must be requested.
+        // Request the permission. The result will be received in onRequestPermissionResult().
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.GET_ACCOUNTS},
+                PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS);
+    }
+
+    /**
+     * Requests permission to use device location.
+     */
+    private void requestLocationPermission() {
+        // Permission has not been granted and must be requested.
+        // Request the permission. The result will be received in onRequestPermissionResult().
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                PERMISSION_REQUEST_ACCESS_FINE_LOCATION);
+    }
+
+    /**
+     * Requests permission to use accounts.
+     */
+    private void requestAccountPermission() {
+        // Permission has not been granted and must be requested.
+        // Request the permission. The result will be received in onRequestPermissionResult().
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.GET_ACCOUNTS},
+                PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS);
+    }
+
+    /**
+     * Requests permission to use device camera.
+     */
+    private void requestCameraPermission() {
+        // Permission has not been granted and must be requested.
+        // Request the permission. The result will be received in onRequestPermissionResult().
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.CAMERA},
+                PERMISSION_REQUEST_CAMERA);
+    }
+
+
+    /**
+     * Checks the results of the permission requests.
+     *
+     * @param requestCode An integer that relates to the permission. So
+     *                    location might be 1, account access 2, and so on.
+     * @param permissions The permission being requested.
+     * @param grantResults What the result of result of the request is. The result
+     *                     of whether or not the user allowed this permission.
+     */
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[],
+                                           int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.v(TAG, "Permission to both granted");
+
+                    try {
+                        Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
+                        startActivityForResult(intent, CHOOSE_ACCOUNT);
+                        checkIfPermissionsGiven();
+
+                    } catch (Exception e) {
+                        Log.v(TAG, "Exception " + e);
+                    }
+
+                } else {
+                    Log.v(TAG, "User needs to make an account");
+                }
+            }
+            return;
+
+            case PERMISSION_REQUEST_ACCESS_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.v(TAG, "Permission to only location granted");
+                    checkIfPermissionsGiven();
+                }
+            }
+            return;
+
+            case PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.v(TAG, "Permission to only account granted");
+                    try {
+                        Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
+                        startActivityForResult(intent, CHOOSE_ACCOUNT);
+                        Log.v(TAG, "Intent to choose just account a go");
+                    } catch (Exception e) {
+                        Log.v(TAG, "Exception " + e);
+                    }
+
+                } else {
+                    //Redirect to force user to create an account
+                    Log.v(TAG, "User needs to make an account");
+                }
+            }
+            return;
+
+            case PERMISSION_REQUEST_CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.v(TAG, "Permission to use camera granted");
+                }
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
 
     /**
      * Creates gets details and confirms operation from account picker
