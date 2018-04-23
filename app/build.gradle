@@ -36,6 +36,9 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.8.1'
     implementation 'com.google.code.gson:gson:2.8.1'
 
+    implementation 'com.clarifai.clarifai-api2:core:2.2.+'
+
+
 
 
     annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
