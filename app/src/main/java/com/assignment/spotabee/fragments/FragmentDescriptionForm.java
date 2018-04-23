@@ -56,6 +56,14 @@ public class FragmentDescriptionForm extends Fragment
     private LatLng userLocation;
     private static final String TAG = "Description_form_debug";
     private final static String imageIdentifyUrl = "https://www.imageidentify.com/";
+    String flowerIdentification;
+
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            flowerIdentification = getArguments().getString("flowerName");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,6 +79,10 @@ public class FragmentDescriptionForm extends Fragment
         addressSpinner.setVisibility(View.GONE);
 
         flower = rootView.findViewById(R.id.flowerField);
+        if(flowerIdentification != null){
+            flower.setText(flowerIdentification);
+        }
+        
         location = rootView.findViewById(R.id.locationField);
         description = rootView.findViewById(R.id.descriptionField);
 
