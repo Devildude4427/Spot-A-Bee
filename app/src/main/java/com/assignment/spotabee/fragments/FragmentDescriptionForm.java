@@ -82,7 +82,7 @@ public class FragmentDescriptionForm extends Fragment
         if(flowerIdentification != null){
             flower.setText(flowerIdentification);
         }
-        
+
         location = rootView.findViewById(R.id.locationField);
         description = rootView.findViewById(R.id.descriptionField);
 
