@@ -42,6 +42,7 @@
     <string name="identify_a_flower">Identify a flower</string>
     <string name="details_title">Details</string>
     <string name="flowers_spotted">Flowers Spotted</string>
+    <string name="identify_your_flower">Identify your flower</string>
 
 
 </resources>
