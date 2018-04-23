@@ -244,11 +244,60 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(final int requestCode, final int resultCode,
                                     final Intent data){
         try {
-            if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
+            if(data == null && requestCode == PICK_IMAGE){
+                return;
+            } else if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
                 String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
                 Log.v(TAG, accountName);
             } else if (requestCode == CHOOSE_ACCOUNT) {
                 Log.v(TAG, "There was an error in the account picker");
+            } else if (requestCode == PICK_IMAGE) {
+
+                final ProgressDialog progress = new ProgressDialog(this);
+                progress.setTitle("Loading");
+                progress.setMessage("Identify your flower..");
+                progress.setCancelable(false);
+                progress.show();
+
+                if (!CheckNetworkConnection.isInternetAvailable(this)) {
+                    progress.dismiss();
+                    Toast.makeText(this,
+                            "Internet connection unavailable.",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                client = ClarifaiClientGenerator.generate(API_KEY);
+                final byte[] imageBytes = FileOp.getByteArrayFromIntentData(this, data);
+                if (imageBytes != null) {
+
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d(TAG, "We have started run thread");
+                            ClarifaiRequest clarifaiRequest = new ClarifaiRequest(client, "flower_species", imageBytes);
+                            String flowerType = clarifaiRequest.executRequest();
+                            Log.d(TAG, "Flower Type: " + flowerType);
+
+                            Bundle descriptionFormBundle = new Bundle();
+                            descriptionFormBundle.putString("flowerName", flowerType);
+
+                            FragmentDescriptionForm fragmentDescriptionForm = new FragmentDescriptionForm();
+                            fragmentDescriptionForm.setArguments(descriptionFormBundle);
+
+                            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                            fragmentTransaction.replace(R.id.content_frame, fragmentDescriptionForm);
+                            fragmentTransaction.commit();
+                            progress.dismiss();
+                        }
+                    });
+
+                } else {
+                    Log.e(TAG, "IMAGE BYTES ARE NULL");
+                }
+            } else if (requestCode == Activity.RESULT_CANCELED){
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.content_frame, new FragmentHome());
+                fragmentTransaction.commit();
             } else {
                 Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
             }
@@ -380,81 +429,6 @@ public class MainActivity extends AppCompatActivity
             // other 'case' lines to check for other
             // permissions this app might request.
         }
-    }
-
-    /**
-     * Creates gets details and confirms operation from account picker
-     *
-     * @param requestCode An integer that relates to the permission. So
-     *                    location might be 1, account access 2, and so on.
-     * @param resultCode If the result succeeded or failed
-     * @param data The intent that is being requested
-     */
-    public void onActivityResult(final int requestCode, final int resultCode,
-                                 final Intent data){
-        Log.d(TAG, "OnActivity  Result fired");
-
-
-        if(data == null && requestCode == PICK_IMAGE){
-            return;
-        }
-        switch (requestCode){
-            case PICK_IMAGE:
-                    final ProgressDialog progress = new ProgressDialog(this);
-                    progress.setTitle("Loading");
-                    progress.setMessage("Identify your flower..");
-                    progress.setCancelable(false);
-                    progress.show();
-
-                    if(!CheckNetworkConnection.isInternetAvailable(this)){
-                        progress.dismiss();
-                        Toast.makeText(this,
-                                "Internet connection unavailable.",
-                                Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    client = ClarifaiClientGenerator.generate(API_KEY);
-                    final byte[] imageBytes = FileOp.getByteArrayFromIntentData(this, data);
-                    if(imageBytes != null){
-
-                        AsyncTask.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                Log.d(TAG, "We have started run thread");
-                                ClarifaiRequest clarifaiRequest = new ClarifaiRequest(client, "flower_species", imageBytes);
-                                String flowerType = clarifaiRequest.executRequest();
-                                Log.d(TAG, "Flower Type: " + flowerType);
-
-                                Bundle descriptionFormBundle = new Bundle();
-                                descriptionFormBundle.putString("flowerName", flowerType);
-
-                                FragmentDescriptionForm fragmentDescriptionForm = new FragmentDescriptionForm();
-                                fragmentDescriptionForm.setArguments(descriptionFormBundle);
-
-                                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                                fragmentTransaction.replace(R.id.content_frame, fragmentDescriptionForm);
-                                fragmentTransaction.commit();
-                                progress.dismiss();
-                            }
-                        });
-
-                    } else {
-                        Log.e(TAG, "IMAGE BYTES ARE NULL");
-                    }
-
-                break;
-
-            case Activity.RESULT_CANCELED:
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.content_frame, new FragmentHome());
-                fragmentTransaction.commit();
-                break;
-
-            default:
-                Log.d(TAG, "Nothing to handle that request code");
-                break;
-        }
-
     }
 
     @Override
