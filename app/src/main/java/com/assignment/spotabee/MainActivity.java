@@ -24,7 +24,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.assignment.spotabee.customutils.CheckNetworkConnection;
 import com.assignment.spotabee.customutils.FileOp;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.DatabaseInitializer;
@@ -391,16 +393,22 @@ public class MainActivity extends AppCompatActivity
         switch (requestCode){
 
             case PICK_IMAGE:
-                Log.d(TAG, "PICK_IMAGE code recognised and selected");
+                final ProgressDialog progress = new ProgressDialog(this);
+                progress.setTitle("Loading");
+                progress.setMessage("Identify your flower..");
+                progress.setCancelable(false);
+                progress.show();
+
+                if(!CheckNetworkConnection.isInternetAvailable(this)){
+                    progress.dismiss();
+                    Toast.makeText(this,
+                            "Internet connection unavailable.",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 client = ClarifaiClientGenerator.generate(API_KEY);
                 final byte[] imageBytes = FileOp.getByteArrayFromIntentData(this, data);
                 if(imageBytes != null){
-
-                    final ProgressDialog progress = new ProgressDialog(this);
-                    progress.setTitle("Loading");
-                    progress.setMessage("Wait while loading...");
-                    progress.setCancelable(false);
-                    progress.show();
 
                     AsyncTask.execute(new Runnable() {
                         @Override
