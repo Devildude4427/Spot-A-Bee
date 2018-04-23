@@ -4,6 +4,9 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.assignment.spotabee.customutils.Time;
+
+import java.util.Date;
 import java.util.List;
 
 public class DatabaseInitializer {
@@ -25,13 +28,23 @@ public class DatabaseInitializer {
     }
 
     private static void populateWithTestData(AppDatabase db) {
+        Date testDate = new Date();
         Description description = new Description(52.4816,
                 -4.17909, "Somewhere", "A daffodil or something",
-                "None", 2, "12-01-18", "12:07");
+                "None", 2, Time.getTodaysDate(testDate), Time.getCurrentTime(testDate));
         addDescription(db, description);
 
         List<Description> descriptionList = db.descriptionDao().getAllDescriptions();
         Log.d(DatabaseInitializer.TAG, "Rows Count: " + descriptionList.size());
+        for (Description d : descriptionList) {
+            Log.d(TAG, d.getFlowerType().toString());
+            Log.d(TAG, d.getLatitude().toString());
+            Log.d(TAG, d.getLongitude().toString());
+            Log.d(TAG, d.getNumOfBees() + "");
+            Log.d(TAG, d.getFurtherDetails().toString());
+            Log.d(TAG, d.getDate().toString());
+            Log.d(TAG, d.getTime().toString());
+        }
     }
 
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
