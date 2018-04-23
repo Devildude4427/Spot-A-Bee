@@ -43,6 +43,8 @@
     <string name="details_title">Details</string>
     <string name="flowers_spotted">Flowers Spotted</string>
     <string name="identify_your_flower">Identify your flower</string>
+    <string name="time">Time</string>
+    <string name="number_of_bees_spotted_on_the_flower">Number of bees spotted on the flower</string>
 
 
 </resources>

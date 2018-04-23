@@ -2,6 +2,7 @@ package com.assignment.spotabee;
 
 import android.Manifest;
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -88,7 +89,11 @@ public class MainActivity extends AppCompatActivity
 
         DatabaseInitializer.populateAsync(db);
 
-        Description description = new Description(51.4816,3.1791,"Cardiff", "Rose", "None");
+        Description description = new Description(
+                51.4816,3.1791,
+                "Cardiff", "Rose", "None",
+                1, "17-05-2018", "15:39");
+
         db.descriptionDao().insertDescriptions(description);
 
 
@@ -113,7 +118,7 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } else{
             super.onBackPressed();
         }
     }
@@ -434,6 +439,12 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     Log.e(TAG, "IMAGE BYTES ARE NULL");
                 }
+                break;
+
+            case Activity.RESULT_CANCELED:
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.content_frame, new FragmentHome());
+                fragmentTransaction.commit();
                 break;
         }
 
