@@ -23,12 +23,14 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.assignment.spotabee.R;
+import com.assignment.spotabee.customutils.Time;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -41,8 +43,6 @@ public class FragmentDescriptionForm extends Fragment
     private AppCompatEditText flower;
     private AppCompatEditText description;
     private AppCompatEditText numberOfBeesField;
-    private AppCompatEditText timeField;
-    private AppCompatEditText dateField;
     private ImageView flowerIdentify;
     private FrameLayout flowerSearch;
     private Spinner addressSpinner;
@@ -89,8 +89,6 @@ public class FragmentDescriptionForm extends Fragment
         location = rootView.findViewById(R.id.locationField);
         description = rootView.findViewById(R.id.descriptionField);
         numberOfBeesField = rootView.findViewById(R.id.numOfBees);
-        timeField = rootView.findViewById(R.id.formTime);
-        dateField = rootView.findViewById(R.id.formDate);
 
         submit = rootView.findViewById(R.id.submit);
         flowerIdentify = rootView.findViewById(R.id.flowerIdentify);
@@ -238,7 +236,7 @@ public class FragmentDescriptionForm extends Fragment
             public void run() {
 
                 try {
-
+                    Date todaysDate = new Date();
                     db.descriptionDao()
                             .insertDescriptions(new Description(
                                     ( userLocation.latitude),
@@ -247,8 +245,8 @@ public class FragmentDescriptionForm extends Fragment
                                     flower.getText().toString(),
                                     description.getText().toString(),
                                     Integer.parseInt(numberOfBeesField.getText().toString()),
-                                    dateField.getText().toString(),
-                                    timeField.getText().toString()
+                                    Time.getTodaysDate(todaysDate),
+                                    Time.getCurrentTime(todaysDate)
                             ));
 
                     List<Description> allDescriptions = db.descriptionDao()
