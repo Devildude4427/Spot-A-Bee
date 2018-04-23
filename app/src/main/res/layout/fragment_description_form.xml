@@ -100,19 +100,6 @@
         android:hint="@string/number_of_bees_spotted_on_the_flower"
         android:layout_height="wrap_content" />
 
-    <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/formTime"
-        android:layout_width="@dimen/field_width"
-        android:maxLines="20"
-        android:hint="@string/time"
-        android:layout_height="wrap_content" />
-
-    <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/formDate"
-        android:layout_width="@dimen/field_width"
-        android:maxLines="20"
-        android:hint="Date"
-        android:layout_height="wrap_content" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/submit"
