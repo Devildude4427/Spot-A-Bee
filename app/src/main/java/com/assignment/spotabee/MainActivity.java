@@ -2,15 +2,18 @@ package com.assignment.spotabee;
 
 import android.Manifest;
 import android.accounts.AccountManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -22,14 +25,20 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.assignment.spotabee.customutils.FileOp;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.DatabaseInitializer;
 import com.assignment.spotabee.database.Description;
 import com.assignment.spotabee.fragments.FragmentAboutUs;
+import com.assignment.spotabee.fragments.FragmentDescriptionForm;
 import com.assignment.spotabee.fragments.FragmentHome;
 import com.assignment.spotabee.fragments.FragmentHowTo;
 import com.assignment.spotabee.fragments.FragmentLeaderboard;
 import com.assignment.spotabee.fragments.FragmentMap;
+import com.assignment.spotabee.imagerecognition.ClarifaiClientGenerator;
+import com.assignment.spotabee.imagerecognition.ClarifaiRequest;
+
+import clarifai2.api.ClarifaiClient;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -44,6 +53,10 @@ public class MainActivity extends AppCompatActivity
     private AccountManager accountManager;
     public static Context contextOfApplication;
     private AppDatabase db;
+
+    public static final int PICK_IMAGE = 100;
+    private static final String API_KEY = "d984d2d494394104bb4bee0b8149523d";
+    private static ClarifaiClient client;
 
     private DrawerLayout mDrawerLayout;
     private static final String TAG = "Main Activity Debug";
@@ -150,6 +163,11 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_leaderboard:
                 fragment = new FragmentLeaderboard();
                 break;
+
+            case R.id.nav_identify_image:
+                startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), PICK_IMAGE);
+                break;
+
         }
 
         //replacing the fragment
@@ -357,6 +375,61 @@ public class MainActivity extends AppCompatActivity
 //            // permissions this app might request.
 //        }
 //    }
+
+    /**
+     * Creates gets details and confirms operation from account picker
+     *
+     * @param requestCode An integer that relates to the permission. So
+     *                    location might be 1, account access 2, and so on.
+     * @param resultCode If the result succeeded or failed
+     * @param data The intent that is being requested
+     */
+    public void onActivityResult(final int requestCode, final int resultCode,
+                                 final Intent data){
+        Log.d(TAG, "OnActivity  Result fired");
+
+        switch (requestCode){
+
+            case PICK_IMAGE:
+                Log.d(TAG, "PICK_IMAGE code recognised and selected");
+                client = ClarifaiClientGenerator.generate(API_KEY);
+                final byte[] imageBytes = FileOp.getByteArrayFromIntentData(this, data);
+                if(imageBytes != null){
+
+                    final ProgressDialog progress = new ProgressDialog(this);
+                    progress.setTitle("Loading");
+                    progress.setMessage("Wait while loading...");
+                    progress.setCancelable(false);
+                    progress.show();
+
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d(TAG, "We have started run thread");
+                            ClarifaiRequest clarifaiRequest = new ClarifaiRequest(client, "flower_species", imageBytes);
+                            String flowerType = clarifaiRequest.executRequest();
+                            Log.d(TAG, "Flower Type: " + flowerType);
+
+                            Bundle descriptionFormBundle = new Bundle();
+                            descriptionFormBundle.putString("flowerName", flowerType);
+
+                            FragmentDescriptionForm fragmentDescriptionForm = new FragmentDescriptionForm();
+                            fragmentDescriptionForm.setArguments(descriptionFormBundle);
+
+                            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                            fragmentTransaction.replace(R.id.content_frame, fragmentDescriptionForm);
+                            fragmentTransaction.commit();
+                            progress.dismiss();
+                        }
+                    });
+
+                } else {
+                    Log.e(TAG, "IMAGE BYTES ARE NULL");
+                }
+                break;
+        }
+
+    }
 
     @Override
     protected void onDestroy(){
