@@ -40,6 +40,9 @@ public class FragmentDescriptionForm extends Fragment
     private AppCompatEditText location;
     private AppCompatEditText flower;
     private AppCompatEditText description;
+    private AppCompatEditText numberOfBeesField;
+    private AppCompatEditText timeField;
+    private AppCompatEditText dateField;
     private ImageView flowerIdentify;
     private FrameLayout flowerSearch;
     private Spinner addressSpinner;
@@ -85,6 +88,9 @@ public class FragmentDescriptionForm extends Fragment
 
         location = rootView.findViewById(R.id.locationField);
         description = rootView.findViewById(R.id.descriptionField);
+        numberOfBeesField = rootView.findViewById(R.id.numOfBees);
+        timeField = rootView.findViewById(R.id.formTime);
+        dateField = rootView.findViewById(R.id.formDate);
 
         submit = rootView.findViewById(R.id.submit);
         flowerIdentify = rootView.findViewById(R.id.flowerIdentify);
@@ -99,7 +105,7 @@ public class FragmentDescriptionForm extends Fragment
         context = getActivity();
 
         userLocation = null;
-        geocoder = new Geocoder(context);
+        geocoder = new Geocoder(context.getApplicationContext());
 
         addressSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -239,7 +245,10 @@ public class FragmentDescriptionForm extends Fragment
                                     userLocation.longitude,
                                     location.getText().toString(),
                                     flower.getText().toString(),
-                                    description.getText().toString()
+                                    description.getText().toString(),
+                                    Integer.parseInt(numberOfBeesField.getText().toString()),
+                                    dateField.getText().toString(),
+                                    timeField.getText().toString()
                             ));
 
                     List<Description> allDescriptions = db.descriptionDao()
@@ -249,6 +258,10 @@ public class FragmentDescriptionForm extends Fragment
                         Log.d(TAG, description.getFlowerType().toString());
                         Log.d(TAG, description.getLatitude().toString());
                         Log.d(TAG, description.getLongitude().toString());
+                        Log.d(TAG, description.getNumOfBees() + "");
+                        Log.d(TAG, description.getFurtherDetails().toString());
+                        Log.d(TAG, description.getDate().toString());
+                        Log.d(TAG, description.getTime().toString());
                     }
 
 
@@ -284,5 +297,7 @@ public class FragmentDescriptionForm extends Fragment
         }
 
     }
+
+
 
 }

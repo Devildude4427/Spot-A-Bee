@@ -29,14 +29,27 @@ public class Description {
     @ColumnInfo(name = "further_details")
     private String furtherDetails;
 
+    @ColumnInfo(name = "number_of_bees")
+    private int numOfBees;
+
+    @ColumnInfo(name = "date")
+    private String date;
+
+    @ColumnInfo(name = "time")
+    private String time;
+
     @Ignore
     public Description(Double latitude, Double longitude, String location,
-                            String flowerType, String furtherDetails) {
+                            String flowerType, String furtherDetails,
+                       int numOfBees, String date, String time) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.location = location;
         this.flowerType = flowerType;
         this.furtherDetails = furtherDetails;
+        this.numOfBees = numOfBees;
+        this.date = date;
+        this.time = time;
     }
 
     public Description(Double latitude, Double longitude) {
@@ -90,5 +103,29 @@ public class Description {
 
     public void setFurtherDetails(String furtherDetails) {
         this.furtherDetails = furtherDetails;
+    }
+
+    public int getNumOfBees() {
+        return numOfBees;
+    }
+
+    public void setNumOfBees(int numOfBees) {
+        this.numOfBees = numOfBees;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }

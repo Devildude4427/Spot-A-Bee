@@ -27,7 +27,7 @@ public class DatabaseInitializer {
     private static void populateWithTestData(AppDatabase db) {
         Description description = new Description(52.4816,
                 -4.17909, "Somewhere", "A daffodil or something",
-                "None");
+                "None", 2, "12-01-18", "12:07");
         addDescription(db, description);
 
         List<Description> descriptionList = db.descriptionDao().getAllDescriptions();
