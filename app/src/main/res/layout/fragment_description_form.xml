@@ -93,6 +93,27 @@
         android:hint="@string/any_further_details"
         android:layout_height="wrap_content" />
 
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/numOfBees"
+        android:layout_width="@dimen/field_width"
+        android:maxLines="20"
+        android:hint="@string/number_of_bees_spotted_on_the_flower"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/formTime"
+        android:layout_width="@dimen/field_width"
+        android:maxLines="20"
+        android:hint="@string/time"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/formDate"
+        android:layout_width="@dimen/field_width"
+        android:maxLines="20"
+        android:hint="Date"
+        android:layout_height="wrap_content" />
+
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/submit"
         android:layout_height="50dp"
@@ -100,11 +121,5 @@
         android:layout_marginTop="70dp"
         android:text="@string/submit"/>
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/num_changes_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        />
 
 </android.support.v7.widget.LinearLayoutCompat>

@@ -7,6 +7,8 @@ import android.util.Log;
 
 /**
  * Reference: https://stackoverflow.com/questions/15866035/android-show-a-message-if-no-internet-connection-and-continue-to-check?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+ *
+ * Not modified from above source, copied and pasted.
  */
 
 public class CheckNetworkConnection {
