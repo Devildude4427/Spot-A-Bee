@@ -8,8 +8,8 @@ import java.util.logging.Logger;
 
 /**
  * Created by Lauren on 4/23/2018.
- * Class to generate the current date and time and validate user's
- * input of these values if they want to change it themselves
+ * Class to generate the current date and time
+ * in String format
  */
 
 public class Time {
