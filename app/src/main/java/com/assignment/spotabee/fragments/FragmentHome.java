@@ -18,6 +18,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,7 +38,10 @@ import com.assignment.spotabee.imagerecognition.ClarifaiClientGenerator;
 import com.assignment.spotabee.imagerecognition.ClarifaiRequest;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import clarifai2.api.ClarifaiClient;
 
@@ -60,6 +64,7 @@ public class FragmentHome extends Fragment  {
     private AppDatabase db;
     private static final String API_KEY = "d984d2d494394104bb4bee0b8149523d";
     private static ClarifaiClient client;
+    private String currentPhotoPath;
 
     Intent intent;
 
@@ -155,8 +160,6 @@ public class FragmentHome extends Fragment  {
         return view;
         }
 
-
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -164,18 +167,57 @@ public class FragmentHome extends Fragment  {
         getActivity().setTitle("Home");
     }
 
+    private File createImageFile() {
+        try {
+            // Create an image file name
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String imageFileName = "JPEG_" + timeStamp + "_";
+            File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+            File image = File.createTempFile(
+                    imageFileName,  /* prefix */
+                    ".jpg",         /* suffix */
+                    storageDir      /* directory */
+            );
+
+            // Save a file: path for use with ACTION_VIEW intents
+            currentPhotoPath = image.getAbsolutePath();
+            return image;
+
+        } catch (Exception e) {
+            Log.v(TAG, "Exception " + e);
+        }
+        return null;
+    }
+
     private void dispatchTakePictureIntent() {
-//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//
-//        startActivityForResult(takePictureIntent, 3);
-        startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), PICK_IMAGE);
+        Log.v(TAG, "Started Pic Intent");
+        try {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            // Ensure that there's a camera activity to handle the intent
+            if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                // Create the File where the photo should go
+                File photoFile = null;
+                photoFile = createImageFile();
+                // Continue only if the File was successfully created
+                if (photoFile != null) {
+                    Log.v(TAG, "Photo file is not null");
+                    Uri photoURI = FileProvider.getUriForFile(getContextOfApplication(),
+                            "com.assignment.spotabee.fileprovider",
+                            photoFile);
+                    Log.v(TAG, "Still bueno");
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, IMAGE_CAPTURE);
+                }
+            }
+        } catch (Exception e) {
+            Log.v(TAG, "Exception " + e);
+        }
     }
 
     /**
      * Allows user to upload picture from phone's storage
      */
     public void onImageGallery() {
-
         Log.v(TAG, "onImageGallery");
         startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), PICK_IMAGE);
     }
