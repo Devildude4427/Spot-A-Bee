@@ -19,6 +19,10 @@
     <string name="upload_picture">Upload Picture</string>
     <string name="flowers_in_cardiff">Flowers in Cardiff</string>
 
+    <string name="home_button_label_camera">Camera</string>
+    <string name="home_button_label_form">Upload Information w/out picture</string>
+    <string name="home_button_label_gallery">Upload Picture from Gallery</string>
+
     <string name="channel_name">First Notification</string>
     <string name="channel_description">Notification for X</string>
 
@@ -31,9 +35,16 @@
     <string name="drawer_menu_item_howto">How To</string>
     <string name="drawer_menu_item_map">Map</string>
     <string name="drawer_menu_item_aboutus">About Us</string>
+    <string name="drawer_menu_item_form">Form</string>
+    <string name="drawer_menu_item_leaderboard">Leaderboard</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="nav_form">Form</string>
+    <string name="identify_a_flower">Identify a flower</string>
+    <string name="details_title">Details</string>
+    <string name="flowers_spotted">Flowers Spotted</string>
+    <string name="identify_your_flower">Identify your flower</string>
+    <string name="time">Time</string>
+    <string name="number_of_bees_spotted_on_the_flower">Number of bees spotted on the flower</string>
+
 
 </resources>
