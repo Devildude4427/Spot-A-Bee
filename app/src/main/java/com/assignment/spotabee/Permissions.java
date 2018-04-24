@@ -16,13 +16,14 @@ import android.util.Log;
 public class Permissions extends AppCompatActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
 
-    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS = 0;
-    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private static final int PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS = 2;
-    public static final int PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE = 3;
-    public static final int PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY = 4;
-    private static final int PERMISSION_REQUEST_CAMERA = 5;
-    private static final int CHOOSE_ACCOUNT = 99;
+    public static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS = 0;
+    public static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 1;
+    public static final int PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS = 2;
+    public static final int IMAGE_CAPTURE = 3;
+    public static final int ACCESS_IMAGE_GALLERY = 4;
+    public static final int PERMISSION_REQUEST_CAMERA = 5;
+    public static final int PERMISSION_REQUEST_EXTERNAL_STORAGE = 6;
+    public static final int CHOOSE_ACCOUNT = 99;
     private  static AccountManager accountManager;
     private static final String TAG = "Permissions Debug";
 

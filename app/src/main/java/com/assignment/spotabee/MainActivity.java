@@ -7,6 +7,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +28,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.assignment.spotabee.customutils.CheckNetworkConnection;
@@ -41,18 +45,28 @@ import com.assignment.spotabee.fragments.FragmentMap;
 import com.assignment.spotabee.imagerecognition.ClarifaiClientGenerator;
 import com.assignment.spotabee.imagerecognition.ClarifaiRequest;
 
+import java.io.InputStream;
+
 import clarifai2.api.ClarifaiClient;
+
+import static com.assignment.spotabee.Permissions.ACCESS_IMAGE_GALLERY;
+import static com.assignment.spotabee.Permissions.CHOOSE_ACCOUNT;
+import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS;
+import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_ACCESS_FINE_LOCATION;
+import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS;
+import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_CAMERA;
+import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_EXTERNAL_STORAGE;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS = 0;
-    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private static final int PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS = 2;
-    public static final int PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE = 3;
-    public static final int PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY = 4;
-    private static final int PERMISSION_REQUEST_CAMERA = 5;
-    private static final int CHOOSE_ACCOUNT = 99;
+//    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS = 0;
+//    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 1;
+//    private static final int PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS = 2;
+//    public static final int PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE = 3;
+//    public static final int PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY = 4;
+//    private static final int PERMISSION_REQUEST_CAMERA = 5;
+//    private static final int CHOOSE_ACCOUNT = 99;
     private AccountManager accountManager;
     public static Context contextOfApplication;
     private AppDatabase db;
@@ -60,6 +74,7 @@ public class MainActivity extends AppCompatActivity
     public static final int PICK_IMAGE = 100;
     private static final String API_KEY = "d984d2d494394104bb4bee0b8149523d";
     private static ClarifaiClient client;
+    private ImageView imgGallery;
 
     private DrawerLayout mDrawerLayout;
     private static final String TAG = "Main Activity Debug";
@@ -73,6 +88,8 @@ public class MainActivity extends AppCompatActivity
 
         accountManager = (AccountManager)
                 getSystemService(Context.ACCOUNT_SERVICE);
+
+        contextOfApplication = this;
 
         checkIfPermissionsGiven();
 
@@ -163,16 +180,13 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_aboutus:
                 fragment = new FragmentAboutUs();
                 break;
-//            case R.id.nav_description_form:
-//                fragment = new FragmentDescriptionForm();
-//                break;
             case R.id.nav_leaderboard:
                 fragment = new FragmentLeaderboard();
                 break;
 
-            case R.id.nav_identify_image:
-                startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), PICK_IMAGE);
-                break;
+//            case R.id.nav_identify_image:
+//                startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), PICK_IMAGE);
+//                break;
 
         }
 
@@ -197,7 +211,11 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    // a static variable to get a reference of our application context
+    /**
+     * A static method that retrieves Activity context
+     *
+     * @return The context for the current activity
+     */
     public static Context getContextOfApplication()
     {
         return contextOfApplication;
@@ -222,13 +240,18 @@ public class MainActivity extends AppCompatActivity
                 Manifest.permission.GET_ACCOUNTS)
                 != PackageManager.PERMISSION_GRANTED) {
             requestAccountPermission();
-            Log.v(TAG, "Only requesting account Permission"); }
-        else if (ContextCompat.checkSelfPermission(this,
+            Log.v(TAG, "Only requesting account Permission");
+        } else if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED){
             requestCameraPermission();
-            Log.v(TAG, "Requesting camera Permission");}
-        else {
+            Log.v(TAG, "Requesting camera Permission");
+        } else if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED){
+            requestExternalStoragePermission();
+            Log.v(TAG, "Requesting camera Permission");
+        } else {
             Log.v(TAG, "No permissions requested");
         }
     }
@@ -241,8 +264,11 @@ public class MainActivity extends AppCompatActivity
      * @param resultCode If the result succeeded or failed
      * @param data The intent that is being requested
      */
-    protected void onActivityResult(final int requestCode, final int resultCode,
+    @Override
+    public void onActivityResult(final int requestCode, final int resultCode,
                                     final Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+
         try {
             if(data == null && requestCode == PICK_IMAGE){
                 return;
@@ -251,6 +277,8 @@ public class MainActivity extends AppCompatActivity
                 Log.v(TAG, accountName);
             } else if (requestCode == CHOOSE_ACCOUNT) {
                 Log.v(TAG, "There was an error in the account picker");
+            } else if (requestCode == 3) {
+                Log.v(TAG, "Request for camera");
             } else if (requestCode == PICK_IMAGE) {
 
                 final ProgressDialog progress = new ProgressDialog(this);
@@ -290,9 +318,6 @@ public class MainActivity extends AppCompatActivity
                             progress.dismiss();
                         }
                     });
-
-                } else {
-                    Log.e(TAG, "IMAGE BYTES ARE NULL");
                 }
             } else if (requestCode == Activity.RESULT_CANCELED){
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -349,6 +374,17 @@ public class MainActivity extends AppCompatActivity
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.CAMERA},
                 PERMISSION_REQUEST_CAMERA);
+    }
+
+    /**
+     * Requests permission to use device camera.
+     */
+    private void requestExternalStoragePermission() {
+        // Permission has not been granted and must be requested.
+        // Request the permission. The result will be received in onRequestPermissionResult().
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                PERMISSION_REQUEST_EXTERNAL_STORAGE);
     }
 
 
@@ -423,6 +459,16 @@ public class MainActivity extends AppCompatActivity
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.v(TAG, "Permission to use camera granted");
+                    checkIfPermissionsGiven();
+                }
+            }
+            return;
+
+            case PERMISSION_REQUEST_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.v(TAG, "Permission to use external storage granted");
                 }
             }
 

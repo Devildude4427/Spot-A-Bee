@@ -1,6 +1,7 @@
 package com.assignment.spotabee.fragments;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -22,32 +24,42 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.assignment.spotabee.MainActivity;
 import com.assignment.spotabee.OutdatedClassMap;
 import com.assignment.spotabee.R;
+import com.assignment.spotabee.customutils.CheckNetworkConnection;
+import com.assignment.spotabee.customutils.FileOp;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
+import com.assignment.spotabee.imagerecognition.ClarifaiClientGenerator;
+import com.assignment.spotabee.imagerecognition.ClarifaiRequest;
 
 import java.io.File;
 import java.io.InputStream;
 
+import clarifai2.api.ClarifaiClient;
+
 import static android.app.Activity.RESULT_OK;
 import static android.location.LocationManager.GPS_PROVIDER;
-import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE;
-import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY;
+import static com.assignment.spotabee.MainActivity.PICK_IMAGE;
+import static com.assignment.spotabee.MainActivity.getContextOfApplication;
+import static com.assignment.spotabee.Permissions.IMAGE_CAPTURE;
+import static com.assignment.spotabee.Permissions.ACCESS_IMAGE_GALLERY;
 
 
 public class FragmentHome extends Fragment  {
 
-    private static final String TAG = "Debug";
+    private static final String TAG = "Home Debug";
     private LocationManager locationManager;
     private LocationListener locationListener;
     private AppCompatButton buttonCamera;
     private AppCompatButton buttonDescriptionForm;
     private AppCompatButton buttonUploadPictures;
-    private ImageView imgGallery;
     private AppDatabase db;
+    private static final String API_KEY = "d984d2d494394104bb4bee0b8149523d";
+    private static ClarifaiClient client;
 
     Intent intent;
 
@@ -70,7 +82,7 @@ public class FragmentHome extends Fragment  {
         db = AppDatabase.getAppDatabase(getContext());
 
 
-        buttonCamera = (AppCompatButton) view.findViewById(R.id.button_camera);
+        buttonCamera = view.findViewById(R.id.button_camera);
         buttonCamera.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
@@ -108,7 +120,7 @@ public class FragmentHome extends Fragment  {
                 }
         });
 
-        buttonDescriptionForm = (AppCompatButton) view.findViewById(R.id.button_description_form);
+        buttonDescriptionForm = view.findViewById(R.id.button_description_form);
         buttonDescriptionForm.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -125,7 +137,7 @@ public class FragmentHome extends Fragment  {
             }
         });
 
-        buttonUploadPictures = (AppCompatButton) view.findViewById(R.id.button_upload_picture);
+        buttonUploadPictures = view.findViewById(R.id.button_upload_picture);
         buttonUploadPictures.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -140,14 +152,6 @@ public class FragmentHome extends Fragment  {
                 }
             }
         });
-
-
-
-
-
-        //Create a view/reference for the Gallery
-        imgGallery = (ImageView) view.findViewById(R.id.imgGallery);
-
         return view;
         }
 
@@ -161,64 +165,66 @@ public class FragmentHome extends Fragment  {
     }
 
     private void dispatchTakePictureIntent() {
-        try {
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            //if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE);
-            //}
-        } catch (Exception e){
-            Log.v(TAG, "Exception " + e);
-        }
+//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//
+//        startActivityForResult(takePictureIntent, 3);
+        startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), PICK_IMAGE);
     }
 
-    //------------------------------------------------------------------------------------------
-    //GALLERY OF IMAGES:
-    //Add the method to invoke the Gallery of the phone
+    /**
+     * Allows user to upload picture from phone's storage
+     */
     public void onImageGallery() {
 
-        //Add the image Gallery using an implicit intent.
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-
-        //Create a variable File, with name: galleryDir. Link the Gallery to the Directory
-        File galleryDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        String galleryDirPath = galleryDir.getPath();
-
-        //Especify URI
-        Uri data = Uri.parse(galleryDirPath);
-
-        //What is the data type? I want all images , includes all extentions for images:
-        photoPickerIntent.setDataAndType(data, "image/*");
-
-        startActivityForResult(photoPickerIntent, PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY);
+        Log.v(TAG, "onImageGallery");
+        startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), PICK_IMAGE);
     }
 
     public void onActivityResult(final int requestCode, final int resultCode,
                                     final Intent data){
         try {
-            if (requestCode == PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY && resultCode == RESULT_OK) {
-                //What will happen if yes??
-                Uri galleryUri = data.getData();
+            if(data == null && requestCode == PICK_IMAGE){
+                return;
+            } else if (requestCode == PICK_IMAGE) {
 
-                //Create a Stream to read the image data for the memory
-                //If we are unable to catch information from the data for any reasy, try/catch it
-                //re edit the exception or put it in the catch block
-                InputStream inputStream;
-                try {
-                    Context applicationContext = MainActivity.getContextOfApplication();
-                    inputStream = applicationContext.getContentResolver().openInputStream(galleryUri);
+                final ProgressDialog progress = new ProgressDialog(getContextOfApplication());
+                progress.setTitle("Loading");
+                progress.setMessage("Identify your flower..");
+                progress.setCancelable(false);
+                progress.show();
 
-                    // Get Bitmap, get an instance of the image view. Catch info, Tell the users that the image was unable to find.
-                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-                    //Show the gallery or image to user:
-                    imgGallery.setImageBitmap(bitmap);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.v(TAG, "Exception " + e);
+                if (!CheckNetworkConnection.isInternetAvailable(getContextOfApplication())) {
+                    progress.dismiss();
+                    Toast.makeText(getContextOfApplication(),
+                            "Internet connection unavailable.",
+                            Toast.LENGTH_SHORT).show();
+                    return;
                 }
-            } else if (requestCode == PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY) {
-                Log.v(TAG, "There was an error in the image gallery" + resultCode);
+                client = ClarifaiClientGenerator.generate(API_KEY);
+                final byte[] imageBytes = FileOp.getByteArrayFromIntentData(getContextOfApplication(), data);
+                if (imageBytes != null) {
+
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d(TAG, "We have started run thread");
+                            ClarifaiRequest clarifaiRequest = new ClarifaiRequest(client, "flower_species", imageBytes);
+                            String flowerType = clarifaiRequest.executRequest();
+                            Log.d(TAG, "Flower Type: " + flowerType);
+
+                            Bundle descriptionFormBundle = new Bundle();
+                            descriptionFormBundle.putString("flowerName", flowerType);
+
+                            FragmentDescriptionForm fragmentDescriptionForm = new FragmentDescriptionForm();
+                            fragmentDescriptionForm.setArguments(descriptionFormBundle);
+
+                            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                            fragmentTransaction.replace(R.id.content_frame, fragmentDescriptionForm);
+                            fragmentTransaction.commit();
+                            progress.dismiss();
+                        }
+                    });
+                }
             } else {
                 Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
             }
