@@ -279,46 +279,46 @@ public class MainActivity extends AppCompatActivity
                 Log.v(TAG, "There was an error in the account picker");
             } else if (requestCode == 3) {
                 Log.v(TAG, "Request for camera");
-            } else if (requestCode == PICK_IMAGE) {
-
-                final ProgressDialog progress = new ProgressDialog(this);
-                progress.setTitle("Loading");
-                progress.setMessage("Identify your flower..");
-                progress.setCancelable(false);
-                progress.show();
-
-                if (!CheckNetworkConnection.isInternetAvailable(this)) {
-                    progress.dismiss();
-                    Toast.makeText(this,
-                            "Internet connection unavailable.",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                client = ClarifaiClientGenerator.generate(API_KEY);
-                final byte[] imageBytes = FileOp.getByteArrayFromIntentData(this, data);
-                if (imageBytes != null) {
-
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d(TAG, "We have started run thread");
-                            ClarifaiRequest clarifaiRequest = new ClarifaiRequest(client, "flower_species", imageBytes);
-                            String flowerType = clarifaiRequest.executRequest();
-                            Log.d(TAG, "Flower Type: " + flowerType);
-
-                            Bundle descriptionFormBundle = new Bundle();
-                            descriptionFormBundle.putString("flowerName", flowerType);
-
-                            FragmentDescriptionForm fragmentDescriptionForm = new FragmentDescriptionForm();
-                            fragmentDescriptionForm.setArguments(descriptionFormBundle);
-
-                            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                            fragmentTransaction.replace(R.id.content_frame, fragmentDescriptionForm);
-                            fragmentTransaction.commit();
-                            progress.dismiss();
-                        }
-                    });
-                }
+//            } else if (requestCode == PICK_IMAGE) {
+//
+//                final ProgressDialog progress = new ProgressDialog(this);
+//                progress.setTitle("Loading");
+//                progress.setMessage("Identify your flower..");
+//                progress.setCancelable(false);
+//                progress.show();
+//
+//                if (!CheckNetworkConnection.isInternetAvailable(this)) {
+//                    progress.dismiss();
+//                    Toast.makeText(this,
+//                            "Internet connection unavailable.",
+//                            Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//                client = ClarifaiClientGenerator.generate(API_KEY);
+//                final byte[] imageBytes = FileOp.getByteArrayFromIntentData(this, data);
+//                if (imageBytes != null) {
+//
+//                    AsyncTask.execute(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Log.d(TAG, "We have started run thread");
+//                            ClarifaiRequest clarifaiRequest = new ClarifaiRequest(client, "flower_species", imageBytes);
+//                            String flowerType = clarifaiRequest.executRequest();
+//                            Log.d(TAG, "Flower Type: " + flowerType);
+//
+//                            Bundle descriptionFormBundle = new Bundle();
+//                            descriptionFormBundle.putString("flowerName", flowerType);
+//
+//                            FragmentDescriptionForm fragmentDescriptionForm = new FragmentDescriptionForm();
+//                            fragmentDescriptionForm.setArguments(descriptionFormBundle);
+//
+//                            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//                            fragmentTransaction.replace(R.id.content_frame, fragmentDescriptionForm);
+//                            fragmentTransaction.commit();
+//                            progress.dismiss();
+//                        }
+//                    });
+//                }
             } else if (requestCode == Activity.RESULT_CANCELED){
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.content_frame, new FragmentHome());
