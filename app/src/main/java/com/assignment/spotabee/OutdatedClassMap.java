@@ -13,7 +13,6 @@ import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -22,35 +21,33 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
-public class Map extends Fragment
+public class OutdatedClassMap extends Fragment
         implements OnMapReadyCallback {
 
     private static final String CHANNEL_ID = "One";
-    private static final String TAG = "Debug";
+    private static final String TAG = "OutdatedClassMap Debug";
     private GoogleMap googleMap;
     private NotificationManager notificationManager;
     private LocationListener locationListener;
     private LocationManager locationManager;
-    MapView mapView;
+    private MapView mapView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //returning our layout file
         //change R.layout.yourlayoutfilename for each of your fragments
-        View rootView = inflater.inflate(R.layout.fragment_menu_map, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_menu_map_outdated, container, false);
 
         mapView = (MapView) rootView.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
@@ -71,7 +68,6 @@ public class Map extends Fragment
                 if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
                         Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
-                    // For showing a move to my location button
                     googleMap.setMyLocationEnabled(true);
                 } else {
                     googleMap.setMyLocationEnabled(false);
@@ -87,7 +83,7 @@ public class Map extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles
-        getActivity().setTitle("Map");
+        getActivity().setTitle("OutdatedClassMap");
 
         locationManager = (LocationManager)
                 getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -139,8 +135,7 @@ public class Map extends Fragment
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
 
-                Log.v(TAG, "Check 3");
-                locationListener = new Map.MyLocationListener();
+                locationListener = new OutdatedClassMap.MyLocationListener();
                 locationManager.requestLocationUpdates(LocationManager
                         .GPS_PROVIDER, 5000, 10, locationListener);
 
@@ -193,12 +188,10 @@ public class Map extends Fragment
 //            Toast.makeText(getBaseContext(),"Location changed : Lat: "
 //                            + loc.getLatitude() + " Lng: " + loc.getLongitude(),
 //                    Toast.LENGTH_SHORT).show();
-            String longitude = "Longitude: " + loc.getLongitude();
-            Log.v(TAG, longitude);
-            String latitude = "Latitude: " + loc.getLatitude();
-            Log.v(TAG, latitude);
-
-            setUpMap(loc.getLatitude(), loc.getLongitude());
+//            String longitude = "Longitude: " + loc.getLongitude();
+//            Log.v(TAG, longitude);
+//            String latitude = "Latitude: " + loc.getLatitude();
+//            Log.v(TAG, latitude);
         }
 
         @Override

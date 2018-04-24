@@ -9,12 +9,20 @@
             android:title="@string/drawer_menu_item_howto" />
         <item
             android:id="@+id/nav_map"
-            android:title="@string/drawer_menu_item_map" />s
+            android:title="@string/drawer_menu_item_map" />
         <item
             android:id="@+id/nav_aboutus"
             android:title="@string/drawer_menu_item_aboutus" />
+        <!--<item-->
+            <!--android:id="@+id/nav_description_form"-->
+            <!--android:title="@string/drawer_menu_item_form" />-->
         <item
-            android:id="@+id/nav_description_form"
-            android:title="@string/nav_form" />
+            android:id="@+id/nav_leaderboard"
+            android:title="@string/drawer_menu_item_leaderboard" />
+
+        <!--<item-->
+            <!--android:id="@+id/nav_identify_image"-->
+            <!--android:title="@string/identify_your_flower" />-->
+
     </group>
 </menu>

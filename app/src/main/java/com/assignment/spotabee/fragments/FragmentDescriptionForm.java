@@ -1,7 +1,7 @@
-package com.assignment.spotabee;
+package com.assignment.spotabee.fragments;
 
-import android.arch.persistence.room.Room;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -17,29 +17,34 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.assignment.spotabee.R;
+import com.assignment.spotabee.customutils.Time;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
-public class FragmentDescriptionForm extends Fragment implements View.OnClickListener {
+public class FragmentDescriptionForm extends Fragment
+        implements View.OnClickListener {
 
-
-    private View rootView;
     // Widgets
     private AppCompatButton submit;
     private AppCompatEditText location;
     private AppCompatEditText flower;
     private AppCompatEditText description;
-    private ImageView search;
+    private AppCompatEditText numberOfBeesField;
+    private ImageView flowerIdentify;
+    private FrameLayout flowerSearch;
     private Spinner addressSpinner;
 
     // Database
@@ -53,9 +58,71 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
     private List<Address> possibleUserAddresses;
     private LatLng userLocation;
     private static final String TAG = "Description_form_debug";
+    private final static String imageIdentifyUrl = "https://www.imageidentify.com/";
+    String flowerIdentification;
 
-    public FragmentDescriptionForm() {
-        // Required empty public constructor
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            flowerIdentification = getArguments().getString("flowerName");
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_description_form, container, false);
+
+        ImageView search = rootView.findViewById(R.id.search_location);
+        search.setOnClickListener(this);
+
+
+        addressSpinner = (Spinner) rootView.findViewById(R.id.addressSpinner);
+        addressSpinner.setVisibility(View.GONE);
+
+        flower = rootView.findViewById(R.id.flowerField);
+        if(flowerIdentification != null){
+            flower.setText(flowerIdentification);
+        }
+
+        location = rootView.findViewById(R.id.locationField);
+        description = rootView.findViewById(R.id.descriptionField);
+        numberOfBeesField = rootView.findViewById(R.id.numOfBees);
+
+        submit = rootView.findViewById(R.id.submit);
+        flowerIdentify = rootView.findViewById(R.id.flowerIdentify);
+        flowerSearch = rootView.findViewById(R.id.flower_search);
+
+        flowerSearch.setOnClickListener(this);
+        submit.setOnClickListener(this);
+
+        db = AppDatabase.getAppDatabase(getContext());
+
+
+        context = getActivity();
+
+        userLocation = null;
+        geocoder = new Geocoder(context.getApplicationContext());
+
+        addressSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                location.setText(parent.getItemAtPosition(position).toString());
+                setCoordinatesToStore(parent, view, position, id);
+
+            }
+
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //you can set the title for your toolbar here for different fragments different titles
+        getActivity().setTitle(R.string.details_title);
     }
 
     // TODO: Rename and change types and number of parameters
@@ -66,58 +133,21 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public void goToImageIdentify(){
+        Intent imageIdentify = new Intent(Intent.ACTION_VIEW);
+        imageIdentify.setData(Uri.parse(imageIdentifyUrl));
+        startActivity(imageIdentify);
     }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_description_form, container, false);
-        this.search = rootView.findViewById(R.id.search_location);
-        this.search.setOnClickListener(this);
-        this.addressSpinner = (Spinner) rootView.findViewById(R.id.addressSpinner);
-        this.addressSpinner.setVisibility(View.GONE);
-        flower = rootView.findViewById(R.id.flowerField);
-        location = rootView.findViewById(R.id.locationField);
-        description = rootView.findViewById(R.id.descriptionField);
-        this.submit = rootView.findViewById(R.id.submit);
-        submit.setOnClickListener(this);
-
-        // Database build
-        db = Room.databaseBuilder(
-                getActivity(),
-                AppDatabase.class,
-                "App Database"
-        ).fallbackToDestructiveMigration().build();
-
-
-        context = getActivity();
-        this.userLocation = null;
-        this.geocoder = new Geocoder(context);
-
-        addressSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                location.setText(parent.getItemAtPosition(position).toString());
-                setCoOrdinatesToStore(parent, view, position, id);
-
-            }
-
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-        return rootView;
-    }
-
 
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
 
         switch (viewId) {
+            case R.id.flower_search:
+                goToImageIdentify();
+                break;
+
             case R.id.submit:
                 if (userLocationIsNull()) return;
 
@@ -142,12 +172,11 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
                     Log.d(TAG, e.getMessage());
                     this.userLocation = new LatLng(51.5842, 2.9977);
                 }
-
         }
     }
 
     private boolean userLocationIsNull() {
-        Log.d(TAG, "We are in setCoOrdinatesToStore");
+        Log.d(TAG, "We are in setCoordinatesToStore");
         if (this.userLocation == null) {
             Toast.makeText(context,
                     "You need to select a location first",
@@ -207,14 +236,17 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
             public void run() {
 
                 try {
-
+                    Date todaysDate = new Date();
                     db.descriptionDao()
                             .insertDescriptions(new Description(
-                                    ((Double) userLocation.latitude),
-                                    (Double) userLocation.longitude,
+                                    ( userLocation.latitude),
+                                    userLocation.longitude,
                                     location.getText().toString(),
                                     flower.getText().toString(),
-                                    description.getText().toString()
+                                    description.getText().toString(),
+                                    Integer.parseInt(numberOfBeesField.getText().toString()),
+                                    Time.getTodaysDate(todaysDate),
+                                    Time.getCurrentTime(todaysDate)
                             ));
 
                     List<Description> allDescriptions = db.descriptionDao()
@@ -224,6 +256,10 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
                         Log.d(TAG, description.getFlowerType().toString());
                         Log.d(TAG, description.getLatitude().toString());
                         Log.d(TAG, description.getLongitude().toString());
+                        Log.d(TAG, description.getNumOfBees() + "");
+                        Log.d(TAG, description.getFurtherDetails().toString());
+                        Log.d(TAG, description.getDate().toString());
+                        Log.d(TAG, description.getTime().toString());
                     }
 
 
@@ -238,8 +274,8 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
         });
     }
 
-    private Address setCoOrdinatesToStore(AdapterView<?> parent, View view, int position, long id) {
-        Log.d(TAG, "We are in setCoOrdinatesToStore");
+    private Address setCoordinatesToStore(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(TAG, "We are in setCoordinatesToStore");
         String addressLineToMatch = parent.getItemAtPosition(position).toString();
         Address addressToFind = null;
 
@@ -259,5 +295,7 @@ public class FragmentDescriptionForm extends Fragment implements View.OnClickLis
         }
 
     }
+
+
 
 }
