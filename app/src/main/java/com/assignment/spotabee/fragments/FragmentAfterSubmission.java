@@ -60,5 +60,5 @@ public class FragmentAfterSubmission extends Fragment {
                     Toast.LENGTH_SHORT).show();
         }
     }
-    
+
 }
