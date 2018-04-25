@@ -87,6 +87,7 @@ public class ClarifaiRequest {
         ClarifaiResponse<List<ClarifaiOutput<Prediction>>> listClarifaiResponse = client.predict(modelId)
                 .withInputs(ClarifaiInput.forImage(ClarifaiImage.of(imageBytes)))
                 .executeSync();
+
         return listClarifaiResponse;
     }
 
