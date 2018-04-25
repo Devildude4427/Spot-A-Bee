@@ -46,5 +46,9 @@
     <string name="time">Time</string>
     <string name="number_of_bees_spotted_on_the_flower">Number of bees spotted on the flower</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="incentive_every_ten_sub_message">Well done! You have now made %d submissions</string>
+
 
 </resources>
