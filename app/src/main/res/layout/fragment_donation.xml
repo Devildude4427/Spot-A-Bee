@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerInParent="true"
+    android:background="@color/white"
+    tools:context="com.assignment.spotabee.fragments.DonationLogin">
+
+    <TextView
+        android:id="@+id/CurrencyTxt"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:layout_above="@+id/linearLayout"
+        android:layout_alignParentStart="true"
+        android:text="ENTER AMOUNT IN $"
+        android:textAlignment="center"
+        android:textSize="24sp" />
+
+    <!--Create a label and a button to submit the amount-->
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:id="@+id/linearLayout">
+
+
+        <EditText
+            android:id="@+id/editAmount"
+            android:layout_width="match_parent"
+            android:layout_height="96dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="11dp"
+            android:hint="Amount Here"
+            android:textAlignment="center" />
+        <Button
+            android:id="@+id/btnPayNow"
+            android:hint="@string/pay_now"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+</RelativeLayout>
+
