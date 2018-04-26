@@ -38,6 +38,7 @@ public class Description {
     @ColumnInfo(name = "time")
     private String time;
 
+
     @Ignore
     public Description(Double latitude, Double longitude, String location,
                             String flowerType, String furtherDetails,
@@ -128,4 +129,5 @@ public class Description {
     public void setTime(String time) {
         this.time = time;
     }
+
 }

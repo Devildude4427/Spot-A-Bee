@@ -48,10 +48,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="thank_you_for_your_help">Thank you for your help!</string>
-    <string name="what_you_can_do_to_help_the_bees">What you can do to help the bees!</string>
-    <string name="spot_a_bee_s_mission">Spot A Bee\'s Mission</string>
-    <string name="go_home">Go Home</string>
+    <string name="incentive_every_ten_sub_message">Well done! You have now made %d submissions! The bees thank you!</string>
 
 
 </resources>
