@@ -24,6 +24,7 @@ android {
         androidTest {
             resources.srcDirs += ['src/androidTest/resources']
         }
+        main { assets.srcDirs = ['src/main/assets', 'src/main/assets/'] }
     }
 
 
