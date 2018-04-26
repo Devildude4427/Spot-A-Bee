@@ -46,5 +46,13 @@
     <string name="time">Time</string>
     <string name="number_of_bees_spotted_on_the_flower">Number of bees spotted on the flower</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="pay_now">Pay now</string>
+    <string name="donation_completed">Donation completed</string>
+    <string name="amount">Amount</string>
+    <string name="id">Id</string>
+    <string name="thanks_for_your_donation_the_bees_thank_you">Thanks for your donation! The bees thank you!</string>
+
 
 </resources>

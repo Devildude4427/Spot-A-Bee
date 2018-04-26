@@ -36,19 +36,26 @@ import com.assignment.spotabee.customutils.FileOp;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.DatabaseInitializer;
 import com.assignment.spotabee.database.Description;
+import com.assignment.spotabee.fragments.DonationLogin;
 import com.assignment.spotabee.fragments.FragmentAboutUs;
 import com.assignment.spotabee.fragments.FragmentDescriptionForm;
 import com.assignment.spotabee.fragments.FragmentHome;
 import com.assignment.spotabee.fragments.FragmentHowTo;
 import com.assignment.spotabee.fragments.FragmentLeaderboard;
 import com.assignment.spotabee.fragments.FragmentMap;
+import com.assignment.spotabee.fragments.PaymentInfo;
 import com.assignment.spotabee.imagerecognition.ClarifaiClientGenerator;
 import com.assignment.spotabee.imagerecognition.ClarifaiRequest;
+import com.paypal.android.sdk.payments.PaymentActivity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
+
+import org.json.JSONException;
 
 import java.io.InputStream;
 
 import clarifai2.api.ClarifaiClient;
 
+import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
 import static com.assignment.spotabee.Permissions.ACCESS_IMAGE_GALLERY;
 import static com.assignment.spotabee.Permissions.CHOOSE_ACCOUNT;
 import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS;
@@ -182,6 +189,10 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_leaderboard:
                 fragment = new FragmentLeaderboard();
+                break;
+
+            case R.id.nav_donate:
+                fragment = new DonationLogin();
                 break;
 
 //            case R.id.nav_identify_image:
@@ -323,6 +334,34 @@ public class MainActivity extends AppCompatActivity
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.content_frame, new FragmentHome());
                 fragmentTransaction.commit();
+            } else if (requestCode == PAYPAL_REQUEST_CODE)
+                {
+                    if (resultCode == RESULT_OK) {
+                        PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+                        if (confirmation != null) {
+                            try {
+
+                                String paymentDetails = confirmation.toJSONObject().toString(7);
+                                PaymentInfo paymentInfo = new PaymentInfo();
+                                Bundle args = new Bundle();
+                                args.putString("amount", "");
+                                args.putString("paymentDetails", paymentDetails);
+                                getSupportFragmentManager().beginTransaction()
+                                        .replace(R.id.content_frame, paymentInfo)
+                                        .commit();
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } else if (resultCode == Activity.RESULT_CANCELED) {
+                        Toast.makeText(this, "Cancel", Toast.LENGTH_SHORT).show();
+
+                    } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
+                        Toast.makeText(this, "Invalid", Toast.LENGTH_SHORT).show();
+
+
+
             } else {
                 Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
             }
