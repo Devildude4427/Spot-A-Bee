@@ -1,0 +1,50 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.assignment.spotabee.fragments.AfterSubmission">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/thankYouTextView"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:textSize="50sp"
+        android:layout_width="386dp"
+        android:layout_height="150dp"
+        android:text="@string/thank_you_for_your_help" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/whatYouCanDo"
+        android:layout_below="@+id/thankYouTextView"
+        android:textSize="30sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_width="300dp"
+        android:textAllCaps="false"
+        android:layout_height="@dimen/thanks_button_height"
+        android:text="@string/what_you_can_do_to_help_the_bees" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/ourMission"
+        android:layout_below="@+id/whatYouCanDo"
+        android:textSize="30sp"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="300dp"
+        android:textAllCaps="false"
+        android:layout_height="@dimen/thanks_button_height"
+        android:text="@string/spot_a_bee_s_mission" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/goHome"
+        android:layout_below="@id/ourMission"
+        android:text="@string/go_home"
+        android:layout_centerHorizontal="true"
+        android:textSize="30sp"
+        android:textAllCaps="false"
+        android:layout_marginTop="20dp"
+        android:layout_width="300dp"
+        android:layout_height="@dimen/thanks_button_height" />
+
+
+</RelativeLayout>
