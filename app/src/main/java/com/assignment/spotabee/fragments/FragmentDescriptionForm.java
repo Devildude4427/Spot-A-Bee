@@ -153,8 +153,9 @@ public class FragmentDescriptionForm extends Fragment
                 if (userLocationIsNull()) return;
 
                 commitFormDataToDB();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.content_frame, new AfterSubmission())
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.content_frame, new FragmentAfterSubmission())
                         .commit();
                 break;
 
