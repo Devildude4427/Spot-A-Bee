@@ -13,16 +13,14 @@
         <item
             android:id="@+id/nav_aboutus"
             android:title="@string/drawer_menu_item_aboutus" />
-        <!--<item-->
-            <!--android:id="@+id/nav_description_form"-->
-            <!--android:title="@string/drawer_menu_item_form" />-->
+
         <item
             android:id="@+id/nav_leaderboard"
             android:title="@string/drawer_menu_item_leaderboard" />
 
-        <!--<item-->
-            <!--android:id="@+id/nav_identify_image"-->
-            <!--android:title="@string/identify_your_flower" />-->
+        <item
+            android:id="@+id/nav_resources"
+            android:title="@string/help_the_bees" />
 
     </group>
 </menu>
