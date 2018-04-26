@@ -1,6 +1,7 @@
 package com.assignment.spotabee;
 
 import android.app.DownloadManager;
+import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -97,7 +98,6 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
 
         request.setTitle("Help the Bees");
         request.setDescription("Guide on helping to preserve the bee population");
-
 
         request.setDestinationInExternalFilesDir(getActivity(),
                 Environment.DIRECTORY_DOWNLOADS,"Bee_Guide.pdf");
@@ -206,6 +206,7 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
             case DownloadManager.STATUS_SUCCESSFUL:
                 statusText = "STATUS_SUCCESSFUL";
                 reasonText = "Successfully downloaded";
+
                 break;
         }
 
@@ -216,16 +217,17 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
                     Toast.LENGTH_LONG);
             toast.setGravity(Gravity.TOP, 25, 400);
             toast.show();
+            Bundle args = new Bundle();
+            args.putLong("download_id", downloadId);
+
+            FragmentOpenDownloadNotification openDownloadNotification = new FragmentOpenDownloadNotification();
+            openDownloadNotification.setArguments(args);
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.content_frame, openDownloadNotification)
+                    .commit();
 
         }
-
-        // Make a delay of 3 seconds so that next toast (Music Status) will not merge with this one.
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-            }
-        }, 3000);
     }
 
 }

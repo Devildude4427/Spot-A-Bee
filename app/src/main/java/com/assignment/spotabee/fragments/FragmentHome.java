@@ -58,7 +58,8 @@ public class FragmentHome extends Fragment  {
     private static final String TAG = "Home Debug";
     private LocationManager locationManager;
     private LocationListener locationListener;
-    private AppCompatButton buttonCamera;
+//    private AppCompatButton buttonCamera;
+    private ImageView buttonCamera;
     private AppCompatButton buttonDescriptionForm;
     private AppCompatButton buttonUploadPictures;
     private AppDatabase db;
