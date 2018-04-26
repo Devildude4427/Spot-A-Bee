@@ -7,6 +7,7 @@ import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
@@ -268,6 +269,7 @@ public class FragmentDescriptionForm extends Fragment
 
 
                 } catch (Exception e) {
+                    Looper.loop();
                     Toast.makeText(context,
                             "Sorry. An error occurred. We can't save your information right now...",
                             Toast.LENGTH_SHORT).show();
@@ -299,7 +301,6 @@ public class FragmentDescriptionForm extends Fragment
         }
 
     }
-
 
 
 }
