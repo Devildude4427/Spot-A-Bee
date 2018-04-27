@@ -11,8 +11,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,11 +29,11 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
     private ImageView downloadPdf;
     private long downloadReference;
     private Context appContext;
-    private BroadcastReceiver downloadReceiver;
+    private Receiver downloadReceiver;
     private View rootView;
     private Uri uri;
     private View v;
-
+    public static final String TAG = "Download PDF Debig";
     public FragmentDownloadPdfGuide() {
         // Required empty public constructor
     }
@@ -64,24 +66,7 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
         downloadPdf.setOnClickListener(this);
         appContext = getActivity().getApplicationContext();
 
-        downloadReceiver = new BroadcastReceiver() {
-
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-                //check if the broadcast message is for our enqueued download
-                long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-
-                if(referenceId == downloadReference) {
-
-                    Toast toast = Toast.makeText(getActivity(),
-                            "Guide download complete", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP, 25, 400);
-                    toast.show();
-                }
-
-            }
-        };
+        downloadReceiver = new Receiver();
 
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         getActivity().registerReceiver(downloadReceiver, filter);
@@ -91,7 +76,6 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
 
     private long downloadData (Uri uri) {
         this.uri = uri;
-        this.v = v;
 
         downloadManager = (DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(uri);
@@ -102,11 +86,9 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
         request.setDestinationInExternalFilesDir(getActivity(),
                 Environment.DIRECTORY_DOWNLOADS,"Bee_Guide.pdf");
 
-
-        //Enqueue download and save into referenceId
         downloadReference = downloadManager.enqueue(request);
+        check_download_Status(downloadReference);
 
-        check_Image_Status(downloadReference);
         return downloadReference;
     }
 
@@ -122,13 +104,12 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
         }
     }
 
-    private void check_Image_Status(long downloadReference) {
+    private void check_download_Status(long downloadReference) {
 
         DownloadManager.Query pdfDownloadQuery = new DownloadManager.Query();
-        //set the query filter to our previously Enqueued download
+
         pdfDownloadQuery.setFilterById(downloadReference);
 
-        //Query the download manager about downloads that have been requested.
         Cursor cursor = downloadManager.query(pdfDownloadQuery);
         if(cursor.moveToFirst()){
             downloadStatus(cursor, downloadReference);
@@ -137,7 +118,6 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
 
     private void downloadStatus(Cursor cursor, long downloadId){
 
-        //column for download  status
         int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
         int status = cursor.getInt(columnIndex);
         //column for reason code if the download failed or paused
@@ -149,62 +129,62 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
 
         switch(status){
             case DownloadManager.STATUS_FAILED:
-                statusText = "STATUS_FAILED";
+                statusText = "Status: FAILED";
                 switch(reason){
                     case DownloadManager.ERROR_CANNOT_RESUME:
-                        reasonText = "ERROR_CANNOT_RESUME";
+                        reasonText = "Error: Cannot resume";
                         break;
                     case DownloadManager.ERROR_DEVICE_NOT_FOUND:
-                        reasonText = "ERROR_DEVICE_NOT_FOUND";
+                        reasonText = "Error: Device not found.";
                         break;
                     case DownloadManager.ERROR_FILE_ALREADY_EXISTS:
-                        reasonText = "ERROR_FILE_ALREADY_EXISTS";
+                        reasonText = "Error: File already exists.";
                         break;
                     case DownloadManager.ERROR_FILE_ERROR:
-                        reasonText = "ERROR_FILE_ERROR";
+                        reasonText = "Error: File error";
                         break;
                     case DownloadManager.ERROR_HTTP_DATA_ERROR:
-                        reasonText = "ERROR_HTTP_DATA_ERROR";
+                        reasonText = "Error: HTTP error";
                         break;
                     case DownloadManager.ERROR_INSUFFICIENT_SPACE:
-                        reasonText = "ERROR_INSUFFICIENT_SPACE";
+                        reasonText = "Error: Insufficient space";
                         break;
                     case DownloadManager.ERROR_TOO_MANY_REDIRECTS:
-                        reasonText = "ERROR_TOO_MANY_REDIRECTS";
+                        reasonText = "Error: Too many redirects";
                         break;
                     case DownloadManager.ERROR_UNHANDLED_HTTP_CODE:
-                        reasonText = "ERROR_UNHANDLED_HTTP_CODE";
+                        reasonText = "Error: Unhandled HTTP exception";
                         break;
                     case DownloadManager.ERROR_UNKNOWN:
-                        reasonText = "ERROR_UNKNOWN";
+                        reasonText = "Error: Unknown";
                         break;
                 }
                 break;
             case DownloadManager.STATUS_PAUSED:
-                statusText = "STATUS_PAUSED";
+                statusText = "Status paused.";
                 switch(reason){
                     case DownloadManager.PAUSED_QUEUED_FOR_WIFI:
-                        reasonText = "PAUSED_QUEUED_FOR_WIFI";
+                        reasonText = "Paused. Queued for wifi.";
                         break;
                     case DownloadManager.PAUSED_UNKNOWN:
-                        reasonText = "PAUSED_UNKNOWN";
+                        reasonText = "Paused. Unknown.";
                         break;
                     case DownloadManager.PAUSED_WAITING_FOR_NETWORK:
-                        reasonText = "PAUSED_WAITING_FOR_NETWORK";
+                        reasonText = "Paused. Waiting for network.";
                         break;
                     case DownloadManager.PAUSED_WAITING_TO_RETRY:
-                        reasonText = "PAUSED_WAITING_TO_RETRY";
+                        reasonText = "Paused. Waiting to retry.";
                         break;
                 }
                 break;
             case DownloadManager.STATUS_PENDING:
-                statusText = "STATUS_PENDING";
+                statusText = "Status pending";
                 break;
             case DownloadManager.STATUS_RUNNING:
-                statusText = "STATUS_RUNNING";
+                statusText = "Status running";
                 break;
             case DownloadManager.STATUS_SUCCESSFUL:
-                statusText = "STATUS_SUCCESSFUL";
+                statusText = "Status successful";
                 reasonText = "Successfully downloaded";
 
                 break;
@@ -213,21 +193,10 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
         if(downloadId == downloadReference) {
 
             Toast toast = Toast.makeText(getActivity(),
-                    "PDF Guide Status:" + "\n" + statusText + reasonText,
+                    "PDF download:" + "\n" + statusText + reasonText,
                     Toast.LENGTH_LONG);
             toast.setGravity(Gravity.TOP, 25, 400);
             toast.show();
-            Bundle args = new Bundle();
-            args.putLong("download_id", downloadId);
-
-            FragmentOpenDownloadNotification openDownloadNotification = new FragmentOpenDownloadNotification();
-            openDownloadNotification.setArguments(args);
-            getActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.content_frame, openDownloadNotification)
-                    .commit();
-
         }
     }
-
 }
