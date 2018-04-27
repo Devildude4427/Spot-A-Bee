@@ -170,47 +170,41 @@ public class FragmentHome extends Fragment  {
         getActivity().setTitle("Home");
     }
 
-    private File createImageFile() {
-        File image = null;
-        try {
-            // Create an image file name
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String imageFileName = "JPEG_" + timeStamp + "_";
-            File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-            image = File.createTempFile(
-                    imageFileName,  /* prefix */
-                    ".jpg",         /* suffix */
-                    storageDir      /* directory */
-            );
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getContextOfApplication().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",   /* suffix */
+                storageDir      /* directory */
+        );
 
-            // Save a file: path for use with ACTION_VIEW intents
-            currentPhotoPath = image.getAbsolutePath();
-            return image;
-
-        } catch (Exception e) {
-            Log.v(TAG, "Exception " + e);
-        }
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
         return image;
     }
 
     private void dispatchTakePictureIntent() {
-        Log.v(TAG, "Started Pic Intent");
         try {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             // Ensure that there's a camera activity to handle the intent
             if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
                 // Create the File where the photo should go
                 File photoFile = null;
-                photoFile = createImageFile();
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+                    Log.v(TAG, "IO Exception " + ex);
+                }
                 // Continue only if the File was successfully created
                 if (photoFile != null) {
-                    Log.v(TAG, "Photo file is not null");
                     Uri photoURI = FileProvider.getUriForFile(getContextOfApplication(),
                             "com.assignment.spotabee.fileprovider",
                             photoFile);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-//                    galleryAddPic();
-                    startActivityForResult(takePictureIntent, PICK_IMAGE);
+                    startActivityForResult(takePictureIntent, IMAGE_CAPTURE);
                 }
             }
         } catch (Exception e) {
@@ -255,11 +249,9 @@ public class FragmentHome extends Fragment  {
                     return;
                 }
                 client = ClarifaiClientGenerator.generate(API_KEY);
-                Log.v(TAG, "Got here though");
-                if (data==null) {
-                    Log.v(TAG, "Data is null");
-                }
+                Log.v(TAG, "Entering imageBytes");
                 final byte[] imageBytes = FileOp.getByteArrayFromIntentData(getContextOfApplication(), data);
+                Log.v(TAG, "Exiting imageBytes");
                 if (imageBytes != null) {
 
                     AsyncTask.execute(new Runnable() {
@@ -284,7 +276,8 @@ public class FragmentHome extends Fragment  {
                     });
                 }
             } else if (requestCode == IMAGE_CAPTURE) {
-                Log.v(TAG, "Request went through");
+                galleryAddPic();
+                Log.v(TAG, "Request went through for Image Capture");
             }
             else {
                 Log.v(TAG, "Nothing exists to handle that request code" + requestCode);

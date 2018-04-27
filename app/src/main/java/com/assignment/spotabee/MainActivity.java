@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED){
             requestExternalStoragePermission();
-            Log.v(TAG, "Requesting camera Permission");
+            Log.v(TAG, "Requesting storage Permission");
         } else {
             Log.v(TAG, "No permissions requested");
         }
