@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -45,7 +46,7 @@ public class FragmentDescriptionForm extends Fragment
     private AppCompatEditText description;
     private AppCompatEditText numberOfBeesField;
     private ImageView flowerIdentify;
-    private FrameLayout flowerSearch;
+    private RelativeLayout flowerSearch;
     private Spinner addressSpinner;
 
     // Database
