@@ -119,6 +119,9 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         displaySelectedScreen(R.id.nav_home);
+
+//        Intent intent = new Intent(this, ScreenService.class);
+//        startService(intent);
     }
 
     public AccountManager getAccountManager() {

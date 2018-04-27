@@ -8,13 +8,13 @@
 
     <ImageView
         android:id="@+id/bee_logo"
-        android:layout_width="160dp"
-        android:layout_height="80dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/textView3"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_vertical"
-        android:layout_marginTop="57dp"
-        android:src="@drawable/ic_bee1" />
+        android:layout_marginTop="12dp"
+        android:src="@drawable/bee_1" />
 
     <!--<android.support.v7.widget.AppCompatButton-->
         <!--android:id="@+id/button_camera"-->
@@ -31,7 +31,7 @@
         <!--app:layout_constraintLeft_toLeftOf="parent"-->
         <!--app:layout_constraintRight_toRightOf="parent"-->
         <!--app:layout_constraintTop_toTopOf="parent"-->
-        app:layout_constraintVertical_bias="0.682" />
+        <!--app:layout_constraintVertical_bias="0.682" />-->
 
     <!--<android.support.v7.widget.AppCompatButton-->
         <!--android:id="@+id/button_description_form"-->
@@ -53,10 +53,11 @@
 
     <ImageView
         android:id="@+id/button_camera"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
-        android:layout_alignTop="@+id/button_no_image_upload"
+        android:layout_width="350dp"
+        android:layout_height="175dp"
+        android:layout_above="@+id/button_image_upload"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="34dp"
         android:src="@drawable/ic_camera_svg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
@@ -102,10 +103,11 @@
 
     <ImageView
         android:id="@+id/button_image_upload"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
-        android:layout_alignTop="@+id/button_camera"
-        android:layout_toEndOf="@+id/bee_logo"
+        android:layout_width="150dp"
+        android:layout_height="75dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="22dp"
         android:src="@drawable/ic_gallery"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -116,11 +118,10 @@
 
     <ImageView
         android:id="@+id/button_no_image_upload"
-        android:layout_width="160dp"
-        android:layout_height="80dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="90dp"
-        android:layout_toStartOf="@+id/button_camera"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
+        android:layout_alignBottom="@+id/button_image_upload"
+        android:layout_alignParentStart="true"
         android:src="@drawable/ic_contact_form_svgrepo_com"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
