@@ -187,9 +187,9 @@ public class MainActivity extends AppCompatActivity
                 fragment = new FragmentLeaderboard();
                 break;
 
-//            case R.id.nav_identify_image:
-//                startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), PICK_IMAGE);
-//                break;
+            case R.id.nav_resources:
+                fragment = new FragmentDownloadPdfGuide();
+                break;
 
         }
 
