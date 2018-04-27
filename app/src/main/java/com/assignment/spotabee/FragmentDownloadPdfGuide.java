@@ -24,6 +24,8 @@ import android.widget.Toast;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
 
+
+//
 public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickListener{
     private DownloadManager downloadManager;
     private ImageView downloadPdf;
@@ -33,7 +35,7 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
     private View rootView;
     private Uri uri;
     private View v;
-    public static final String TAG = "Download PDF Debig";
+    public static final String TAG = "Download PDF Debug";
     public FragmentDownloadPdfGuide() {
         // Required empty public constructor
     }

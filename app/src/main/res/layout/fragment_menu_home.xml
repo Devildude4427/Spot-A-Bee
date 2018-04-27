@@ -6,15 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <!--android:background="@drawable/background">-->
 
-    <ImageView
-        android:id="@+id/bee_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView3"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="12dp"
-        android:src="@drawable/bee_1" />
+
 
     <!--<android.support.v7.widget.AppCompatButton-->
         <!--android:id="@+id/button_camera"-->
@@ -50,12 +42,27 @@
         <!--app:layout_constraintRight_toRightOf="parent"-->
         <!--app:layout_constraintTop_toTopOf="parent"-->
         <!--app:layout_constraintVertical_bias="1.0" />-->
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </RelativeLayout>
+    <ImageView
+        android:id="@+id/bee_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView3"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="12dp"
+        android:src="@drawable/bee_1" />
 
     <ImageView
         android:id="@+id/button_camera"
         android:layout_width="350dp"
         android:layout_height="175dp"
         android:layout_above="@+id/button_image_upload"
+        android:layout_below="@+id/bee_logo"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="34dp"
         android:src="@drawable/ic_camera_svg"
