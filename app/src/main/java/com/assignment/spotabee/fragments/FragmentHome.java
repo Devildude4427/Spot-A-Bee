@@ -67,7 +67,7 @@ public class FragmentHome extends Fragment  {
     private AppDatabase db;
     private static final String API_KEY = "d984d2d494394104bb4bee0b8149523d";
     private static ClarifaiClient client;
-    private String currentPhotoPath;
+    String currentPhotoPath;
 
     Intent intent;
 
@@ -171,12 +171,13 @@ public class FragmentHome extends Fragment  {
     }
 
     private File createImageFile() {
+        File image = null;
         try {
             // Create an image file name
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             String imageFileName = "JPEG_" + timeStamp + "_";
             File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-            File image = File.createTempFile(
+            image = File.createTempFile(
                     imageFileName,  /* prefix */
                     ".jpg",         /* suffix */
                     storageDir      /* directory */
@@ -189,7 +190,7 @@ public class FragmentHome extends Fragment  {
         } catch (Exception e) {
             Log.v(TAG, "Exception " + e);
         }
-        return null;
+        return image;
     }
 
     private void dispatchTakePictureIntent() {
@@ -207,13 +208,13 @@ public class FragmentHome extends Fragment  {
                     Uri photoURI = FileProvider.getUriForFile(getContextOfApplication(),
                             "com.assignment.spotabee.fileprovider",
                             photoFile);
-                    Log.v(TAG, "Still bueno");
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    startActivityForResult(takePictureIntent, IMAGE_CAPTURE);
+//                    galleryAddPic();
+                    startActivityForResult(takePictureIntent, PICK_IMAGE);
                 }
             }
         } catch (Exception e) {
-            Log.v(TAG, "Exception " + e);
+            Log.v(TAG, "Exception in dispatch " + e);
         }
     }
 
@@ -223,6 +224,14 @@ public class FragmentHome extends Fragment  {
     public void onImageGallery() {
         Log.v(TAG, "onImageGallery");
         startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), PICK_IMAGE);
+    }
+
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(currentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        getContextOfApplication().sendBroadcast(mediaScanIntent);
     }
 
     public void onActivityResult(final int requestCode, final int resultCode,
@@ -246,6 +255,10 @@ public class FragmentHome extends Fragment  {
                     return;
                 }
                 client = ClarifaiClientGenerator.generate(API_KEY);
+                Log.v(TAG, "Got here though");
+                if (data==null) {
+                    Log.v(TAG, "Data is null");
+                }
                 final byte[] imageBytes = FileOp.getByteArrayFromIntentData(getContextOfApplication(), data);
                 if (imageBytes != null) {
 
@@ -270,11 +283,14 @@ public class FragmentHome extends Fragment  {
                         }
                     });
                 }
-            } else {
+            } else if (requestCode == IMAGE_CAPTURE) {
+                Log.v(TAG, "Request went through");
+            }
+            else {
                 Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
             }
         } catch (Exception e) {
-            Log.v(TAG, "Exception " + e);
+            Log.v(TAG, "Exception with Activity Start " + e);
         }
     }
 
