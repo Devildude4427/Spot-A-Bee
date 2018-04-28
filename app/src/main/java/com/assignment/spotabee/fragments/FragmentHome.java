@@ -64,9 +64,12 @@ public class FragmentHome extends Fragment  {
     private static final String TAG = "Home Debug";
     private LocationManager locationManager;
     private LocationListener locationListener;
-    private AppCompatButton buttonCamera;
-    private AppCompatButton buttonDescriptionForm;
-    private AppCompatButton buttonUploadPictures;
+//    private AppCompatButton buttonCamera;
+    private ImageView buttonCamera;
+//    private AppCompatButton buttonDescriptionForm;
+//    private AppCompatButton buttonUploadPictures;
+    private ImageView buttonDescriptionForm;
+    private ImageView buttonUploadPictures;
     private AppDatabase db;
     private static final String API_KEY = "d984d2d494394104bb4bee0b8149523d";
     private static ClarifaiClient client;
@@ -101,8 +104,9 @@ public class FragmentHome extends Fragment  {
                     //Open the camera HOPEFULLY
 
                     if (id == R.id.button_camera){
+                        Toast.makeText(getActivity(), "We have at least registered an onclick event", Toast.LENGTH_SHORT).show();
                         dispatchTakePictureIntent();
-                    }else{
+                    } else {
                         //Go back to main button
                         intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
                         startActivity(intent);
@@ -131,7 +135,7 @@ public class FragmentHome extends Fragment  {
                 }
         });
 
-        buttonDescriptionForm = view.findViewById(R.id.button_description_form);
+        buttonDescriptionForm = view.findViewById(R.id.button_no_image_upload);
         buttonDescriptionForm.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -148,13 +152,14 @@ public class FragmentHome extends Fragment  {
             }
         });
 
-        buttonUploadPictures = view.findViewById(R.id.button_upload_picture);
+        buttonUploadPictures = view.findViewById(R.id.button_image_upload);
         buttonUploadPictures.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 int id = v.getId();
                 //Open the camera HOPEFULLY
                 if (id == R.id.button_upload_picture) {
+                if (id == R.id.button_image_upload){
                     onImageGallery();
                 }else if(id == R.id.btnHome){
                     //Go back to main button
