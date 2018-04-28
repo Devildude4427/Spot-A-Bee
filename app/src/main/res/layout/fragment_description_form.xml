@@ -158,6 +158,9 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
+        android:background="@drawable/button_background"
+        android:textSize="18dp"
+        android:textColor="#d1d1d1"
         android:text="@string/submit"/>
 
 

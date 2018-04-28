@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,7 @@ import org.json.JSONObject;
 
 public class PaymentDetails extends Fragment {
     private View rootView;
-    private TextView txtId, txtAmount, txtStatus;
+    private AppCompatTextView txtId, txtAmount, txtStatus;
 
 
     public PaymentDetails() {
@@ -45,9 +46,9 @@ public class PaymentDetails extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView =  inflater.inflate(R.layout.fragment_payment_info, container, false);
-        txtId = (TextView) rootView.findViewById(R.id.txtId);
-        txtAmount = (TextView) rootView.findViewById(R.id.txtAmount);
-        txtStatus = (TextView) rootView.findViewById(R.id.txtStatus);
+//        txtId = (TextView) rootView.findViewById(R.id.txtId);
+        txtAmount =  rootView.findViewById(R.id.txtAmount);
+        txtStatus =  rootView.findViewById(R.id.txtStatus);
 
 
         //This will get the Intent related

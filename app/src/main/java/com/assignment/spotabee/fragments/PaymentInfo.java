@@ -2,11 +2,14 @@ package com.assignment.spotabee.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.assignment.spotabee.AmountPayed;
@@ -20,8 +23,8 @@ public class PaymentInfo extends Fragment {
     private View rootView;
     private String amount;
     private String paymentDetails;
-    private TextView txtHeading, txtId, txtStatus, txtAmount;
-    private Button btnHome;
+    private AppCompatTextView txtHeading, txtId, txtStatus, txtAmount;
+    private RelativeLayout goHome;
     private static final String TAG = "PaymentInfo Debug";
 
 
@@ -55,7 +58,16 @@ public class PaymentInfo extends Fragment {
 
         //This button will help to go back home after
         //Donation has completed
-        btnHome = rootView.findViewById(R.id.btnHome);
+        goHome = rootView.findViewById(R.id.goHome);
+        goHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.content_frame, new FragmentHome())
+                        .commit();
+            }
+        });
         setUpScreen();
         return rootView;
     }
@@ -67,7 +79,7 @@ public class PaymentInfo extends Fragment {
 
     private void setUpScreen(){
         if(amount != null || paymentDetails != null){
-            txtAmount.setText("You have donated " +"\n"+ "$:" +amount+ "\n" + "To SPOT A BEE");
+            txtAmount.setText(String.format(getString(R.string.you_have_donated_x), amount));
             txtStatus.setText((CharSequence) txtId);
             Log.d(TAG, paymentDetails);
             Log.d(TAG, amount);

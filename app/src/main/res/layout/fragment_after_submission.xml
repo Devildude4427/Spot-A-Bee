@@ -14,14 +14,17 @@
         android:text="@string/thank_you_for_your_help"
         android:textAlignment="center"
         android:textAllCaps="false"
-        android:textSize="30sp" />
+        android:textSize="@dimen/after_submission_thank_you_message_height" />
 
     <RelativeLayout
         android:id="@+id/goHome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true">
+        android:layout_centerVertical="true"
+        android:background="@drawable/white_border"
+        android:elevation="@dimen/default_elevation"
+        android:translationZ="@dimen/default_translation_z">
 
         <ImageView
             android:id="@+id/go_home"
@@ -40,5 +43,6 @@
             android:textSize="20sp" />
 
     </RelativeLayout>
+
 
 </RelativeLayout>
