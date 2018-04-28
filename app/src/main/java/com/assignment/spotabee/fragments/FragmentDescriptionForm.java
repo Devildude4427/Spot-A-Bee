@@ -81,7 +81,7 @@ public class FragmentDescriptionForm extends Fragment
 
 
         addressSpinner = (Spinner) rootView.findViewById(R.id.addressSpinner);
-        addressSpinner.setVisibility(View.GONE);
+        addressSpinner.setVisibility(View.VISIBLE);
 
         flower = rootView.findViewById(R.id.flowerField);
         if(flowerIdentification != null){
