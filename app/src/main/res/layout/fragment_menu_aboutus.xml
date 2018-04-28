@@ -5,12 +5,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.v7.widget.AppCompatButton
-        android:id="@+id/button2"
+        android:id="@+id/goToYoutube"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="207dp"
         android:layout_height="80dp"
         android:background="@color/colorTranparentOrange"
-        android:text="Potential link to site or other resources"
+        android:text="Go to YouTube to see our mission"
+        android:textAllCaps="false"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
