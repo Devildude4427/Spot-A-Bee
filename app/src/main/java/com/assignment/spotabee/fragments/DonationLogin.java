@@ -39,6 +39,7 @@ import static android.app.Activity.RESULT_OK;
 import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
 import static com.assignment.spotabee.MainActivity.PICK_IMAGE;
 import static com.assignment.spotabee.MainActivity.getContextOfApplication;
+import com.assignment.spotabee.AmountPayed;
 
 
 public class DonationLogin extends Fragment {
@@ -117,6 +118,7 @@ public class DonationLogin extends Fragment {
     private void processPayment() {
 
         amount = editAmount.getText().toString();
+        AmountPayed.setAmountPayed(amount);
         PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(String.valueOf(amount)),
                 "USD", "Donate for Spot a Bee", PayPalPayment.PAYMENT_INTENT_SALE);
         Intent intent = new Intent(getActivity(), PaymentActivity.class);
