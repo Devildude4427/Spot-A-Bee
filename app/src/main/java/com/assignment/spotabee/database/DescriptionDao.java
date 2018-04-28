@@ -21,6 +21,7 @@ public interface DescriptionDao {
     @Query("SELECT * FROM Description")
     List<Description> getAllDescriptions();
 
+
     @Transaction
     @Query("SELECT latitude FROM Description")
     List<Double> getAllLatitudes();
