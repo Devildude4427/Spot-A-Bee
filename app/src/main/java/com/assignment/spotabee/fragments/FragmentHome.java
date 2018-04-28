@@ -51,6 +51,7 @@ import java.util.Date;
 import clarifai2.api.ClarifaiClient;
 
 import static android.app.Activity.RESULT_OK;
+import static android.support.v4.content.FileProvider.getUriForFile;
 import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
 import static android.location.LocationManager.GPS_PROVIDER;
 import static com.assignment.spotabee.MainActivity.PICK_IMAGE;
@@ -104,7 +105,6 @@ public class FragmentHome extends Fragment  {
                     //Open the camera HOPEFULLY
 
                     if (id == R.id.button_camera){
-                        Toast.makeText(getActivity(), "We have at least registered an onclick event", Toast.LENGTH_SHORT).show();
                         dispatchTakePictureIntent();
                     } else {
                         //Go back to main button
@@ -203,20 +203,28 @@ public class FragmentHome extends Fragment  {
         Log.v(TAG, "Started Pic Intent");
         try {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            Log.d("camera debug", "Have made an image capture intent");
             // Ensure that there's a camera activity to handle the intent
             if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                Log.d("camera debug", "get package manager isn't null");
                 // Create the File where the photo should go
                 File photoFile = null;
                 photoFile = createImageFile();
+
                 // Continue only if the File was successfully created
                 if (photoFile != null) {
                     Log.v(TAG, "Photo file is not null");
-                    Uri photoURI = FileProvider.getUriForFile(getContextOfApplication(),
-                            "com.assignment.spotabee.fileprovider",
+
+                    Uri contentUri = getUriForFile(getContext(), "com.assignment.spotabee.provider" , photoFile);
+                    Uri photoURI = getUriForFile(getContextOfApplication(),
+                            "com.assignment.spotabee.fragments.fileprovider",
                             photoFile);
                     Log.v(TAG, "Still bueno");
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    Log.d(TAG, "Have made photo uri");
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
+                    Log.d(TAG, "Have finished making an image capture intent");
                     getActivity().startActivityForResult(takePictureIntent, IMAGE_CAPTURE);
+                    Log.d(TAG, "should have done it all");
                 }
             }
         } catch (Exception e) {
