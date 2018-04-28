@@ -104,8 +104,9 @@ public class FragmentHome extends Fragment  {
                     //Open the camera HOPEFULLY
 
                     if (id == R.id.button_camera){
+                        Toast.makeText(getActivity(), "We have at least registered an onclick event", Toast.LENGTH_SHORT).show();
                         dispatchTakePictureIntent();
-                    }else{
+                    } else {
                         //Go back to main button
                         intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
                         startActivity(intent);
