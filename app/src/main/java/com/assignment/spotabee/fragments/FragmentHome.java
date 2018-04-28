@@ -154,8 +154,12 @@ public class FragmentHome extends Fragment  {
             public void onClick(View v) {
                 int id = v.getId();
                 //Open the camera HOPEFULLY
-                if (id == R.id.button_upload_picture){
+                if (id == R.id.button_upload_picture) {
                     onImageGallery();
+                }else if(id == R.id.btnHome){
+                    //Go back to main button
+                    Intent intent = new Intent(getActivity().getApplicationContext(), FragmentHome.class);
+
                 }else{
                     //Go back to main button
                     intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);

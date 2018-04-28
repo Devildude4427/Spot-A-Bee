@@ -53,6 +53,9 @@
     <string name="amount">Amount</string>
     <string name="id">Id</string>
     <string name="thanks_for_your_donation_the_bees_thank_you">Thanks for your donation! The bees thank you!</string>
+    <string name="status">Status</string>
+    <string name="btnhome">Home</string>
+    <string name="state">Status</string>
 
 
 </resources>

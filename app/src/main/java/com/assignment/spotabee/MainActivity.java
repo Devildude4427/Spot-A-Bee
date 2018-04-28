@@ -28,6 +28,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -201,6 +202,11 @@ public class MainActivity extends AppCompatActivity
                 fragment = new DonationLogin();
                 break;
 
+            //Adding btnHome from the DonationInfo fragment so that
+            //The user can easily go back home after making a donation
+            case R.id.btnHome:
+                fragment = new FragmentHome();
+                break;
 //            case R.id.nav_identify_image:
 //                startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), PICK_IMAGE);
 //                break;
@@ -610,5 +616,7 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }
-    }
+
+
+}
 

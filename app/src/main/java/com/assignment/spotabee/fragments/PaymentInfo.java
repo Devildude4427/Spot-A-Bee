@@ -1,7 +1,5 @@
 package com.assignment.spotabee.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -13,6 +11,9 @@ import android.widget.TextView;
 
 import com.assignment.spotabee.AmountPayed;
 import com.assignment.spotabee.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class PaymentInfo extends Fragment {
@@ -51,14 +52,23 @@ public class PaymentInfo extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_payment_info, container, false);
         txtAmount = rootView.findViewById(R.id.txtAmount);
         txtStatus = rootView.findViewById(R.id.txtStatus);
+
+        //This button will help to go back home after
+        //Donation has completed
+        btnHome = rootView.findViewById(R.id.btnHome);
         setUpScreen();
         return rootView;
     }
 
+    //This method will manage the btnHome after the transaction to easily
+    //give the choise to the user to comback home after the donation
+
+
+
     private void setUpScreen(){
         if(amount != null || paymentDetails != null){
-            txtAmount.setText(amount);
-            txtStatus.setText(paymentDetails);
+            txtAmount.setText("You have donated " +"\n"+ "$:" +amount+ "\n" + "To SPOT A BEE");
+            txtStatus.setText((CharSequence) txtId);
             Log.d(TAG, paymentDetails);
             Log.d(TAG, amount);
         } else {
@@ -66,6 +76,16 @@ public class PaymentInfo extends Fragment {
         }
 
 
+    }
+    private void showDetails(JSONObject response, String paymentAmount){
+        try {
+            txtId.setText(response.getString("id"));
+            txtStatus.setText(response.getString("state"));
+            txtAmount.setText("$"+ paymentAmount);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }
