@@ -13,10 +13,11 @@
     <string name="about_us_title">About Us!</string>
     <string name="how_to">How #to</string>
     <string name="form">Form</string>
-    <string name="donate">DONATE</string>
+    <string name="donate">Donate</string>
     <string name="about_us">About Us</string>
     <string name="how_to_menu">How to</string>
     <string name="upload_picture">Upload Picture</string>
+    <string name="you_have_donated_x">You have donated %s$\n to Spot A Bee</string>
     <string name="flowers_in_cardiff">Flowers in Cardiff</string>
 
     <string name="home_button_label_camera">Camera</string>
@@ -66,6 +67,9 @@
     <string name="status">Status</string>
     <string name="btnhome">Home</string>
     <string name="state">Status</string>
+    <string name="enter_amount_you_d_nlike_to_donate_in">Enter amount you\'d \n like to donate in $</string>
+    <string name="amount_here">Amount Here</string>
+    <string name="go_to_youtube_to_see_our_mission">Go to YouTube to see our mission</string>
 
 
 </resources>

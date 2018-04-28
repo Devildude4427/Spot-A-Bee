@@ -3,4 +3,10 @@
     <dimen name="field_width">300dp</dimen>
     <dimen name="thanks_button_height">100dp</dimen>
     <dimen name="location_search_elevation">5dp</dimen>
+    <dimen name="default_translation_z">10dp</dimen>
+    <dimen name="default_elevation">5dp</dimen>
+    <dimen name="default_text_view_margin">15dp</dimen>
+    <dimen name="default_text_padding">20dp</dimen>
+    <dimen name="default_heading_size">24sp</dimen>
+    <dimen name="after_submission_thank_you_message_height">30sp</dimen>
 </resources>
