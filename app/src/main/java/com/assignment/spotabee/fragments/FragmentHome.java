@@ -1,6 +1,7 @@
 package com.assignment.spotabee.fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -36,6 +37,10 @@ import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
 import com.assignment.spotabee.imagerecognition.ClarifaiClientGenerator;
 import com.assignment.spotabee.imagerecognition.ClarifaiRequest;
+import com.paypal.android.sdk.payments.PaymentActivity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
+
+import org.json.JSONException;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +51,7 @@ import java.util.Date;
 import clarifai2.api.ClarifaiClient;
 
 import static android.app.Activity.RESULT_OK;
+import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
 import static android.location.LocationManager.GPS_PROVIDER;
 import static com.assignment.spotabee.MainActivity.PICK_IMAGE;
 import static com.assignment.spotabee.MainActivity.getContextOfApplication;
@@ -222,57 +228,91 @@ public class FragmentHome extends Fragment  {
         startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), PICK_IMAGE);
     }
 
-    public void onActivityResult(final int requestCode, final int resultCode,
-                                    final Intent data){
-        try {
-            if(data == null && requestCode == PICK_IMAGE){
-                return;
-            } else if (requestCode == PICK_IMAGE) {
-
-                final ProgressDialog progress = new ProgressDialog(getContextOfApplication());
-                progress.setTitle("Loading");
-                progress.setMessage("Identify your flower..");
-                progress.setCancelable(false);
-                progress.show();
-
-                if (!CheckNetworkConnection.isInternetAvailable(getContextOfApplication())) {
-                    progress.dismiss();
-                    Toast.makeText(getContextOfApplication(),
-                            "Internet connection unavailable.",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                client = ClarifaiClientGenerator.generate(API_KEY);
-                final byte[] imageBytes = FileOp.getByteArrayFromIntentData(getContextOfApplication(), data);
-                if (imageBytes != null) {
-
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d(TAG, "We have started run thread");
-                            ClarifaiRequest clarifaiRequest = new ClarifaiRequest(client, "flower_species", imageBytes);
-                            String flowerType = clarifaiRequest.executRequest();
-                            Log.d(TAG, "Flower Type: " + flowerType);
-
-                            Bundle descriptionFormBundle = new Bundle();
-                            descriptionFormBundle.putString("flowerName", flowerType);
-
-                            FragmentDescriptionForm fragmentDescriptionForm = new FragmentDescriptionForm();
-                            fragmentDescriptionForm.setArguments(descriptionFormBundle);
-
-                            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                            fragmentTransaction.replace(R.id.content_frame, fragmentDescriptionForm);
-                            fragmentTransaction.commit();
-                            progress.dismiss();
-                        }
-                    });
-                }
-            } else {
-                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
-            }
-        } catch (Exception e) {
-            Log.v(TAG, "Exception " + e);
-        }
-    }
-
+//    public void onActivityResult(final int requestCode, final int resultCode,
+//                                    final Intent data){
+//
+//        if(requestCode == 1819){
+//            Log.d(TAG, "WE HAVE REGISTERED THE PAYPAL REQUEST CODE");
+//            payPalResult(requestCode, resultCode, data);
+//        }
+//
+//        try {
+//            if(data == null && requestCode == PICK_IMAGE){
+//                return;
+//            } else if (requestCode == PICK_IMAGE) {
+//                Log.d(TAG, "WE FIRE ACTIVITY RESULT FROM HOME");
+//                final ProgressDialog progress = new ProgressDialog(getContextOfApplication());
+//                progress.setTitle("Loading");
+//                progress.setMessage("Identify your flower..");
+//                progress.setCancelable(false);
+//                progress.show();
+//
+//                if (!CheckNetworkConnection.isInternetAvailable(getContextOfApplication())) {
+//                    progress.dismiss();
+//                    Toast.makeText(getContextOfApplication(),
+//                            "Internet connection unavailable.",
+//                            Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//                client = ClarifaiClientGenerator.generate(API_KEY);
+//                final byte[] imageBytes = FileOp.getByteArrayFromIntentData(getContextOfApplication(), data);
+//                if (imageBytes != null) {
+//
+//                    AsyncTask.execute(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Log.d(TAG, "We have started run thread");
+//                            ClarifaiRequest clarifaiRequest = new ClarifaiRequest(client, "flower_species", imageBytes);
+//                            String flowerType = clarifaiRequest.executRequest();
+//                            Log.d(TAG, "Flower Type: " + flowerType);
+//
+//                            Bundle descriptionFormBundle = new Bundle();
+//                            descriptionFormBundle.putString("flowerName", flowerType);
+//
+//                            FragmentDescriptionForm fragmentDescriptionForm = new FragmentDescriptionForm();
+//                            fragmentDescriptionForm.setArguments(descriptionFormBundle);
+//
+//                            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+//                            fragmentTransaction.replace(R.id.content_frame, fragmentDescriptionForm);
+//                            fragmentTransaction.commit();
+//                            progress.dismiss();
+//                        }
+//                    });
+//                }
+//            } else {
+//                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
+//            }
+//        } catch (Exception e) {
+//            Log.v(TAG, "Exception " + e);
+//        }
+//    }
+//
+//    public void payPalResult(final int requestCode, final int resultCode,
+//                             final Intent data){
+//        Log.d(TAG, "We are in payPalResult");
+//        String amount = "test amount";
+//        if (resultCode == RESULT_OK) {
+//            PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+//            if (confirmation != null) {
+//                try {
+//                    String paymentDetails = confirmation.toJSONObject().toString(7);
+//                    PaymentInfo paymentInfo = new PaymentInfo();
+//                    Bundle args = new Bundle();
+//                    args.putString("amount", "$100");
+//                    args.putString("paymentInfo", paymentDetails);
+//                    paymentInfo.setArguments(args);
+//                    getActivity().getSupportFragmentManager().beginTransaction()
+//                            .replace(R.id.content_frame, paymentInfo).commit();
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        } else if (resultCode == Activity.RESULT_CANCELED) {
+//            Toast.makeText(getActivity(), "Cancel", Toast.LENGTH_SHORT).show();
+//
+//        } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
+//            Toast.makeText(getActivity(), "Invalid", Toast.LENGTH_SHORT).show();
+//
+//    }
 }

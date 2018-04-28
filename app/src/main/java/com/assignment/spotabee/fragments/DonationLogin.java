@@ -1,7 +1,12 @@
 package com.assignment.spotabee.fragments;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,19 +17,35 @@ import com.assignment.spotabee.R;
 import android.content.Intent;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.assignment.spotabee.customutils.CheckNetworkConnection;
+import com.assignment.spotabee.customutils.FileOp;
+import com.assignment.spotabee.imagerecognition.ClarifaiClientGenerator;
+import com.assignment.spotabee.imagerecognition.ClarifaiRequest;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
 import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
+
+import org.json.JSONException;
 
 import java.math.BigDecimal;
 
+import clarifai2.api.ClarifaiClient;
+
+import static android.app.Activity.RESULT_OK;
 import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
+import static com.assignment.spotabee.MainActivity.PICK_IMAGE;
+import static com.assignment.spotabee.MainActivity.getContextOfApplication;
 
 
 public class DonationLogin extends Fragment {
    private View rootView;
+    private static final String API_KEY = "d984d2d494394104bb4bee0b8149523d";
+    private static ClarifaiClient client;
+    private static final String TAG = "Donation Login Debug";
 
 
     private static PayPalConfiguration config = new PayPalConfiguration()
@@ -101,10 +122,9 @@ public class DonationLogin extends Fragment {
         Intent intent = new Intent(getActivity(), PaymentActivity.class);
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
         intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payPalPayment);
-        startActivityForResult(intent, PAYPAL_REQUEST_CODE);
+        getActivity().startActivityForResult(intent, PAYPAL_REQUEST_CODE);
 
     }
-
 
 
 }

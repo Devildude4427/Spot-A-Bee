@@ -7,11 +7,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.assignment.spotabee.fragments.PaymentInfo;
+import com.paypal.android.sdk.payments.PaymentActivity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
+import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
+
+import org.json.JSONException;
 
 public class Permissions extends AppCompatActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -78,21 +87,23 @@ public class Permissions extends AppCompatActivity
      * @param resultCode If the result succeeded or failed
      * @param data The intent that is being requested
      */
-    protected void onActivityResult(final int requestCode, final int resultCode,
-                                    final Intent data){
-        try {
-            if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
-                String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                Log.v(TAG, accountName);
-            } else if (requestCode == CHOOSE_ACCOUNT) {
-                Log.v(TAG, "There was an error in the account picker");
-            } else {
-                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
-            }
-        } catch (Exception e) {
-            Log.v(TAG, "Exception " + e);
-        }
-    }
+//    protected void onActivityResult(final int requestCode, final int resultCode,
+//                                    final Intent data){
+//        try {
+//            if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
+//                String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+//                Log.v(TAG, accountName);
+//            } else if (requestCode == CHOOSE_ACCOUNT) {
+//                Log.v(TAG, "There was an error in the account picker");
+//            } else if (requestCode == PAYPAL_REQUEST_CODE){
+//                payPalResult(requestCode, resultCode, data);
+//            } else{
+//                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
+//            }
+//        } catch (Exception e) {
+//            Log.v(TAG, "Exception " + e);
+//        }
+//    }
 
     /**
      * Requests permissions to use device location and access accounts.
@@ -225,5 +236,34 @@ public class Permissions extends AppCompatActivity
             // other 'case' lines to check for other
             // permissions this app might request.
         }
+    }
+
+    public void payPalResult(final int requestCode, final int resultCode,
+                             final Intent data){
+        Log.d(TAG, "We are in payPalResult");
+        String amount = "test amount";
+        if (resultCode == RESULT_OK) {
+            PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+            if (confirmation != null) {
+                try {
+                    String paymentDetails = confirmation.toJSONObject().toString(7);
+                    PaymentInfo paymentInfo = new PaymentInfo();
+                    Bundle args = new Bundle();
+                    args.putString("amount", "$100");
+                    args.putString("paymentInfo", paymentDetails);
+                    paymentInfo.setArguments(args);
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.content_frame, paymentInfo).commit();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            Toast.makeText(this, "Cancel", Toast.LENGTH_SHORT).show();
+
+        } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
+            Toast.makeText(this, "Invalid", Toast.LENGTH_SHORT).show();
+
     }
 }
