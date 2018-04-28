@@ -48,6 +48,7 @@ import clarifai2.api.ClarifaiClient;
 
 import static android.app.Activity.RESULT_OK;
 import static android.location.LocationManager.GPS_PROVIDER;
+import static android.os.Environment.getExternalStorageState;
 import static com.assignment.spotabee.MainActivity.PICK_IMAGE;
 import static com.assignment.spotabee.MainActivity.getContextOfApplication;
 import static com.assignment.spotabee.Permissions.IMAGE_CAPTURE;
@@ -247,9 +248,7 @@ public class FragmentHome extends Fragment  {
     public void onActivityResult(final int requestCode, final int resultCode,
                                     final Intent data){
         try {
-            if(data == null && requestCode == PICK_IMAGE){
-                return;
-            } else if (requestCode == PICK_IMAGE) {
+            if (requestCode == PICK_IMAGE) {
 
                 final ProgressDialog progress = new ProgressDialog(getContextOfApplication());
                 progress.setTitle("Loading");
@@ -265,9 +264,7 @@ public class FragmentHome extends Fragment  {
                     return;
                 }
                 client = ClarifaiClientGenerator.generate(API_KEY);
-                Log.v(TAG, "Entering imageBytes");
                 final byte[] imageBytes = FileOp.getByteArrayFromIntentData(getContextOfApplication(), data);
-                Log.v(TAG, "Exiting imageBytes");
                 if (imageBytes != null) {
 
                     AsyncTask.execute(new Runnable() {
@@ -294,6 +291,56 @@ public class FragmentHome extends Fragment  {
             } else if (requestCode == IMAGE_CAPTURE) {
                 galleryAddPic();
                 Log.v(TAG, "Request went through for Image Capture");
+                Log.v(TAG, "External storage state: " + Environment.getExternalStorageState()
+                + "External Storage directory: " + Environment.getExternalStorageDirectory());
+
+                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                File f = new File(currentPhotoPath);
+                Uri contentUri = Uri.fromFile(f);
+                mediaScanIntent.setData(contentUri);
+
+                final ProgressDialog progress = new ProgressDialog(getContextOfApplication());
+                progress.setTitle("Loading");
+                progress.setMessage("Identify your flower..");
+                progress.setCancelable(false);
+                progress.show();
+
+                if (!CheckNetworkConnection.isInternetAvailable(getContextOfApplication())) {
+                    progress.dismiss();
+                    Toast.makeText(getContextOfApplication(),
+                            "Internet connection unavailable.",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                client = ClarifaiClientGenerator.generate(API_KEY);
+                Log.v(TAG, "Entering imageBytes");
+                final byte[] imageBytes = FileOp.getByteArrayFromIntentData(getContextOfApplication(), mediaScanIntent);
+                Log.v(TAG, "Exiting imageBytes");
+                if (imageBytes != null) {
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d(TAG, "We have started run thread");
+                            ClarifaiRequest clarifaiRequest = new ClarifaiRequest(client, "flower_species", imageBytes);
+                            String flowerType = clarifaiRequest.executRequest();
+                            Log.d(TAG, "Flower Type: " + flowerType);
+
+                            Bundle descriptionFormBundle = new Bundle();
+                            descriptionFormBundle.putString("flowerName", flowerType);
+
+                            FragmentDescriptionForm fragmentDescriptionForm = new FragmentDescriptionForm();
+                            fragmentDescriptionForm.setArguments(descriptionFormBundle);
+
+                            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                            fragmentTransaction.replace(R.id.content_frame, fragmentDescriptionForm);
+                            fragmentTransaction.commit();
+                            progress.dismiss();
+                        }
+                    });
+                } else {
+                    Log.v(TAG, "imageBytes is empty");
+                }
+
             }
             else {
                 Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
