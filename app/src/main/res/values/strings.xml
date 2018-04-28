@@ -70,6 +70,7 @@
     <string name="enter_amount_you_d_nlike_to_donate_in">Enter amount you\'d \n like to donate in $</string>
     <string name="amount_here">Amount Here</string>
     <string name="go_to_youtube_to_see_our_mission">Go to YouTube to see our mission</string>
+    <string name="go_to_paypal">Go to PayPal</string>
 
 
 </resources>
