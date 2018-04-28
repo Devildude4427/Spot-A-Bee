@@ -34,7 +34,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="25dp"
         android:elevation="@dimen/default_elevation"
-        android:text="@string/pay_now"
+        android:text="@string/go_to_paypal"
         android:textAllCaps="false"
         android:translationZ="@dimen/default_translation_z"
         app:layout_constraintBottom_toBottomOf="parent"
