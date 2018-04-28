@@ -44,7 +44,17 @@
     <string name="flowers_spotted">Flowers Spotted</string>
     <string name="identify_your_flower">Identify your flower</string>
     <string name="time">Time</string>
-    <string name="number_of_bees_spotted_on_the_flower">Number of bees spotted on the flower</string>
+    <string name="number_of_bees_spotted_on_the_flower">Number of bees on the flower</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="incentive_every_ten_sub_message">Well done! You have now made %d submissions! The bees thank you!</string>
+    <string name="help_the_bees_more">Please download our PDF to \nfind out what more you can you to help\n the bees!</string>
+    <string name="download_guide">Download Guide</string>
+    <string name="help_the_bees">Help the bees</string>
+    <string name="spot_a_bee">spot a bee</string>
+    <string name="thanks_for_your_help">Thank you for your help</string>
+    <string name="flower_sighting">Flower Sighting</string>
+    <string name="thank_you_for_your_help">Thank you for your help!</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

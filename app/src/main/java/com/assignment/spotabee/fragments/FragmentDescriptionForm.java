@@ -7,6 +7,7 @@ import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
@@ -19,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -44,7 +46,7 @@ public class FragmentDescriptionForm extends Fragment
     private AppCompatEditText description;
     private AppCompatEditText numberOfBeesField;
     private ImageView flowerIdentify;
-    private FrameLayout flowerSearch;
+    private RelativeLayout flowerSearch;
     private Spinner addressSpinner;
 
     // Database
@@ -79,7 +81,7 @@ public class FragmentDescriptionForm extends Fragment
 
 
         addressSpinner = (Spinner) rootView.findViewById(R.id.addressSpinner);
-        addressSpinner.setVisibility(View.GONE);
+        addressSpinner.setVisibility(View.VISIBLE);
 
         flower = rootView.findViewById(R.id.flowerField);
         if(flowerIdentification != null){
@@ -152,6 +154,10 @@ public class FragmentDescriptionForm extends Fragment
                 if (userLocationIsNull()) return;
 
                 commitFormDataToDB();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.content_frame, new FragmentAfterSubmission())
+                        .commit();
                 break;
 
             case R.id.search_location:
@@ -264,6 +270,7 @@ public class FragmentDescriptionForm extends Fragment
 
 
                 } catch (Exception e) {
+                    Looper.loop();
                     Toast.makeText(context,
                             "Sorry. An error occurred. We can't save your information right now...",
                             Toast.LENGTH_SHORT).show();
@@ -295,7 +302,6 @@ public class FragmentDescriptionForm extends Fragment
         }
 
     }
-
 
 
 }
