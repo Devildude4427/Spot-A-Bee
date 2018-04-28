@@ -1,5 +1,6 @@
 package com.assignment.spotabee.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
@@ -34,6 +35,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static com.assignment.spotabee.MainActivity.getContextOfApplication;
 
 
 public class FragmentDescriptionForm extends Fragment
@@ -162,7 +165,11 @@ public class FragmentDescriptionForm extends Fragment
 
             case R.id.search_location:
                 Log.d(TAG, "Search icon has been selected");
-                this.addressSpinner.setVisibility(View.VISIBLE);
+                final ProgressDialog progress = new ProgressDialog(getContextOfApplication());
+                progress.setTitle("Loading");
+                progress.setMessage("Searching for locations");
+                progress.setCancelable(false);
+                progress.show();
 
                 try {
                     ArrayAdapter<String> stringAddressAdapter = getStringArrayAdapter();
@@ -178,6 +185,8 @@ public class FragmentDescriptionForm extends Fragment
                     Log.d(TAG, e.getMessage());
                     this.userLocation = new LatLng(51.5842, 2.9977);
                 }
+                progress.dismiss();
+                break;
         }
     }
 
