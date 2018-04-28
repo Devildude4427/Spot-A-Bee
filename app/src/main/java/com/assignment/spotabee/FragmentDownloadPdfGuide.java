@@ -100,8 +100,12 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
 
         switch (id){
             case R.id.download_pdf_bee:
-                Uri uriForPdf = Uri.parse("https://friendsoftheearth.uk/sites/default/files/downloads/bees_booklet.pdf");
-                downloadData(uriForPdf);
+//                Uri uriForPdf = Uri.parse("https://friendsoftheearth.uk/sites/default/files/downloads/bees_booklet.pdf");
+//                downloadData(uriForPdf);
+                Intent mService = new Intent(getContext(), ScreenService.class);
+                mService.putExtra("download_id", 1);
+                getContext().startService(mService);
+
                 break;
         }
     }
