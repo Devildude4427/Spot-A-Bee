@@ -87,6 +87,8 @@ public class DonationLogin extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+//        PayPal pp = PayPal.getInstance();
+//        launchPayPalButton = pp.getCheckoutButton(this, PayPal.BUTTON_278x43, CheckoutButton.TEXT_PAY);
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_donation, container, false);
 
