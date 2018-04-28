@@ -2,4 +2,5 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="field_width">300dp</dimen>
     <dimen name="thanks_button_height">100dp</dimen>
+    <dimen name="location_search_elevation">5dp</dimen>
 </resources>
