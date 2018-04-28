@@ -97,46 +97,46 @@ public class FragmentHome extends Fragment  {
 
 
         buttonCamera = view.findViewById(R.id.button_camera);
-        buttonCamera.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    int id = v.getId();
-                    //Open the camera HOPEFULLY
+        buttonCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int id = v.getId();
+                //Open the camera HOPEFULLY
 
-                    if (id == R.id.button_camera){
-                        Toast.makeText(getActivity(), "We have at least registered an onclick event", Toast.LENGTH_SHORT).show();
-                        dispatchTakePictureIntent();
-                    } else {
-                        //Go back to main button
-                        intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
-                        startActivity(intent);
-                    }
-
-                    try {
-                        if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
-                                Manifest.permission.ACCESS_FINE_LOCATION)
-                                == PackageManager.PERMISSION_GRANTED) {
-                            locationManager.requestLocationUpdates(
-                                    GPS_PROVIDER, 5000, 10, locationListener);
-
-                            Double lat = locationManager.getLastKnownLocation(GPS_PROVIDER).getLatitude();
-                            Double lng = locationManager.getLastKnownLocation(GPS_PROVIDER).getLongitude();
-                            Log.v(TAG, "Lat: " + lat + "Lng: " + lng);
-
-                            db.descriptionDao()
-                                    .insertDescriptions(new Description(
-                                            lat,
-                                            lng)
-                                    );
-                        }
-                    } catch (Exception e) {
-                        Log.v(TAG, "Exception " + e);
-                    }
+                if (id == R.id.button_camera) {
+                    Toast.makeText(getActivity(), "We have at least registered an onclick event", Toast.LENGTH_SHORT).show();
+                    dispatchTakePictureIntent();
+                } else {
+                    //Go back to main button
+                    intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
                 }
+
+                try {
+                    if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        locationManager.requestLocationUpdates(
+                                GPS_PROVIDER, 5000, 10, locationListener);
+
+                        Double lat = locationManager.getLastKnownLocation(GPS_PROVIDER).getLatitude();
+                        Double lng = locationManager.getLastKnownLocation(GPS_PROVIDER).getLongitude();
+                        Log.v(TAG, "Lat: " + lat + "Lng: " + lng);
+
+                        db.descriptionDao()
+                                .insertDescriptions(new Description(
+                                        lat,
+                                        lng)
+                                );
+                    }
+                } catch (Exception e) {
+                    Log.v(TAG, "Exception " + e);
+                }
+            }
         });
 
         buttonDescriptionForm = view.findViewById(R.id.button_no_image_upload);
-        buttonDescriptionForm.setOnClickListener(new View.OnClickListener(){
+        buttonDescriptionForm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //creating fragment object
@@ -153,29 +153,34 @@ public class FragmentHome extends Fragment  {
         });
 
         buttonUploadPictures = view.findViewById(R.id.button_image_upload);
-        buttonUploadPictures.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                int id = v.getId();
-                //Open the camera HOPEFULLY
-                if (id == R.id.button_upload_picture) {
-                if (id == R.id.button_image_upload){
-                    onImageGallery();
-                }else if(id == R.id.btnHome){
-                    //Go back to main button
-                    Intent intent = new Intent(getActivity().getApplicationContext(), FragmentHome.class);
+        buttonUploadPictures.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        int id = v.getId();
+                                                        //Open the camera HOPEFULLY
+                                                        if (id == R.id.button_upload_picture) {
+                                                            if (id == R.id.button_image_upload) {
+                                                                onImageGallery();
+                                                            } else if (id == R.id.btnHome) {
+                                                                //Go back to main button
+                                                                Intent intent = new Intent(getActivity().getApplicationContext(), FragmentHome.class);
 
-                }else{
-                    //Go back to main button
-                    intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
-                }
-            }
-        });
+                                                            } else {
+                                                                //Go back to main button
+                                                                intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
+                                                                startActivity(intent);
+                                                            }
+                                                        }
+                                                    }
+
+                                                    ;
+                                                }
+
+        );
         return view;
-        }
+    }
 
-    @Override
+        @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles
