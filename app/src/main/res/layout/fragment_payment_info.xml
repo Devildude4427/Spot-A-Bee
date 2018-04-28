@@ -1,34 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.assignment.spotabee.fragments.PaymentInfo">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="41dp">
+    <!--<Button-->
+        <!--android:id="@+id/btnHome"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/linearLayout2"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="44dp"-->
+        <!--android:onClick="onClickListener"-->
+        <!--android:text="@string/btnhome"-->
+        <!--android:textSize="18sp"-->
+        <!--android:textStyle="bold"-->
+        <!--tools:ignore="OnClick" />-->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/linearLayout2">
 
         <TextView
-            android:layout_width="220dp"
+            android:id="@+id/txtHeading"
+            android:layout_width="204dp"
+            android:layout_height="106dp"
+            android:text="@string/thanks_for_your_donation_the_bees_thank_you"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:textStyle="bold" />
+
+        <!--<TextView-->
+            <!--android:id="@+id/txtId"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/id"-->
+            <!--android:gravity="center"-->
+            <!--android:textSize="18sp"-->
+            <!--android:textStyle="bold" />-->
+
+
+        <TextView
+            android:id="@+id/txtAmount"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/donation_completed"
-            android:textColor="@color/black"
+            android:text="@string/amount"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
-            android:textSize="18sp" />
+        <TextView
+            android:id="@+id/txtStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/state"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-    </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_payment_info" />
+    </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
-
-</android.support.design.widget.CoordinatorLayout>
-
+</RelativeLayout>

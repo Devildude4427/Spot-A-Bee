@@ -44,7 +44,7 @@ public class PaymentDetails extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootView =  inflater.inflate(R.layout.fragment_payment_details, container, false);
+        rootView =  inflater.inflate(R.layout.fragment_payment_info, container, false);
         txtId = (TextView) rootView.findViewById(R.id.txtId);
         txtAmount = (TextView) rootView.findViewById(R.id.txtAmount);
         txtStatus = (TextView) rootView.findViewById(R.id.txtStatus);
