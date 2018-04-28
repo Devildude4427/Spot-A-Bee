@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.assignment.spotabee.BuildConfig;
 import com.assignment.spotabee.MainActivity;
 import com.assignment.spotabee.OutdatedClassMap;
 import com.assignment.spotabee.R;
@@ -67,7 +68,8 @@ public class FragmentHome extends Fragment  {
     private AppDatabase db;
     private static final String API_KEY = "d984d2d494394104bb4bee0b8149523d";
     private static ClarifaiClient client;
-    String currentPhotoPath;
+    private String currentPhotoPath;
+    private Uri photoURI;
 
     Intent intent;
 
@@ -174,7 +176,8 @@ public class FragmentHome extends Fragment  {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getContextOfApplication().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM), "Camera");
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",   /* suffix */
@@ -182,11 +185,24 @@ public class FragmentHome extends Fragment  {
         );
 
         // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = image.getAbsolutePath();
+        currentPhotoPath = "file: " + image.getAbsolutePath();
         return image;
     }
 
     private void dispatchTakePictureIntent() {
+//        try {
+//            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//            imageUri = FileProvider.getUriForFile(getContextOfApplication(),
+//                    BuildConfig.APPLICATION_ID + ".provider",
+//                    createImageFile());
+//            takePictureIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, imageUri);
+//            takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//            startActivityForResult(takePictureIntent, IMAGE_CAPTURE);
+//        } catch (Exception e) {
+//            Log.v(TAG, "Exception in dispatch " + e);
+//        }
+
+
         try {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             // Ensure that there's a camera activity to handle the intent
@@ -200,9 +216,9 @@ public class FragmentHome extends Fragment  {
                 }
                 // Continue only if the File was successfully created
                 if (photoFile != null) {
-                    Uri photoURI = FileProvider.getUriForFile(getContextOfApplication(),
-                            "com.assignment.spotabee.fileprovider",
-                            photoFile);
+                    photoURI = FileProvider.getUriForFile(getContextOfApplication(),
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    createImageFile());
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                     startActivityForResult(takePictureIntent, IMAGE_CAPTURE);
                 }
