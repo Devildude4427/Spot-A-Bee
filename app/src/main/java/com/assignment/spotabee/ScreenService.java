@@ -63,15 +63,7 @@ public class ScreenService extends Service {
             }
         }
 
-//        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, SERVICE_CHANNEL_ID)
-//                .setSmallIcon(R.drawable.ic_bell)
-//                .setContentTitle("Test title")
-//                .setContentText("Test content")
-//                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-//        Notification n = mBuilder.build();
-//
-//        startForeground(SERVICE_NOTIFICATION_ID, n);
-//        nManager.notify(SERVICE_NOTIFICATION_ID, n);
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -162,6 +154,7 @@ public class ScreenService extends Service {
 
         registerScreenEvents();
 
+        stopSelf();
         return START_STICKY;
     }
 
