@@ -67,7 +67,7 @@ import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_EXTERNAL_ST
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-//    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS = 0;
+    //    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS = 0;
 //    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 1;
 //    private static final int PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS = 2;
 //    public static final int PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE = 3;
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity
         DatabaseInitializer.populateAsync(db);
 
         Description description = new Description(
-                51.4816,3.1791,
+                51.4816, 3.1791,
                 "Cardiff", "Rose", "None",
                 1, "17-05-2018", "15:39");
 
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else{
+        } else {
             super.onBackPressed();
         }
     }
@@ -233,8 +233,7 @@ public class MainActivity extends AppCompatActivity
      *
      * @return The context for the current activity
      */
-    public static Context getContextOfApplication()
-    {
+    public static Context getContextOfApplication() {
         return contextOfApplication;
     }
 
@@ -245,10 +244,10 @@ public class MainActivity extends AppCompatActivity
     public void checkIfPermissionsGiven() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+                Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
             requestLocationAccountPermission();
             Log.v(TAG, "Requesting account and location Permissions");
-        } else if(ContextCompat.checkSelfPermission(this,
+        } else if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             requestLocationPermission();
@@ -260,12 +259,12 @@ public class MainActivity extends AppCompatActivity
             Log.v(TAG, "Only requesting account Permission");
         } else if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED){
+                != PackageManager.PERMISSION_GRANTED) {
             requestCameraPermission();
             Log.v(TAG, "Requesting camera Permission");
         } else if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED){
+                != PackageManager.PERMISSION_GRANTED) {
             requestExternalStoragePermission();
             Log.v(TAG, "Requesting camera Permission");
         } else {
@@ -411,9 +410,9 @@ public class MainActivity extends AppCompatActivity
     /**
      * Checks the results of the permission requests.
      *
-     * @param requestCode An integer that relates to the permission. So
-     *                    location might be 1, account access 2, and so on.
-     * @param permissions The permission being requested.
+     * @param requestCode  An integer that relates to the permission. So
+     *                     location might be 1, account access 2, and so on.
+     * @param permissions  The permission being requested.
      * @param grantResults What the result of result of the request is. The result
      *                     of whether or not the user allowed this permission.
      */
@@ -498,26 +497,79 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         AppDatabase.destroyInstance();
         super.onDestroy();
     }
 
 
     public void onActivityResult(final int requestCode, final int resultCode,
-                                 final Intent data){
+                                 final Intent data) {
 
-        if(requestCode == PAYPAL_REQUEST_CODE){
-            mReturningWithResult = true;
-            payPalData = data;
-            payPalResultCode = resultCode;
-        }
 
         try {
-            if(data == null && requestCode == PICK_IMAGE){
+            if (data != null && requestCode == PICK_IMAGE) {
+                imageRecognitionResult(resultCode, data);
+            }
+
+            if (requestCode == PAYPAL_REQUEST_CODE) {
+                mReturningWithResult = true;
+                payPalData = data;
+                payPalResultCode = resultCode;
+            }
+
+            else {
+                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
+            }
+        } catch (Exception e) {
+            Log.v(TAG, "Exception " + e);
+        }
+    }
+
+    public void payPalResult(final int resultCode,
+                             final Intent data) {
+        Log.d(TAG, "We are in payPalResult");
+//        String paymentDetails = "test paymentDetails";
+        if (resultCode == RESULT_OK) {
+            PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+            if (confirmation != null) {
+                try {
+                    String paymentDetails = confirmation.toJSONObject().toString(7);
+                    PaymentInfo paymentInfo = new PaymentInfo();
+                    Bundle args = new Bundle();
+                    args.putString("paymentInfo", paymentDetails);
+                    paymentInfo.setArguments(args);
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.content_frame, paymentInfo).commit();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            Toast.makeText(getActivity(), "Cancel", Toast.LENGTH_SHORT).show();
+
+        } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
+            Toast.makeText(getActivity(), "Invalid", Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        if (mReturningWithResult) {
+            payPalResult(payPalResultCode, payPalData);
+        }
+        // Reset the boolean flag back to false for next time.
+        mReturningWithResult = false;
+    }
+
+    private void imageRecognitionResult(int resultCode, Intent data) {
+
+            if (data == null) {
                 return;
-            } else if (requestCode == PICK_IMAGE) {
-                Log.d(TAG, "WE FIRE ACTIVITY RESULT FROM HOME");
+            } else {
+                Log.d(TAG, "WE ARE IN IMAGE RECOGNITION");
                 final ProgressDialog progress = new ProgressDialog(getContextOfApplication());
                 progress.setTitle("Loading");
                 progress.setMessage("Identify your flower..");
@@ -556,51 +608,7 @@ public class MainActivity extends AppCompatActivity
                         }
                     });
                 }
-            } else {
-                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
             }
-        } catch (Exception e) {
-            Log.v(TAG, "Exception " + e);
         }
     }
-
-    public void payPalResult(final int resultCode,
-                             final Intent data){
-        Log.d(TAG, "We are in payPalResult");
-        String amount = "test amount";
-        if (resultCode == RESULT_OK) {
-            PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
-            if (confirmation != null) {
-                try {
-                    String paymentDetails = confirmation.toJSONObject().toString(7);
-                    PaymentInfo paymentInfo = new PaymentInfo();
-                    Bundle args = new Bundle();
-                    args.putString("amount", "$100");
-                    args.putString("paymentInfo", paymentDetails);
-                    paymentInfo.setArguments(args);
-                    getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.content_frame, paymentInfo).commit();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        } else if (resultCode == Activity.RESULT_CANCELED) {
-            Toast.makeText(getActivity(), "Cancel", Toast.LENGTH_SHORT).show();
-
-        } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
-            Toast.makeText(getActivity(), "Invalid", Toast.LENGTH_SHORT).show();
-
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        if (mReturningWithResult) {
-            payPalResult(payPalResultCode, payPalData);
-        }
-        // Reset the boolean flag back to false for next time.
-        mReturningWithResult = false;
-    }
-}
 
