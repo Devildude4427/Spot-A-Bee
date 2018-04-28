@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.assignment.spotabee.R;
 import com.assignment.spotabee.database.AppDatabase;
@@ -15,6 +16,7 @@ import com.assignment.spotabee.database.AppDatabase;
 public class FragmentAfterSubmission extends Fragment {
 
     private View rootView;
+    private RelativeLayout goHome;
     private AppDatabase db;
     private Context context;
 
@@ -40,7 +42,17 @@ public class FragmentAfterSubmission extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        rootView = inflater.inflate(R.layout.fragment_fragment_after_submission, container, false);
+        rootView = inflater.inflate(R.layout.fragment_after_submission, container, false);
+        goHome = rootView.findViewById(R.id.goHome);
+        goHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.content_frame, new FragmentHome())
+                        .commit();
+            }
+        });
         db = AppDatabase.getAppDatabase(getContext());
         context = getActivity();
         checkForNotifications();
