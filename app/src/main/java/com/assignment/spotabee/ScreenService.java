@@ -98,53 +98,6 @@ public class ScreenService extends Service {
     }
 
 
-//    private Notification createExampleNotification() {
-//
-//        Intent fileIntent = new Intent(Intent.ACTION_VIEW);
-//
-//        // Grabs the Uri for the file that was downloaded.
-//        Uri mostRecentDownload =
-//                downloadManager.getUriForDownloadedFile(downloadReference);
-//        // DownloadManager stores the Mime Type. Makes it really easy for us.
-////        String mimeType =
-////                downloadManager.getMimeTypeForDownloadedFile(downloadReference);
-//        String mimeType = "application/pdf";
-//        fileIntent.setDataAndType(mostRecentDownload, mimeType);
-//        fileIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//
-//        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(getBaseContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        PendingIntent pendingOpenFile = PendingIntent.getActivity(getBaseContext(), 0, fileIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getBaseContext(), CHANNEL_ID)
-//                .setSmallIcon(R.drawable.ic_bell)
-//                .setContentTitle("Spot a Bee")
-//                .setContentText("Help the Bees")
-//                .setPriority(NotificationCompat.PRIORITY_DEFAULT) //Set priority for backwards compatibility
-//                .addAction(0, "Open your guide", pendingOpenFile) //Sets no icon in this example
-//                .setContentIntent(pendingOpenFile)
-//                .setAutoCancel(true);
-//
-//
-//        return mBuilder.build();
-//    }
-
-
-//    public void makeNotifications() {
-//
-//        NotificationManager nManager = (NotificationManager) getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
-//        if (nManager == null)
-//            Toast.makeText(getBaseContext(), "Unable to post notification", Toast.LENGTH_SHORT).show();
-//        else {
-//
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-//                createAnExampleNotificationChannel(nManager, "Open your Spot a Bee PDF");
-//
-//            Notification exampleNotification = createExampleNotification();
-//
-//            nManager.notify(NOTIFICATION_ID, exampleNotification);
-//        }
-//    }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(this, "Service is starting", Toast.LENGTH_SHORT).show();
@@ -161,7 +114,7 @@ public class ScreenService extends Service {
     private void registerScreenEvents(){
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_ON);
-        this.registerReceiver(new ScreenReceiver(), filter);
+        this.registerReceiver(new Receiver(), filter);
     }
 
 

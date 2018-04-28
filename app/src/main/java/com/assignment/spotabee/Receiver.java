@@ -65,13 +65,17 @@ public class Receiver extends BroadcastReceiver {
         Intent intent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, fileIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent pendingOpenFile = PendingIntent.getActivity(context, 0, fileIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent goToDownloads = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
+        PendingIntent pendingGoToDownloads = PendingIntent.getActivity(context, 0, goToDownloads, PendingIntent.FLAG_UPDATE_CURRENT);
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_bell)
                 .setContentTitle("Spot a Bee")
                 .setContentText("Help the Bees")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT) //Set priority for backwards compatibility
-                .addAction(0, "Open your guide", pendingOpenFile) //Sets no icon in this example
-                .setContentIntent(pendingOpenFile)
+                .addAction(0, "Open your guide", pendingGoToDownloads) //Sets no icon in this example
+                .setContentIntent(pendingGoToDownloads)
                 .setAutoCancel(true);
 
 
