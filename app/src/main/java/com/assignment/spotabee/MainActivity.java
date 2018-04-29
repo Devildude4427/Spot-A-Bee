@@ -3,21 +3,15 @@ package com.assignment.spotabee;
 import android.Manifest;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -29,27 +23,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.assignment.spotabee.customutils.CheckNetworkConnection;
-import com.assignment.spotabee.customutils.FileOp;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.DatabaseInitializer;
 import com.assignment.spotabee.database.Description;
 import com.assignment.spotabee.fragments.FragmentAboutUs;
-import com.assignment.spotabee.fragments.FragmentDescriptionForm;
 import com.assignment.spotabee.fragments.FragmentHome;
 import com.assignment.spotabee.fragments.FragmentHowTo;
 import com.assignment.spotabee.fragments.FragmentLeaderboard;
 import com.assignment.spotabee.fragments.FragmentMap;
-import com.assignment.spotabee.imagerecognition.ClarifaiClientGenerator;
-import com.assignment.spotabee.imagerecognition.ClarifaiRequest;
-
-import java.io.InputStream;
 
 import clarifai2.api.ClarifaiClient;
 
-import static com.assignment.spotabee.Permissions.ACCESS_IMAGE_GALLERY;
 import static com.assignment.spotabee.Permissions.CHOOSE_ACCOUNT;
 import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS;
 import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_ACCESS_FINE_LOCATION;
@@ -102,7 +87,7 @@ public class MainActivity extends AppCompatActivity
         DatabaseInitializer.populateAsync(db);
 
         Description description = new Description(
-                51.4816,3.1791,
+                51.4816,-3.1791,
                 "Cardiff", "Rose", "None",
                 1, "17-05-2018", "15:39");
 
@@ -177,7 +162,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_howto:
                 fragment = new FragmentHowTo();
                 break;
-            case R.id.nav_map:
+            case R.id.nav_results:
                 fragment = new FragmentMap();
                 break;
             case R.id.nav_aboutus:

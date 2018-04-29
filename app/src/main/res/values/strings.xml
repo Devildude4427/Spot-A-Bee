@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Spot A Bee</string>
-    <string name="title_activity_maps">Map</string>
 
     <string name="button">Button</string>
 
@@ -33,12 +32,11 @@
 
     <string name="drawer_menu_item_home">Home</string>
     <string name="drawer_menu_item_howto">How To</string>
-    <string name="drawer_menu_item_map">Map</string>
+    <string name="drawer_menu_item_results">Results</string>
     <string name="drawer_menu_item_aboutus">About Us</string>
     <string name="drawer_menu_item_form">Form</string>
     <string name="drawer_menu_item_leaderboard">Leaderboard</string>
 
-    <string name="nav_form">Form</string>
     <string name="identify_a_flower">Identify a flower</string>
     <string name="details_title">Details</string>
     <string name="flowers_spotted">Flowers Spotted</string>
