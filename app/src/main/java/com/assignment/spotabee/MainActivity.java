@@ -3,11 +3,9 @@ package com.assignment.spotabee;
 import android.Manifest;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -24,40 +22,24 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.assignment.spotabee.customutils.CheckNetworkConnection;
-import com.assignment.spotabee.customutils.FileOp;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.DatabaseInitializer;
 import com.assignment.spotabee.database.Description;
 import com.assignment.spotabee.fragments.DonationLogin;
 import com.assignment.spotabee.fragments.FragmentAboutUs;
-import com.assignment.spotabee.fragments.FragmentDescriptionForm;
 import com.assignment.spotabee.fragments.FragmentHome;
 import com.assignment.spotabee.fragments.FragmentHowTo;
 import com.assignment.spotabee.fragments.FragmentLeaderboard;
 import com.assignment.spotabee.fragments.FragmentMap;
 import com.assignment.spotabee.fragments.PaymentInfo;
-import com.assignment.spotabee.imagerecognition.ClarifaiClientGenerator;
-import com.assignment.spotabee.imagerecognition.ClarifaiRequest;
 import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
-
-import org.json.JSONException;
-
-import java.io.InputStream;
-
 import clarifai2.api.ClarifaiClient;
 
 import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
-import static com.assignment.spotabee.Permissions.ACCESS_IMAGE_GALLERY;
-
-
-import clarifai2.api.ClarifaiClient;
-
 import static com.assignment.spotabee.Permissions.CHOOSE_ACCOUNT;
 import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS;
 import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_ACCESS_FINE_LOCATION;
@@ -75,12 +57,7 @@ public class MainActivity extends AppCompatActivity
     private AccountManager accountManager;
     private static Context contextOfApplication;
     private AppDatabase db;
-
     public static final int PICK_IMAGE = 100;
-    private static final String API_KEY = "d984d2d494394104bb4bee0b8149523d";
-    private static ClarifaiClient client;
-    private ImageView imgGallery;
-
     private DrawerLayout mDrawerLayout;
     private static final String TAG = "Main Activity Debug";
 
@@ -181,7 +158,6 @@ public class MainActivity extends AppCompatActivity
      *               that the app wants to open.
      */
     private void displaySelectedScreen(final int itemId) {
-
         //creating fragment object
         Fragment fragment = null;
 
@@ -202,24 +178,12 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_leaderboard:
                 fragment = new FragmentLeaderboard();
                 break;
-
             case R.id.nav_donate:
                 fragment = new DonationLogin();
                 break;
-
-            //Adding btnHome from the DonationInfo fragment so that
-            //The user can easily go back home after making a donation
-            case R.id.btnHome:
-                fragment = new FragmentHome();
-                break;
-//            case R.id.nav_identify_image:
-//                startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), PICK_IMAGE);
-//                break;
-
             case R.id.nav_resources:
                 fragment = new FragmentDownloadPdfGuide();
                 break;
-
         }
 
         //replacing the fragment
@@ -297,25 +261,21 @@ public class MainActivity extends AppCompatActivity
                                     final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        try {
-            if (data == null && requestCode == PICK_IMAGE) {
-                return;
-            } else if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
-                String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                Log.v(TAG, accountName);
-            } else if (requestCode == CHOOSE_ACCOUNT) {
-                Log.v(TAG, "There was an error in the account picker");
-            } else if (requestCode == 3) {
-                Log.v(TAG, "Request for camera");
-            } else if (requestCode == Activity.RESULT_CANCELED) {
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.content_frame, new FragmentHome());
-                fragmentTransaction.commit();
-            } else {
-                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
-            }
-        } catch (Exception e) {
-            Log.v(TAG, "Exception " + e);
+        if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
+            String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+            Log.v(TAG, accountName);
+        } else if (requestCode == CHOOSE_ACCOUNT) {
+            Log.v(TAG, "There was an error in the account picker");
+        } else if (requestCode == Activity.RESULT_CANCELED) {
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.content_frame, new FragmentHome());
+            fragmentTransaction.commit();
+        } else if (requestCode == PAYPAL_REQUEST_CODE) {
+            mReturningWithResult = true;
+            payPalData = data;
+            payPalResultCode = resultCode;
+        } else {
+            Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
         }
     }
 
@@ -488,7 +448,33 @@ public class MainActivity extends AppCompatActivity
         AppDatabase.destroyInstance();
         super.onDestroy();
     }
-}
+
+    public void payPalResult(final int resultCode,
+                             final Intent data) {
+        if (resultCode == RESULT_OK) {
+            PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+            if (confirmation != null) {
+                try {
+                    String paymentDetails = confirmation.toJSONObject().toString(7);
+                    PaymentInfo paymentInfo = new PaymentInfo();
+                    Bundle args = new Bundle();
+                    args.putString("paymentInfo", paymentDetails);
+                    paymentInfo.setArguments(args);
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.content_frame, paymentInfo).commit();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            Toast.makeText(getActivity(), "Cancel", Toast.LENGTH_SHORT).show();
+
+        } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
+            Toast.makeText(getActivity(), "Invalid", Toast.LENGTH_SHORT).show();
+
+    }
+
 
     @Override
     protected void onPostResume() {
@@ -499,54 +485,5 @@ public class MainActivity extends AppCompatActivity
         // Reset the boolean flag back to false for next time.
         mReturningWithResult = false;
     }
-
-    private void imageRecognitionResult(int resultCode, Intent data) {
-
-            if (data == null) {
-                return;
-            } else {
-                Log.d(TAG, "WE ARE IN IMAGE RECOGNITION");
-                final ProgressDialog progress = new ProgressDialog(getContextOfApplication());
-                progress.setTitle("Loading");
-                progress.setMessage("Identify your flower..");
-                progress.setCancelable(false);
-                progress.show();
-
-                if (!CheckNetworkConnection.isInternetAvailable(getContextOfApplication())) {
-                    progress.dismiss();
-                    Toast.makeText(getContextOfApplication(),
-                            "Internet connection unavailable.",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                client = ClarifaiClientGenerator.generate(API_KEY);
-                final byte[] imageBytes = FileOp.getByteArrayFromIntentData(getContextOfApplication(), data);
-                if (imageBytes != null) {
-
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d(TAG, "We have started run thread");
-                            ClarifaiRequest clarifaiRequest = new ClarifaiRequest(client, "flower_species", imageBytes);
-                            String flowerType = clarifaiRequest.executRequest();
-                            Log.d(TAG, "Flower Type: " + flowerType);
-
-                            Bundle descriptionFormBundle = new Bundle();
-                            descriptionFormBundle.putString("flowerName", flowerType);
-
-                            FragmentDescriptionForm fragmentDescriptionForm = new FragmentDescriptionForm();
-                            fragmentDescriptionForm.setArguments(descriptionFormBundle);
-
-                            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                            fragmentTransaction.replace(R.id.content_frame, fragmentDescriptionForm);
-                            fragmentTransaction.commit();
-                            progress.dismiss();
-                        }
-                    });
-                }
-            }
-        }
-
-
 }
 
