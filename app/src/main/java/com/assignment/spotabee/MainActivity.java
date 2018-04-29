@@ -65,18 +65,15 @@ import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_ACCESS_FINE
 import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_CAMERA;
 import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_EXTERNAL_STORAGE;
 
+/**
+ * This is the main backbone of the app. It handles all fragments
+ * and non-fragment specific methods.
+ */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    //    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS = 0;
-//    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 1;
-//    private static final int PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS = 2;
-//    public static final int PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE = 3;
-//    public static final int PERMISSION_REQUEST_ACCESS_IMAGE_GALLERY = 4;
-//    private static final int PERMISSION_REQUEST_CAMERA = 5;
-//    private static final int CHOOSE_ACCOUNT = 99;
     private AccountManager accountManager;
-    public static Context contextOfApplication;
+    private static Context contextOfApplication;
     private AppDatabase db;
 
     public static final int PICK_IMAGE = 100;
@@ -93,7 +90,7 @@ public class MainActivity extends AppCompatActivity
     private boolean mReturningWithResult = false;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -115,12 +112,11 @@ public class MainActivity extends AppCompatActivity
         DatabaseInitializer.populateAsync(db);
 
         Description description = new Description(
-                51.4816,-3.1791,
+                51.4816, -3.1791,
                 "Cardiff", "Rose", "None",
                 1, "17-05-2018", "15:39");
 
         db.descriptionDao().insertDescriptions(description);
-
 
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -156,16 +152,15 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -179,7 +174,13 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void displaySelectedScreen(int itemId) {
+    /**
+     * Method that handles all screen changes through the nav drawer.
+     *
+     * @param itemId A page, identified by "R.id.page_name",
+     *               that the app wants to open.
+     */
+    private void displaySelectedScreen(final int itemId) {
 
         //creating fragment object
         Fragment fragment = null;
@@ -219,7 +220,6 @@ public class MainActivity extends AppCompatActivity
                 fragment = new FragmentDownloadPdfGuide();
                 break;
 
-
         }
 
         //replacing the fragment
@@ -235,11 +235,8 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-
-        //calling the method displayselectedscreen and passing the id of selected menu
+    public boolean onNavigationItemSelected(final MenuItem item) {
         displaySelectedScreen(item.getItemId());
-        //make this method blank
         return true;
     }
 
@@ -259,7 +256,7 @@ public class MainActivity extends AppCompatActivity
     public void checkIfPermissionsGiven() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
-                Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+                        Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
             requestLocationAccountPermission();
             Log.v(TAG, "Requesting account and location Permissions");
         } else if (ContextCompat.checkSelfPermission(this,
@@ -288,82 +285,39 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Creates gets details and confirms operation from account picker
+     * Creates gets details and confirms operation from account picker.
      *
      * @param requestCode An integer that relates to the permission. So
      *                    location might be 1, account access 2, and so on.
      * @param resultCode If the result succeeded or failed
      * @param data The intent that is being requested
      */
-//    @Override
-//    public void onActivityResult(final int requestCode, final int resultCode,
-//                                    final Intent data){
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        try {
-//            if(data == null && requestCode == PICK_IMAGE){
-//                return;
-//            } else if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
-//                String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-//                Log.v(TAG, accountName);
-//            } else if (requestCode == CHOOSE_ACCOUNT) {
-//                Log.v(TAG, "There was an error in the account picker");
-//            } else if (requestCode == 3) {
-//                Log.v(TAG, "Request for camera");
-//            } else if (requestCode == PICK_IMAGE) {
-//
-//                final ProgressDialog progress = new ProgressDialog(this);
-//                progress.setTitle("Loading");
-//                progress.setMessage("Identify your flower..");
-//                progress.setCancelable(false);
-//                progress.show();
-//
-//                if (!CheckNetworkConnection.isInternetAvailable(this)) {
-//                    progress.dismiss();
-//                    Toast.makeText(this,
-//                            "Internet connection unavailable.",
-//                            Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//                client = ClarifaiClientGenerator.generate(API_KEY);
-//                final byte[] imageBytes = FileOp.getByteArrayFromIntentData(this, data);
-//                if (imageBytes != null) {
-//
-//                    AsyncTask.execute(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Log.d(TAG, "We have started run thread");
-//                            ClarifaiRequest clarifaiRequest = new ClarifaiRequest(client, "flower_species", imageBytes);
-//                            String flowerType = clarifaiRequest.executRequest();
-//                            Log.d(TAG, "Flower Type: " + flowerType);
-//
-//                            Bundle descriptionFormBundle = new Bundle();
-//                            descriptionFormBundle.putString("flowerName", flowerType);
-//
-//                            FragmentDescriptionForm fragmentDescriptionForm = new FragmentDescriptionForm();
-//                            fragmentDescriptionForm.setArguments(descriptionFormBundle);
-//
-//                            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//                            fragmentTransaction.replace(R.id.content_frame, fragmentDescriptionForm);
-//                            fragmentTransaction.commit();
-//                            progress.dismiss();
-//                        }
-//                    });
-//                }
-//            } else if (requestCode == Activity.RESULT_CANCELED){
-//                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//                fragmentTransaction.replace(R.id.content_frame, new FragmentHome());
-//                fragmentTransaction.commit();
-//            } else if (requestCode == PAYPAL_REQUEST_CODE){
-//                payPalResult(requestCode, resultCode, data);
-//
-//            } else {
-//                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
-//            }
-//        } catch (Exception e) {
-//            Log.v(TAG, "Exception " + e);
-//        }
-//    }
+    @Override
+    public void onActivityResult(final int requestCode, final int resultCode,
+                                    final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        try {
+            if (data == null && requestCode == PICK_IMAGE) {
+                return;
+            } else if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
+                String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                Log.v(TAG, accountName);
+            } else if (requestCode == CHOOSE_ACCOUNT) {
+                Log.v(TAG, "There was an error in the account picker");
+            } else if (requestCode == 3) {
+                Log.v(TAG, "Request for camera");
+            } else if (requestCode == Activity.RESULT_CANCELED) {
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.content_frame, new FragmentHome());
+                fragmentTransaction.commit();
+            } else {
+                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
+            }
+        } catch (Exception e) {
+            Log.v(TAG, "Exception " + e);
+        }
+    }
 
     /**
      * Requests permissions to use device location and access accounts.
@@ -425,26 +379,31 @@ public class MainActivity extends AppCompatActivity
     /**
      * Checks the results of the permission requests.
      *
-     * @param requestCode  An integer that relates to the permission. So
-     *                     location might be 1, account access 2, and so on.
-     * @param permissions  The permission being requested.
+     * @param requestCode An integer that relates to the permission. So
+     *                    location might be 1, account access 2, and so on.
+     * @param permissions The permission being requested.
      * @param grantResults What the result of result of the request is. The result
      *                     of whether or not the user allowed this permission.
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[],
-                                           int[] grantResults) {
+    public void onRequestPermissionsResult(final int requestCode,
+                                           final String[] permissions,
+                                           final int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        && grantResults[0]
+                        == PackageManager.PERMISSION_GRANTED) {
                     Log.v(TAG, "Permission to both granted");
 
                     try {
-                        Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
+                        Intent intent =
+                                accountManager.newChooseAccountIntent(null,
+                                null, new String[]{"com.google"},
+                                null, null,
+                                null, null);
                         startActivityForResult(intent, CHOOSE_ACCOUNT);
                         checkIfPermissionsGiven();
 
@@ -461,7 +420,8 @@ public class MainActivity extends AppCompatActivity
             case PERMISSION_REQUEST_ACCESS_FINE_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        && grantResults[0]
+                        == PackageManager.PERMISSION_GRANTED) {
                     Log.v(TAG, "Permission to only location granted");
                     checkIfPermissionsGiven();
                 }
@@ -471,10 +431,15 @@ public class MainActivity extends AppCompatActivity
             case PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        && grantResults[0]
+                        == PackageManager.PERMISSION_GRANTED) {
                     Log.v(TAG, "Permission to only account granted");
                     try {
-                        Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
+                        Intent intent =
+                                accountManager.newChooseAccountIntent(null,
+                                null, new String[]{"com.google"},
+                                null, null,
+                                null, null);
                         startActivityForResult(intent, CHOOSE_ACCOUNT);
                         Log.v(TAG, "Intent to choose just account a go");
                     } catch (Exception e) {
@@ -491,7 +456,8 @@ public class MainActivity extends AppCompatActivity
             case PERMISSION_REQUEST_CAMERA: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        && grantResults[0]
+                        == PackageManager.PERMISSION_GRANTED) {
                     Log.v(TAG, "Permission to use camera granted");
                     checkIfPermissionsGiven();
                 }
@@ -501,9 +467,15 @@ public class MainActivity extends AppCompatActivity
             case PERMISSION_REQUEST_EXTERNAL_STORAGE: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        && grantResults[0]
+                        == PackageManager.PERMISSION_GRANTED) {
                     Log.v(TAG, "Permission to use external storage granted");
                 }
+            }
+            return;
+
+            default: {
+                Log.v(TAG, "Nothing exists to handle that permission request");
             }
 
             // other 'case' lines to check for other
@@ -516,58 +488,7 @@ public class MainActivity extends AppCompatActivity
         AppDatabase.destroyInstance();
         super.onDestroy();
     }
-
-
-    public void onActivityResult(final int requestCode, final int resultCode,
-                                 final Intent data) {
-
-
-        try {
-            if (data != null && requestCode == PICK_IMAGE) {
-                imageRecognitionResult(resultCode, data);
-            }
-
-            if (requestCode == PAYPAL_REQUEST_CODE) {
-                mReturningWithResult = true;
-                payPalData = data;
-                payPalResultCode = resultCode;
-            }
-
-            else {
-                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
-            }
-        } catch (Exception e) {
-            Log.v(TAG, "Exception " + e);
-        }
-    }
-
-    public void payPalResult(final int resultCode,
-                             final Intent data) {
-        Log.d(TAG, "We are in payPalResult");
-//        String paymentDetails = "test paymentDetails";
-        if (resultCode == RESULT_OK) {
-            PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
-            if (confirmation != null) {
-                try {
-                    String paymentDetails = confirmation.toJSONObject().toString(7);
-                    PaymentInfo paymentInfo = new PaymentInfo();
-                    Bundle args = new Bundle();
-                    args.putString("paymentInfo", paymentDetails);
-                    paymentInfo.setArguments(args);
-                    getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.content_frame, paymentInfo).commit();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        } else if (resultCode == Activity.RESULT_CANCELED) {
-            Toast.makeText(getActivity(), "Cancel", Toast.LENGTH_SHORT).show();
-
-        } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
-            Toast.makeText(getActivity(), "Invalid", Toast.LENGTH_SHORT).show();
-
-    }
+}
 
     @Override
     protected void onPostResume() {
