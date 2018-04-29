@@ -302,6 +302,10 @@ public class FragmentHome extends Fragment  {
                     return;
                 }
 
+                if (data == null) {
+                    Log.v(TAG, "Data is null");
+                }
+
                 client = ClarifaiClientGenerator.generate(API_KEY);
                 final byte[] imageBytes = FileOp.getByteArrayFromIntentData(getContextOfApplication(), data);
                 Log.v(TAG, "There");

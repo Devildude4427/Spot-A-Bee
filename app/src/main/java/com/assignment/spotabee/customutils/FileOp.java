@@ -31,15 +31,14 @@ public class FileOp {
         InputStream inStream = null;
         Bitmap bitmap = null;
         try {
-            Log.v(TAG + "data", data.getData().toString());
-            inStream = context.getContentResolver().openInputStream(data.getData());
+            inStream = context.getContentResolver().openInputStream(data);
             Log.v(TAG, "Instream works");
             bitmap = BitmapFactory.decodeStream(inStream);
             final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
             return outStream.toByteArray();
         } catch (FileNotFoundException e) {
-            Log.v("FileOP Debug", "Exception " + e);
+            Log.v(TAG, "Exception " + e);
             return null;
         } finally {
             if (inStream != null) {
