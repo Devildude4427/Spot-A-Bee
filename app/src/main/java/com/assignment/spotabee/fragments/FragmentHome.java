@@ -281,12 +281,12 @@ public class FragmentHome extends Fragment  {
                 }
 
             } else if (requestCode == IMAGE_CAPTURE) {
-                galleryAddPic();
-
-                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                File f = new File(currentPhotoPath);
-                Uri contentUri = Uri.fromFile(f);
-                mediaScanIntent.setData(contentUri);
+//                galleryAddPic();
+//
+//                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//                File f = new File(currentPhotoPath);
+//                Uri contentUri = Uri.fromFile(f);
+//                mediaScanIntent.setData(contentUri);
 
                 final ProgressDialog progress = new ProgressDialog(getContextOfApplication());
                 progress.setTitle("Loading");
@@ -302,9 +302,9 @@ public class FragmentHome extends Fragment  {
                     return;
                 }
 
-//                Log.v(TAG, data.getData().toString());
                 client = ClarifaiClientGenerator.generate(API_KEY);
-                final byte[] imageBytes = FileOp.getByteArrayFromIntentData(getContextOfApplication(), mediaScanIntent);
+                final byte[] imageBytes = FileOp.getByteArrayFromIntentData(getContextOfApplication(), data);
+                Log.v(TAG, "There");
                 if (imageBytes != null) {
                     AsyncTask.execute(new Runnable() {
                         @Override
@@ -336,6 +336,7 @@ public class FragmentHome extends Fragment  {
             }
         } catch (Exception e) {
             Log.v(TAG, "Exception with Activity Start " + e);
+            e.printStackTrace();
         }
     }
 

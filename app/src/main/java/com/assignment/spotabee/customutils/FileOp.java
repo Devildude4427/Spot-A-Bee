@@ -23,7 +23,7 @@ import java.io.InputStream;
 
 public class FileOp {
 
-    private static final String TAG = "FileOP Debug";
+    private static final String TAG = "FileOPDebug";
 
 
     @Nullable
