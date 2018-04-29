@@ -53,7 +53,7 @@ public class FragmentLeaderboard extends Fragment implements AdapterView.OnItemC
     private void doCustomAdapterExample(List<UserScore> userScores){
 
         ArrayList<UserScore> arrlistOfBooks= new ArrayList<UserScore>(userScores);
-        MyCustomAdapter myCustomAdapter = new MyCustomAdapter(
+        LeaderBoardAdapter leaderBoardAdapter = new LeaderBoardAdapter(
                 getActivity(),
                 R.layout.gray_user_score_layout,
                 arrlistOfBooks
@@ -64,7 +64,7 @@ public class FragmentLeaderboard extends Fragment implements AdapterView.OnItemC
 //        lv.setAdapter(myCustomAdapter);
 
         ListView testListView = rootView.findViewById(R.id.testListView);
-        testListView.setAdapter(myCustomAdapter);
+        testListView.setAdapter(leaderBoardAdapter);
 
     }
 
@@ -74,13 +74,13 @@ public class FragmentLeaderboard extends Fragment implements AdapterView.OnItemC
     }
 
     //Custom adapter used in Example 2
-    private class MyCustomAdapter extends BaseAdapter {
+    private class LeaderBoardAdapter extends BaseAdapter {
 
         private Context context;
         private ArrayList data;
         private int layoutToUseForTheRows;
 
-        MyCustomAdapter(Context context, int layout, ArrayList data) {
+        LeaderBoardAdapter(Context context, int layout, ArrayList data) {
             this.context = context;
             this.layoutToUseForTheRows = layout;
             this.data = data;
@@ -103,15 +103,14 @@ public class FragmentLeaderboard extends Fragment implements AdapterView.OnItemC
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            //If the view has not been created previously, inflate the user interface for the row
+
             if (view == null){
                 view = LayoutInflater.from(this.context).inflate(this.layoutToUseForTheRows, viewGroup, false);
             }
 
-            //Get the data object to show at position i in the list
+
             UserScore userScore = (UserScore) this.getItem(i);
-//
-            //Update the text views with the data
+
             try {
                 AppCompatTextView topText = view.findViewById(R.id.user_name);
                 topText.setText(userScore.getAccountName());
@@ -125,7 +124,6 @@ public class FragmentLeaderboard extends Fragment implements AdapterView.OnItemC
                         Toast.LENGTH_SHORT).show();
             }
 
-            //return the view we have created, by default this returns null
             return view;
         }
     }
