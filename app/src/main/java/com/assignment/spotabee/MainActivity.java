@@ -25,6 +25,8 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.anthonycr.grant.PermissionsManager;
+import com.anthonycr.grant.PermissionsResultAction;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.DatabaseInitializer;
 import com.assignment.spotabee.database.Description;
@@ -78,7 +80,32 @@ public class MainActivity extends AppCompatActivity
 
         contextOfApplication = this;
 
-        checkIfPermissionsGiven();
+        PermissionsManager.getInstance()
+                .requestAllManifestPermissionsIfNecessary(this,
+                        new PermissionsResultAction() {
+                            @Override
+                            public void onGranted() {
+                                Log.v(TAG, "All Bueno");
+                            }
+
+                            @Override
+                            public void onDenied(String permission) {
+                                Log.v(TAG, "Cocks said no");
+                            }
+                        });
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.GET_ACCOUNTS)
+                != PackageManager.PERMISSION_GRANTED
+                ) {
+            Intent intent =
+                    accountManager.newChooseAccountIntent(null,
+                            null, new String[]{"com.google"},
+                            null, null,
+                            null, null);
+            startActivityForResult(intent, CHOOSE_ACCOUNT);
+        }
+
 
         db = AppDatabase.getAppDatabase(getApplicationContext());
 
@@ -117,6 +144,15 @@ public class MainActivity extends AppCompatActivity
 
     public AppCompatActivity getActivity() {
         return this;
+    }
+
+    /**
+     * A static method that retrieves Activity context
+     *
+     * @return The context for the current activity
+     */
+    public static Context getContextOfApplication() {
+        return contextOfApplication;
     }
 
     @Override
@@ -205,50 +241,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * A static method that retrieves Activity context
-     *
-     * @return The context for the current activity
-     */
-    public static Context getContextOfApplication() {
-        return contextOfApplication;
-    }
-
-    /**
-     * Checks each permission if it is given, and, if not, requests them.
-     */
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public void checkIfPermissionsGiven() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
-            requestLocationAccountPermission();
-            Log.v(TAG, "Requesting account and location Permissions");
-        } else if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestLocationPermission();
-            Log.v(TAG, "Only requesting location Permission");
-        } else if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.GET_ACCOUNTS)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestAccountPermission();
-            Log.v(TAG, "Only requesting account Permission");
-        } else if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestCameraPermission();
-            Log.v(TAG, "Requesting camera Permission");
-        } else if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestExternalStoragePermission();
-            Log.v(TAG, "Requesting camera Permission");
-        } else {
-            Log.v(TAG, "No permissions requested");
-        }
-    }
-
-    /**
      * Creates gets details and confirms operation from account picker.
      *
      * @param requestCode An integer that relates to the permission. So
@@ -276,170 +268,6 @@ public class MainActivity extends AppCompatActivity
             payPalResultCode = resultCode;
         } else {
             Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
-        }
-    }
-
-    /**
-     * Requests permissions to use device location and access accounts.
-     */
-    private void requestLocationAccountPermission() {
-        // Permission has not been granted and must be requested.
-        // Request the permission. The result will be received in onRequestPermissionResult().
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.GET_ACCOUNTS},
-                PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS);
-    }
-
-    /**
-     * Requests permission to use device location.
-     */
-    private void requestLocationPermission() {
-        // Permission has not been granted and must be requested.
-        // Request the permission. The result will be received in onRequestPermissionResult().
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                PERMISSION_REQUEST_ACCESS_FINE_LOCATION);
-    }
-
-    /**
-     * Requests permission to use accounts.
-     */
-    private void requestAccountPermission() {
-        // Permission has not been granted and must be requested.
-        // Request the permission. The result will be received in onRequestPermissionResult().
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.GET_ACCOUNTS},
-                PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS);
-    }
-
-    /**
-     * Requests permission to use device camera.
-     */
-    private void requestCameraPermission() {
-        // Permission has not been granted and must be requested.
-        // Request the permission. The result will be received in onRequestPermissionResult().
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.CAMERA},
-                PERMISSION_REQUEST_CAMERA);
-    }
-
-    /**
-     * Requests permission to use device camera.
-     */
-    private void requestExternalStoragePermission() {
-        // Permission has not been granted and must be requested.
-        // Request the permission. The result will be received in onRequestPermissionResult().
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                PERMISSION_REQUEST_EXTERNAL_STORAGE);
-    }
-
-
-    /**
-     * Checks the results of the permission requests.
-     *
-     * @param requestCode An integer that relates to the permission. So
-     *                    location might be 1, account access 2, and so on.
-     * @param permissions The permission being requested.
-     * @param grantResults What the result of result of the request is. The result
-     *                     of whether or not the user allowed this permission.
-     */
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    public void onRequestPermissionsResult(final int requestCode,
-                                           final String[] permissions,
-                                           final int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0]
-                        == PackageManager.PERMISSION_GRANTED) {
-                    Log.v(TAG, "Permission to both granted");
-
-                    try {
-                        Intent intent =
-                                accountManager.newChooseAccountIntent(null,
-                                null, new String[]{"com.google"},
-                                null, null,
-                                null, null);
-                        startActivityForResult(intent, CHOOSE_ACCOUNT);
-                        checkIfPermissionsGiven();
-
-                    } catch (Exception e) {
-                        Log.v(TAG, "Exception " + e);
-                    }
-
-                } else {
-                    Log.v(TAG, "User needs to make an account");
-                }
-            }
-            return;
-
-            case PERMISSION_REQUEST_ACCESS_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0]
-                        == PackageManager.PERMISSION_GRANTED) {
-                    Log.v(TAG, "Permission to only location granted");
-                    checkIfPermissionsGiven();
-                }
-            }
-            return;
-
-            case PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0]
-                        == PackageManager.PERMISSION_GRANTED) {
-                    Log.v(TAG, "Permission to only account granted");
-                    try {
-                        Intent intent =
-                                accountManager.newChooseAccountIntent(null,
-                                null, new String[]{"com.google"},
-                                null, null,
-                                null, null);
-                        startActivityForResult(intent, CHOOSE_ACCOUNT);
-                        Log.v(TAG, "Intent to choose just account a go");
-                    } catch (Exception e) {
-                        Log.v(TAG, "Exception " + e);
-                    }
-
-                } else {
-                    //Redirect to force user to create an account
-                    Log.v(TAG, "User needs to make an account");
-                }
-            }
-            return;
-
-            case PERMISSION_REQUEST_CAMERA: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0]
-                        == PackageManager.PERMISSION_GRANTED) {
-                    Log.v(TAG, "Permission to use camera granted");
-                    checkIfPermissionsGiven();
-                }
-            }
-            return;
-
-            case PERMISSION_REQUEST_EXTERNAL_STORAGE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0]
-                        == PackageManager.PERMISSION_GRANTED) {
-                    Log.v(TAG, "Permission to use external storage granted");
-                }
-            }
-            return;
-
-            default: {
-                Log.v(TAG, "Nothing exists to handle that permission request");
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request.
         }
     }
 
