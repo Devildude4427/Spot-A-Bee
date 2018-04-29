@@ -15,6 +15,7 @@ import java.util.List;
 @Dao
 public interface DescriptionDao {
 
+    // Description
     @Insert
     void insertDescriptions(Description... descriptions);
 
@@ -32,4 +33,11 @@ public interface DescriptionDao {
 
     @Query("DELETE FROM Description")
     void nukeTable();
+
+    // UserScore
+    @Insert
+    void insertUserScore(UserScore... UserScore);
+
+    @Query("SELECT * FROM UserScore")
+    List<UserScore> getAllUserScores();
 }

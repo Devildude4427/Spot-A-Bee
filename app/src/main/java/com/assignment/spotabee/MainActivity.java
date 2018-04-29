@@ -134,8 +134,6 @@ public class MainActivity extends AppCompatActivity
 
         displaySelectedScreen(R.id.nav_home);
 
-//        Intent intent = new Intent(this, ScreenService.class);
-//        startService(intent);
     }
 
     public AccountManager getAccountManager() {
@@ -287,83 +285,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /**
-     * Creates gets details and confirms operation from account picker
-     *
-     * @param requestCode An integer that relates to the permission. So
-     *                    location might be 1, account access 2, and so on.
-     * @param resultCode If the result succeeded or failed
-     * @param data The intent that is being requested
-     */
-//    @Override
-//    public void onActivityResult(final int requestCode, final int resultCode,
-//                                    final Intent data){
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        try {
-//            if(data == null && requestCode == PICK_IMAGE){
-//                return;
-//            } else if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
-//                String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-//                Log.v(TAG, accountName);
-//            } else if (requestCode == CHOOSE_ACCOUNT) {
-//                Log.v(TAG, "There was an error in the account picker");
-//            } else if (requestCode == 3) {
-//                Log.v(TAG, "Request for camera");
-//            } else if (requestCode == PICK_IMAGE) {
-//
-//                final ProgressDialog progress = new ProgressDialog(this);
-//                progress.setTitle("Loading");
-//                progress.setMessage("Identify your flower..");
-//                progress.setCancelable(false);
-//                progress.show();
-//
-//                if (!CheckNetworkConnection.isInternetAvailable(this)) {
-//                    progress.dismiss();
-//                    Toast.makeText(this,
-//                            "Internet connection unavailable.",
-//                            Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//                client = ClarifaiClientGenerator.generate(API_KEY);
-//                final byte[] imageBytes = FileOp.getByteArrayFromIntentData(this, data);
-//                if (imageBytes != null) {
-//
-//                    AsyncTask.execute(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Log.d(TAG, "We have started run thread");
-//                            ClarifaiRequest clarifaiRequest = new ClarifaiRequest(client, "flower_species", imageBytes);
-//                            String flowerType = clarifaiRequest.executRequest();
-//                            Log.d(TAG, "Flower Type: " + flowerType);
-//
-//                            Bundle descriptionFormBundle = new Bundle();
-//                            descriptionFormBundle.putString("flowerName", flowerType);
-//
-//                            FragmentDescriptionForm fragmentDescriptionForm = new FragmentDescriptionForm();
-//                            fragmentDescriptionForm.setArguments(descriptionFormBundle);
-//
-//                            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//                            fragmentTransaction.replace(R.id.content_frame, fragmentDescriptionForm);
-//                            fragmentTransaction.commit();
-//                            progress.dismiss();
-//                        }
-//                    });
-//                }
-//            } else if (requestCode == Activity.RESULT_CANCELED){
-//                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//                fragmentTransaction.replace(R.id.content_frame, new FragmentHome());
-//                fragmentTransaction.commit();
-//            } else if (requestCode == PAYPAL_REQUEST_CODE){
-//                payPalResult(requestCode, resultCode, data);
-//
-//            } else {
-//                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
-//            }
-//        } catch (Exception e) {
-//            Log.v(TAG, "Exception " + e);
-//        }
-//    }
+
 
     /**
      * Requests permissions to use device location and access accounts.
@@ -518,22 +440,27 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    /**
+     * Creates gets details and confirms operation from account picker
+     *
+     * @param requestCode An integer that relates to the permission. So
+     *                    location might be 1, account access 2, and so on.
+     * @param resultCode If the result succeeded or failed
+     * @param data The intent that is being requested
+     */
     public void onActivityResult(final int requestCode, final int resultCode,
                                  final Intent data) {
 
-
         try {
-            if (data != null && requestCode == PICK_IMAGE) {
+            if(requestCode == CHOOSE_ACCOUNT){
+                resultAccounts(resultCode, data);
+            } else if (data != null && requestCode == PICK_IMAGE) {
                 imageRecognitionResult(resultCode, data);
-            }
-
-            if (requestCode == PAYPAL_REQUEST_CODE) {
+            } else if (requestCode == PAYPAL_REQUEST_CODE) {
                 mReturningWithResult = true;
                 payPalData = data;
                 payPalResultCode = resultCode;
-            }
-
-            else {
+            } else {
                 Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
             }
         } catch (Exception e) {
@@ -544,7 +471,6 @@ public class MainActivity extends AppCompatActivity
     public void payPalResult(final int resultCode,
                              final Intent data) {
         Log.d(TAG, "We are in payPalResult");
-//        String paymentDetails = "test paymentDetails";
         if (resultCode == RESULT_OK) {
             PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
             if (confirmation != null) {
@@ -626,6 +552,15 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
+        public void resultAccounts(int resultCode, Intent data){
+        if (resultCode == RESULT_OK) {
+            String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+            UserAccount.setAccountName(accountName);
+            Log.v(TAG, accountName);
+        } else {
+                Log.v(TAG, "There was an error in the account picker");
+            }
+        }
 
 }
 
