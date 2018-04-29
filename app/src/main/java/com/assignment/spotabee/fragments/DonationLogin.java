@@ -24,35 +24,23 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.assignment.spotabee.customutils.CheckNetworkConnection;
-import com.assignment.spotabee.customutils.FileOp;
-import com.assignment.spotabee.imagerecognition.ClarifaiClientGenerator;
-import com.assignment.spotabee.imagerecognition.ClarifaiRequest;
 import com.paypal.android.MEP.CheckoutButton;
 import com.paypal.android.MEP.PayPal;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
 import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
-import com.paypal.android.sdk.payments.PaymentConfirmation;
-
-import org.json.JSONException;
 
 import java.math.BigDecimal;
 
-import clarifai2.api.ClarifaiClient;
 
-import static android.app.Activity.RESULT_OK;
 import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
-import static com.assignment.spotabee.MainActivity.PICK_IMAGE;
-import static com.assignment.spotabee.MainActivity.getContextOfApplication;
 import com.assignment.spotabee.AmountPayed;
 
 
 public class DonationLogin extends Fragment implements View.OnClickListener{
    private View rootView;
     private static final String API_KEY = "d984d2d494394104bb4bee0b8149523d";
-    private static ClarifaiClient client;
     private static final String TAG = "Donation Login Debug";
     private CheckoutButton launchPayPalButton;
     private static final int PAYPAL_BUTTON_ID = 13098;
