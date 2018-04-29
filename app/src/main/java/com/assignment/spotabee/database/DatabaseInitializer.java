@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.assignment.spotabee.customutils.Time;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,11 @@ public class DatabaseInitializer {
     }
 
     public static Description addDescription(final AppDatabase db, Description description) {
+        db.descriptionDao().insertDescriptions(description);
+        return description;
+    }
+
+    public static Description addData(final AppDatabase db, Description description, List<UserScore> userScores) {
         db.descriptionDao().insertDescriptions(description);
         return description;
     }
@@ -48,6 +54,45 @@ public class DatabaseInitializer {
         }
     }
 
+    private static void populateFakeScores(AppDatabase db){
+        ArrayList<String> testUsers = new ArrayList<>();
+        testUsers.add("Harry");
+        testUsers.add("Hermione");
+        testUsers.add("Ron");
+        testUsers.add("Rachel");
+        testUsers.add("Ross");
+        testUsers.add("Monica");
+        testUsers.add("Chandler");
+        testUsers.add("Joey");
+        testUsers.add("Phoebe");
+        testUsers.add("Frasier");
+        testUsers.add("Nial");
+        testUsers.add("Daphney");
+        testUsers.add("Eddie");
+        testUsers.add("Marty");
+        testUsers.add("Basil Faulty");
+        testUsers.add("Sybil Faulty");
+        testUsers.add("Carrie");
+        testUsers.add("Charlotte");
+        testUsers.add("Sam");
+        testUsers.add("Miranda");
+        testUsers.add("Chuck");
+        testUsers.add("Blaire");
+        testUsers.add("Serena");
+        testUsers.add("Dan");
+        testUsers.add("Jenny");
+        testUsers.add("Nate");
+        testUsers.add("Vanessa");
+        testUsers.add("Charlie");
+        testUsers.add("Cece");
+
+        UserScore userScore;
+        for (int i = 0; i <testUsers.size(); i++){
+            userScore = new UserScore(testUsers.get(i), i+i);
+            db.descriptionDao().insertUserScore(userScore);
+        }
+    }
+
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
         private final AppDatabase mDb;
@@ -59,6 +104,7 @@ public class DatabaseInitializer {
         @Override
         protected Void doInBackground(final Void... params) {
             populateWithTestData(mDb);
+            populateFakeScores(mDb);
             return null;
         }
 
