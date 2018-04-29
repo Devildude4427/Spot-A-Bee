@@ -92,7 +92,7 @@ public class DonationLogin extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_donation, container, false);
 
-
+        getActivity().setTitle(getString(R.string.donate));
         //Start Paypal Service
         Intent intent = new Intent(getActivity(), PayPalService.class);
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
