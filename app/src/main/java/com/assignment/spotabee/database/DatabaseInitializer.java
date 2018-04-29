@@ -30,8 +30,8 @@ public class DatabaseInitializer {
     private static void populateWithTestData(AppDatabase db) {
         Date testDate = new Date();
 
-        Description description = new Description(52.4816,
-                -4.17909, "Somewhere", "A daffodil or something",
+        Description description = new Description(53.3094,
+                -4.6330, "HolyHead", "A daffodil or something",
                 "None", 2, Time.getTodaysDate(testDate), Time.getCurrentTime(testDate));
         addDescription(db, description);
 

@@ -3,6 +3,10 @@ package com.assignment.spotabee.fragments;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,6 +26,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -86,8 +92,6 @@ public class FragmentMap extends Fragment
                 setMarkers(allDescriptions);
             }
         });
-
-        getActivity().setTitle(getString(R.string.flowers_spotted));
         return rootView;
     }
 
@@ -95,7 +99,7 @@ public class FragmentMap extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles
-        getActivity().setTitle("Map");
+        getActivity().setTitle("Results");
     }
 
     @Override
@@ -115,6 +119,13 @@ public class FragmentMap extends Fragment
 
     }
 
+    public BitmapDescriptor resizeMapIcons(){
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("bee", "drawable", getActivity().getPackageName()));
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, 70,90, false);
+        BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(resizedBitmap);
+        return icon;
+    }
+
     public void setMarkers(List<Description> descriptions) {
         if(descriptions.isEmpty()){
                 Log.d(TAG, "Description ArrayList is empty");
@@ -122,15 +133,20 @@ public class FragmentMap extends Fragment
         }
 
         try {
+
+            BitmapDescriptor icon = resizeMapIcons();
+
             for (Description location:descriptions){
                 LatLng newMarker = new LatLng(location.getLatitude(), location.getLongitude());
                 if (location.getLocation() != null) {
                     googleMap.addMarker(new MarkerOptions()
                             .position(newMarker)
-                            .title(location.getLocation()));
+                            .title(location.getLocation())
+                            .icon(icon));
                 } else {
                     googleMap.addMarker(new MarkerOptions()
-                            .position(newMarker));
+                            .position(newMarker)
+                            .icon(icon));
                 }
                 allMarkers.add(newMarker);
             }
