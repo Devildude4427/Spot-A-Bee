@@ -26,9 +26,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.assignment.spotabee.R;
+import com.assignment.spotabee.UserAccount;
 import com.assignment.spotabee.customutils.Time;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
+import com.assignment.spotabee.database.UserScore;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
@@ -110,6 +112,7 @@ public class FragmentDescriptionForm extends Fragment
         userLocation = null;
         geocoder = new Geocoder(context.getApplicationContext());
 
+
         addressSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 location.setText(parent.getItemAtPosition(position).toString());
@@ -122,6 +125,7 @@ public class FragmentDescriptionForm extends Fragment
         });
         return rootView;
     }
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -157,6 +161,7 @@ public class FragmentDescriptionForm extends Fragment
                 if (userLocationIsNull()) return;
 
                 commitFormDataToDB();
+                updateUserScore();
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.content_frame, new FragmentAfterSubmission())
@@ -279,7 +284,7 @@ public class FragmentDescriptionForm extends Fragment
 
 
                 } catch (Exception e) {
-                    Looper.loop();
+                    Looper.prepare();
                     Toast.makeText(context,
                             "Sorry. An error occurred. We can't save your information right now...",
                             Toast.LENGTH_SHORT).show();
@@ -310,6 +315,66 @@ public class FragmentDescriptionForm extends Fragment
             return addressToFind;
         }
 
+    }
+
+    public void firstScoredSubmission(final String accountName){
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                db.descriptionDao()
+                        .insertUserScore(new UserScore(accountName, 1));
+            }
+        });
+    }
+
+    public void updateUserScore(){
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    String currentUserAccountName = UserAccount.getAccountName();
+//                    if(db.descriptionDao()
+//                            .getUserByAccountName(currentUserAccountName) == null){
+//                        firstScoredSubmission(currentUserAccountName);
+//                    } else {
+//                        db.descriptionDao()
+//                                .insertUserScore(new UserScore(currentUserAccountName,
+//                                        db.descriptionDao()
+//                                                .getUserByAccountName(currentUserAccountName) + 1));
+//                    }
+
+                        db.descriptionDao()
+                                .insertUserScore(new UserScore(currentUserAccountName,
+                                        db.descriptionDao()
+                                                .getUserByAccountName(currentUserAccountName) + 1));
+
+
+                    List<UserScore> allUserScores = db.descriptionDao()
+                            .getAllUserScores();
+
+                    for (UserScore userScore : allUserScores) {
+                        Log.d(TAG, userScore.getAccountName());
+                        Log.d(TAG, userScore.getScore() + "");
+                    }
+
+
+                } catch (NullPointerException e){
+                    Looper.prepare();
+                    Toast.makeText(context,
+                            "Make sure you log in next time to add to your score!",
+                            Toast.LENGTH_SHORT).show();
+                }catch (Exception e) {
+                    Looper.prepare();
+                    Toast.makeText(context,
+                            "Sorry. An error occurred. We can't save your information right now...",
+                            Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error: " + e.getMessage());
+                }
+
+            }
+        });
     }
 
 

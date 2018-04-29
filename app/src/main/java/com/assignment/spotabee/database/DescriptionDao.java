@@ -43,4 +43,8 @@ public interface DescriptionDao {
 
     @Query("DELETE FROM UserScore")
     void nukeUserScores();
+
+    @Transaction
+    @Query("SELECT score FROM UserScore WHERE account_name = :name")
+    int getUserByAccountName(String name);
 }
