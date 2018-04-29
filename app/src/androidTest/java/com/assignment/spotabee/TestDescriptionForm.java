@@ -74,10 +74,7 @@ public class TestDescriptionForm {
     @Test
     public void doUiComponentsExist() {
 
-        // Text Views
-        onView(withId(R.id.descriptionFormSighting))
-                .check(matches(isDisplayed()))
-                .check(matches(withText(R.string.bee_sighting)));
+      
 
         onView(withId(R.id.identifyFlowerMessage))
                 .check(matches(isDisplayed()))

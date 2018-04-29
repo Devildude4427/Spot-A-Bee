@@ -3,9 +3,11 @@ package com.assignment.spotabee;
 import android.Manifest;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -22,16 +24,37 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.assignment.spotabee.customutils.CheckNetworkConnection;
+import com.assignment.spotabee.customutils.FileOp;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.DatabaseInitializer;
 import com.assignment.spotabee.database.Description;
+import com.assignment.spotabee.fragments.DonationLogin;
 import com.assignment.spotabee.fragments.FragmentAboutUs;
+import com.assignment.spotabee.fragments.FragmentDescriptionForm;
 import com.assignment.spotabee.fragments.FragmentHome;
 import com.assignment.spotabee.fragments.FragmentHowTo;
 import com.assignment.spotabee.fragments.FragmentLeaderboard;
 import com.assignment.spotabee.fragments.FragmentMap;
+import com.assignment.spotabee.fragments.PaymentInfo;
+import com.assignment.spotabee.imagerecognition.ClarifaiClientGenerator;
+import com.assignment.spotabee.imagerecognition.ClarifaiRequest;
+import com.paypal.android.sdk.payments.PaymentActivity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
+
+import org.json.JSONException;
+
+import java.io.InputStream;
+
+import clarifai2.api.ClarifaiClient;
+
+import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
+import static com.assignment.spotabee.Permissions.ACCESS_IMAGE_GALLERY;
+
 
 import clarifai2.api.ClarifaiClient;
 
@@ -45,7 +68,7 @@ import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_EXTERNAL_ST
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-//    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS = 0;
+    //    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS = 0;
 //    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 1;
 //    private static final int PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS = 2;
 //    public static final int PERMISSION_REQUEST_ACCESS_IMAGE_CAPTURE = 3;
@@ -63,6 +86,11 @@ public class MainActivity extends AppCompatActivity
 
     private DrawerLayout mDrawerLayout;
     private static final String TAG = "Main Activity Debug";
+
+    private int payPalResultCode;
+    private Intent payPalData;
+
+    private boolean mReturningWithResult = false;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +122,7 @@ public class MainActivity extends AppCompatActivity
         db.descriptionDao().insertDescriptions(description);
 
 
+
         mDrawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -122,10 +151,11 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else{
+        } else {
             super.onBackPressed();
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -172,9 +202,23 @@ public class MainActivity extends AppCompatActivity
                 fragment = new FragmentLeaderboard();
                 break;
 
+            case R.id.nav_donate:
+                fragment = new DonationLogin();
+                break;
+
+            //Adding btnHome from the DonationInfo fragment so that
+            //The user can easily go back home after making a donation
+            case R.id.btnHome:
+                fragment = new FragmentHome();
+                break;
+//            case R.id.nav_identify_image:
+//                startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), PICK_IMAGE);
+//                break;
+
             case R.id.nav_resources:
                 fragment = new FragmentDownloadPdfGuide();
                 break;
+
 
         }
 
@@ -204,8 +248,7 @@ public class MainActivity extends AppCompatActivity
      *
      * @return The context for the current activity
      */
-    public static Context getContextOfApplication()
-    {
+    public static Context getContextOfApplication() {
         return contextOfApplication;
     }
 
@@ -216,10 +259,10 @@ public class MainActivity extends AppCompatActivity
     public void checkIfPermissionsGiven() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+                Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
             requestLocationAccountPermission();
             Log.v(TAG, "Requesting account and location Permissions");
-        } else if(ContextCompat.checkSelfPermission(this,
+        } else if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             requestLocationPermission();
@@ -231,12 +274,12 @@ public class MainActivity extends AppCompatActivity
             Log.v(TAG, "Only requesting account Permission");
         } else if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED){
+                != PackageManager.PERMISSION_GRANTED) {
             requestCameraPermission();
             Log.v(TAG, "Requesting camera Permission");
         } else if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED){
+                != PackageManager.PERMISSION_GRANTED) {
             requestExternalStoragePermission();
             Log.v(TAG, "Requesting camera Permission");
         } else {
@@ -252,21 +295,21 @@ public class MainActivity extends AppCompatActivity
      * @param resultCode If the result succeeded or failed
      * @param data The intent that is being requested
      */
-    @Override
-    public void onActivityResult(final int requestCode, final int resultCode,
-                                    final Intent data){
-        super.onActivityResult(requestCode, resultCode, data);
-
-        try {
-            if(data == null && requestCode == PICK_IMAGE){
-                return;
-            } else if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
-                String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                Log.v(TAG, accountName);
-            } else if (requestCode == CHOOSE_ACCOUNT) {
-                Log.v(TAG, "There was an error in the account picker");
-            } else if (requestCode == 3) {
-                Log.v(TAG, "Request for camera");
+//    @Override
+//    public void onActivityResult(final int requestCode, final int resultCode,
+//                                    final Intent data){
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        try {
+//            if(data == null && requestCode == PICK_IMAGE){
+//                return;
+//            } else if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
+//                String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+//                Log.v(TAG, accountName);
+//            } else if (requestCode == CHOOSE_ACCOUNT) {
+//                Log.v(TAG, "There was an error in the account picker");
+//            } else if (requestCode == 3) {
+//                Log.v(TAG, "Request for camera");
 //            } else if (requestCode == PICK_IMAGE) {
 //
 //                final ProgressDialog progress = new ProgressDialog(this);
@@ -307,17 +350,20 @@ public class MainActivity extends AppCompatActivity
 //                        }
 //                    });
 //                }
-            } else if (requestCode == Activity.RESULT_CANCELED){
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.content_frame, new FragmentHome());
-                fragmentTransaction.commit();
-            } else {
-                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
-            }
-        } catch (Exception e) {
-            Log.v(TAG, "Exception " + e);
-        }
-    }
+//            } else if (requestCode == Activity.RESULT_CANCELED){
+//                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//                fragmentTransaction.replace(R.id.content_frame, new FragmentHome());
+//                fragmentTransaction.commit();
+//            } else if (requestCode == PAYPAL_REQUEST_CODE){
+//                payPalResult(requestCode, resultCode, data);
+//
+//            } else {
+//                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
+//            }
+//        } catch (Exception e) {
+//            Log.v(TAG, "Exception " + e);
+//        }
+//    }
 
     /**
      * Requests permissions to use device location and access accounts.
@@ -379,9 +425,9 @@ public class MainActivity extends AppCompatActivity
     /**
      * Checks the results of the permission requests.
      *
-     * @param requestCode An integer that relates to the permission. So
-     *                    location might be 1, account access 2, and so on.
-     * @param permissions The permission being requested.
+     * @param requestCode  An integer that relates to the permission. So
+     *                     location might be 1, account access 2, and so on.
+     * @param permissions  The permission being requested.
      * @param grantResults What the result of result of the request is. The result
      *                     of whether or not the user allowed this permission.
      */
@@ -466,8 +512,120 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         AppDatabase.destroyInstance();
         super.onDestroy();
     }
+
+
+    public void onActivityResult(final int requestCode, final int resultCode,
+                                 final Intent data) {
+
+
+        try {
+            if (data != null && requestCode == PICK_IMAGE) {
+                imageRecognitionResult(resultCode, data);
+            }
+
+            if (requestCode == PAYPAL_REQUEST_CODE) {
+                mReturningWithResult = true;
+                payPalData = data;
+                payPalResultCode = resultCode;
+            }
+
+            else {
+                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
+            }
+        } catch (Exception e) {
+            Log.v(TAG, "Exception " + e);
+        }
+    }
+
+    public void payPalResult(final int resultCode,
+                             final Intent data) {
+        Log.d(TAG, "We are in payPalResult");
+//        String paymentDetails = "test paymentDetails";
+        if (resultCode == RESULT_OK) {
+            PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+            if (confirmation != null) {
+                try {
+                    String paymentDetails = confirmation.toJSONObject().toString(7);
+                    PaymentInfo paymentInfo = new PaymentInfo();
+                    Bundle args = new Bundle();
+                    args.putString("paymentInfo", paymentDetails);
+                    paymentInfo.setArguments(args);
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.content_frame, paymentInfo).commit();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            Toast.makeText(getActivity(), "Cancel", Toast.LENGTH_SHORT).show();
+
+        } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
+            Toast.makeText(getActivity(), "Invalid", Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        if (mReturningWithResult) {
+            payPalResult(payPalResultCode, payPalData);
+        }
+        // Reset the boolean flag back to false for next time.
+        mReturningWithResult = false;
+    }
+
+    private void imageRecognitionResult(int resultCode, Intent data) {
+
+            if (data == null) {
+                return;
+            } else {
+                Log.d(TAG, "WE ARE IN IMAGE RECOGNITION");
+                final ProgressDialog progress = new ProgressDialog(getContextOfApplication());
+                progress.setTitle("Loading");
+                progress.setMessage("Identify your flower..");
+                progress.setCancelable(false);
+                progress.show();
+
+                if (!CheckNetworkConnection.isInternetAvailable(getContextOfApplication())) {
+                    progress.dismiss();
+                    Toast.makeText(getContextOfApplication(),
+                            "Internet connection unavailable.",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                client = ClarifaiClientGenerator.generate(API_KEY);
+                final byte[] imageBytes = FileOp.getByteArrayFromIntentData(getContextOfApplication(), data);
+                if (imageBytes != null) {
+
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d(TAG, "We have started run thread");
+                            ClarifaiRequest clarifaiRequest = new ClarifaiRequest(client, "flower_species", imageBytes);
+                            String flowerType = clarifaiRequest.executRequest();
+                            Log.d(TAG, "Flower Type: " + flowerType);
+
+                            Bundle descriptionFormBundle = new Bundle();
+                            descriptionFormBundle.putString("flowerName", flowerType);
+
+                            FragmentDescriptionForm fragmentDescriptionForm = new FragmentDescriptionForm();
+                            fragmentDescriptionForm.setArguments(descriptionFormBundle);
+
+                            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                            fragmentTransaction.replace(R.id.content_frame, fragmentDescriptionForm);
+                            fragmentTransaction.commit();
+                            progress.dismiss();
+                        }
+                    });
+                }
+            }
+        }
+
+
 }
+

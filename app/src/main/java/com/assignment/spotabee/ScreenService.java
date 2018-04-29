@@ -24,11 +24,11 @@ import static android.app.Service.START_STICKY;
 import static android.provider.Settings.Global.getString;
 import static java.security.AccessController.getContext;
 
-/**
+
 // * Created by Lauren on 4/25/2018.
 // *
 // */
-//
+
 public class ScreenService extends Service {
     //Constants used for foreground notification
     public static final String SERVICE_CHANNEL_ID = "com.assignment.spotabee.service";
@@ -220,3 +220,4 @@ public class ScreenService extends Service {
         }
     }
 }
+
