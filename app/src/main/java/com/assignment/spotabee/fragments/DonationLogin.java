@@ -121,12 +121,18 @@ public class DonationLogin extends Fragment {
 
         amount = editAmount.getText().toString();
         AmountPayed.setAmountPayed(amount);
-        PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(String.valueOf(amount)),
-                "USD", "Donate for Spot a Bee", PayPalPayment.PAYMENT_INTENT_SALE);
-        Intent intent = new Intent(getActivity(), PaymentActivity.class);
-        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
-        intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payPalPayment);
-        getActivity().startActivityForResult(intent, PAYPAL_REQUEST_CODE);
+        try {
+            PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(String.valueOf(amount)),
+                    "USD", "Donate for Spot a Bee", PayPalPayment.PAYMENT_INTENT_SALE);
+            Intent intent = new Intent(getActivity(), PaymentActivity.class);
+            intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
+            intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payPalPayment);
+            getActivity().startActivityForResult(intent, PAYPAL_REQUEST_CODE);
+        } catch (NumberFormatException e){
+            Toast.makeText(getActivity(),
+                    "Please enter numerical characters only. E.g, 10 for $10",
+                    Toast.LENGTH_SHORT).show();
+        }
 
     }
 

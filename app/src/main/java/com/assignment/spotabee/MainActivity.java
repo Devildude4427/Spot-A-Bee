@@ -7,9 +7,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,7 +14,6 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -58,6 +54,10 @@ import clarifai2.api.ClarifaiClient;
 
 import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
 import static com.assignment.spotabee.Permissions.ACCESS_IMAGE_GALLERY;
+
+
+import clarifai2.api.ClarifaiClient;
+
 import static com.assignment.spotabee.Permissions.CHOOSE_ACCOUNT;
 import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS;
 import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_ACCESS_FINE_LOCATION;
@@ -115,11 +115,12 @@ public class MainActivity extends AppCompatActivity
         DatabaseInitializer.populateAsync(db);
 
         Description description = new Description(
-                51.4816, 3.1791,
+                51.4816,-3.1791,
                 "Cardiff", "Rose", "None",
                 1, "17-05-2018", "15:39");
 
         db.descriptionDao().insertDescriptions(description);
+
 
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -191,7 +192,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_howto:
                 fragment = new FragmentHowTo();
                 break;
-            case R.id.nav_map:
+            case R.id.nav_results:
                 fragment = new FragmentMap();
                 break;
             case R.id.nav_aboutus:

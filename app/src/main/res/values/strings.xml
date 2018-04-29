@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Spot A Bee</string>
-    <string name="title_activity_maps">Map</string>
 
     <string name="button">Button</string>
 
@@ -9,8 +8,14 @@
     <string name="flower_type">Flower type</string>
     <string name="any_further_details">Any further details?</string>
     <string name="submit">Submit</string>
-    <string name="einstein_quote">Einstein said If the bee disappeared off the surface of the globe then man would only have  four years of life left. No more bees, no  more pollination, no more plants, no  more animals, no more manThis single quote captures the key role that bees play in the survival of planet earth.</string>
+    <string name="einstein_quote">Einstein said If the bee disappeared off the surface
+        of the globe then man would only have  four years of life left.
+        No more bees, no  more pollination, no more plants, no
+        more animals, no more manThis single quote captures the
+        key role that bees play in the survival of planet earth.
+      </string>
     <string name="about_us_title">About Us!</string>
+    <string name="download_pdf_fragment_title">Download Our Guide</string>
     <string name="how_to">How #to</string>
     <string name="form">Form</string>
     <string name="donate">Donate</string>
@@ -34,12 +39,11 @@
 
     <string name="drawer_menu_item_home">Home</string>
     <string name="drawer_menu_item_howto">How To</string>
-    <string name="drawer_menu_item_map">Map</string>
+    <string name="drawer_menu_item_results">Results</string>
     <string name="drawer_menu_item_aboutus">About Us</string>
     <string name="drawer_menu_item_form">Form</string>
     <string name="drawer_menu_item_leaderboard">Leaderboard</string>
 
-    <string name="nav_form">Form</string>
     <string name="identify_a_flower">Identify a flower</string>
     <string name="details_title">Details</string>
     <string name="flowers_spotted">Flowers Spotted</string>

@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import static android.content.Context.DOWNLOAD_SERVICE;
 public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickListener{
     private DownloadManager downloadManager;
     private ImageView downloadPdf;
+    private AppCompatButton downloadBtn;
     private long downloadReference;
     private Context appContext;
     private Receiver downloadReceiver;
@@ -64,14 +66,17 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
 
         downloadManager = (DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE);
 
-        downloadPdf = rootView.findViewById(R.id.download_pdf_bee);
-        downloadPdf.setOnClickListener(this);
         appContext = getActivity().getApplicationContext();
 
         downloadReceiver = new Receiver();
 
+        downloadBtn = rootView.findViewById(R.id.downloadGuideBtn);
+        downloadBtn.setOnClickListener(this);
+
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         getActivity().registerReceiver(downloadReceiver, filter);
+
+        getActivity().setTitle(getString(R.string.download_pdf_fragment_title));
 
         return rootView;
     }
@@ -99,7 +104,7 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
         int id = v.getId();
 
         switch (id){
-            case R.id.download_pdf_bee:
+            case R.id.downloadGuideBtn:
 //                Uri uriForPdf = Uri.parse("https://friendsoftheearth.uk/sites/default/files/downloads/bees_booklet.pdf");
 //                downloadData(uriForPdf);
                 Intent mService = new Intent(getContext(), ScreenService.class);
