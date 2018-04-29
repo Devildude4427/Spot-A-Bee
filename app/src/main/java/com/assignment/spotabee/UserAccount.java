@@ -6,7 +6,7 @@ package com.assignment.spotabee;
  */
 
 public class UserAccount {
-    private static String accountName;
+    private static final String accountName = "Princess Consuela";
 
 
     public static String getAccountName() {
