@@ -22,5 +22,10 @@
             android:id="@+id/nav_resources"
             android:title="@string/help_the_bees" />
 
+        <item
+            android:id="@+id/nav_donate"
+            android:title="@string/donate" />
+
+
     </group>
 </menu>

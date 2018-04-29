@@ -15,12 +15,14 @@
         key role that bees play in the survival of planet earth.
       </string>
     <string name="about_us_title">About Us!</string>
+    <string name="download_pdf_fragment_title">Download Our Guide</string>
     <string name="how_to">How #to</string>
     <string name="form">Form</string>
-    <string name="donate">DONATE</string>
+    <string name="donate">Donate</string>
     <string name="about_us">About Us</string>
     <string name="how_to_menu">How to</string>
     <string name="upload_picture">Upload Picture</string>
+    <string name="you_have_donated_x">You have donated $%s\n to Spot A Bee</string>
     <string name="flowers_in_cardiff">Flowers in Cardiff</string>
 
     <string name="home_button_label_camera">Camera</string>
@@ -50,7 +52,6 @@
     <string name="number_of_bees_spotted_on_the_flower">Number of bees on the flower</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="incentive_every_ten_sub_message">Well done! You have now made %d submissions! The bees thank you!</string>
     <string name="help_the_bees_more">Please download our PDF to \nfind out what more you can you to help\n the bees!</string>
     <string name="download_guide">Download Guide</string>
@@ -59,8 +60,21 @@
     <string name="thanks_for_your_help">Thank you for your help</string>
     <string name="flower_sighting">Flower Sighting</string>
     <string name="thank_you_for_your_help">Thank you for your help!</string>
-    <string name="download_pdf_fragment_title">Download Our Guide</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="pay_now">Pay now</string>
+    <string name="donation_completed">Donation completed</string>
+    <string name="amount">Amount</string>
+    <string name="id">Id</string>
+    <string name="thanks_for_your_donation_the_bees_thank_you">Thanks for your donation! The bees thank you!</string>
+    <string name="status">Status</string>
+    <string name="btnhome">Home</string>
+    <string name="state">Status</string>
+    <string name="enter_amount_you_d_nlike_to_donate_in">Enter amount you\'d \n like to donate in $</string>
+    <string name="amount_here">Amount Here</string>
     <string name="go_to_youtube_to_see_our_mission">Go to YouTube to see our mission</string>
+    <string name="go_to_paypal">Go to PayPal</string>
 
 
 </resources>

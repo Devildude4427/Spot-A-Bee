@@ -51,6 +51,8 @@ android {
 
         implementation 'com.clarifai.clarifai-api2:core:2.2.+'
 
+        implementation 'com.paypal.sdk:paypal-android-sdk:2.15.3'
+
         annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
         testImplementation 'junit:junit:4.12'
         androidTestImplementation 'com.android.support.test.espresso:espresso-intents:3.0.1'
@@ -63,5 +65,4 @@ android {
 dependencies {
     implementation 'com.android.support:support-v4:27.+'
 }
-
 
