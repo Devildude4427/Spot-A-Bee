@@ -142,27 +142,6 @@
     </FrameLayout>
 
 
-    <!--<android.support.v7.widget.AppCompatButton-->
-        <!--android:id="@+id/submit"-->
-        <!--android:translationZ="@dimen/default_translationz"-->
-        <!--android:elevation="@dimen/default_elevation"-->
-        <!--android:layout_below="@id/description_container"-->
-        <!--android:layout_marginTop="30dp"-->
-        <!--android:textAllCaps="false"-->
-        <!--android:layout_width="150dp"-->
-        <!--android:layout_height="60dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_gravity="center_horizontal"-->
-        <!--android:layout_marginBottom="40dp"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintHorizontal_bias="0.0"-->
-        <!--app:layout_constraintLeft_toLeftOf="parent"-->
-        <!--app:layout_constraintRight_toRightOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent"-->
-        <!--app:layout_constraintVertical_bias="1.0"-->
-        <!--android:text="@string/submit"/>-->
-
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/submit"
         android:layout_width="150dp"
