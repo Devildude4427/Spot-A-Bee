@@ -22,7 +22,7 @@
     <string name="about_us">About Us</string>
     <string name="how_to_menu">How to</string>
     <string name="upload_picture">Upload Picture</string>
-    <string name="you_have_donated_x">You have donated %s$\n to Spot A Bee</string>
+    <string name="you_have_donated_x">You have donated $%s\n to Spot A Bee</string>
     <string name="flowers_in_cardiff">Flowers in Cardiff</string>
 
     <string name="home_button_label_camera">Camera</string>
