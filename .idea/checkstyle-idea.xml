@@ -3,7 +3,6 @@
   <component name="CheckStyle-IDEA">
     <option name="configuration">
       <map>
-        <entry key="active-configuration" value="LOCAL_FILE:D:/Users/Ryun/Documents/CustomChecks.xml:Custom Checks" />
         <entry key="checkstyle-version" value="8.8" />
         <entry key="copy-libs" value="true" />
         <entry key="location-0" value="BUNDLED:(bundled):Sun Checks" />
