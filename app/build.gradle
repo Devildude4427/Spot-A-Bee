@@ -61,5 +61,6 @@ android {
 }
 dependencies {
     implementation 'com.android.support:support-v4:27.+'
+    implementation files('libs/PayPal_MPL.jar')
 }
 
