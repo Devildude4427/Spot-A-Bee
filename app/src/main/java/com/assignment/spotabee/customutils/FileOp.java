@@ -31,6 +31,7 @@ public class FileOp {
         InputStream inStream = null;
         Bitmap bitmap = null;
         try {
+            Log.v(TAG + "data", data.getData().toString());
             inStream = context.getContentResolver().openInputStream(data.getData());
             Log.v(TAG, "Instream works");
             bitmap = BitmapFactory.decodeStream(inStream);
