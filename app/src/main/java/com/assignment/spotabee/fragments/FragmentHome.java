@@ -1,17 +1,12 @@
 package com.assignment.spotabee.fragments;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -19,62 +14,37 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.assignment.spotabee.MainActivity;
 import com.assignment.spotabee.OutdatedClassMap;
 import com.assignment.spotabee.R;
-import com.assignment.spotabee.customutils.CheckNetworkConnection;
-import com.assignment.spotabee.customutils.FileOp;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
-import com.assignment.spotabee.imagerecognition.ClarifaiClientGenerator;
-import com.assignment.spotabee.imagerecognition.ClarifaiRequest;
-import com.paypal.android.sdk.payments.PaymentActivity;
-import com.paypal.android.sdk.payments.PaymentConfirmation;
-
-import org.json.JSONException;
-
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import clarifai2.api.ClarifaiClient;
-
-import static android.app.Activity.RESULT_OK;
 import static android.support.v4.content.FileProvider.getUriForFile;
-import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
 import static android.location.LocationManager.GPS_PROVIDER;
+import static com.assignment.spotabee.MainActivity.IMAGE_CAPTURE;
 import static com.assignment.spotabee.MainActivity.PICK_IMAGE;
 import static com.assignment.spotabee.MainActivity.getContextOfApplication;
-import static com.assignment.spotabee.Permissions.IMAGE_CAPTURE;
-import static com.assignment.spotabee.Permissions.ACCESS_IMAGE_GALLERY;
-
 
 public class FragmentHome extends Fragment  {
 
     private static final String TAG = "Home Debug";
     private LocationManager locationManager;
     private LocationListener locationListener;
-//    private AppCompatButton buttonCamera;
     private ImageView buttonCamera;
-//    private AppCompatButton buttonDescriptionForm;
-//    private AppCompatButton buttonUploadPictures;
     private ImageView buttonDescriptionForm;
     private ImageView buttonUploadPictures;
     private AppDatabase db;
     private static final String API_KEY = "d984d2d494394104bb4bee0b8149523d";
-    private static ClarifaiClient client;
-    private String currentPhotoPath;
 
     Intent intent;
 
@@ -197,28 +167,21 @@ public class FragmentHome extends Fragment  {
         Log.v(TAG, "Started Pic Intent");
         try {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            Log.d("camera debug", "Have made an image capture intent");
             // Ensure that there's a camera activity to handle the intent
             if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                Log.d("camera debug", "get package manager isn't null");
                 // Create the File where the photo should go
                 File photoFile = null;
                 photoFile = createImageFile();
 
                 // Continue only if the File was successfully created
                 if (photoFile != null) {
-                    Log.v(TAG, "Photo file is not null");
 
                     Uri contentUri = getUriForFile(getContext(), "com.assignment.spotabee.provider" , photoFile);
                     Uri photoURI = getUriForFile(getContextOfApplication(),
                             "com.assignment.spotabee.fragments.fileprovider",
                             photoFile);
-                    Log.v(TAG, "Still bueno");
-                    Log.d(TAG, "Have made photo uri");
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
-                    Log.d(TAG, "Have finished making an image capture intent");
                     getActivity().startActivityForResult(takePictureIntent, IMAGE_CAPTURE);
-                    Log.d(TAG, "should have done it all");
                 }
             }
         } catch (Exception e) {
