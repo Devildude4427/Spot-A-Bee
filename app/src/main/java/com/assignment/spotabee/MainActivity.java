@@ -39,15 +39,9 @@ import com.assignment.spotabee.fragments.FragmentMap;
 import com.assignment.spotabee.fragments.PaymentInfo;
 import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
-import clarifai2.api.ClarifaiClient;
 
 import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
-import static com.assignment.spotabee.Permissions.CHOOSE_ACCOUNT;
-import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS;
-import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_ACCESS_FINE_LOCATION;
-import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS;
-import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_CAMERA;
-import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_EXTERNAL_STORAGE;
+
 
 /**
  * This is the main backbone of the app. It handles all fragments
@@ -55,6 +49,15 @@ import static com.assignment.spotabee.Permissions.PERMISSION_REQUEST_EXTERNAL_ST
  */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS = 0;
+    public static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 1;
+    public static final int PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS = 2;
+    public static final int IMAGE_CAPTURE = 3;
+    public static final int ACCESS_IMAGE_GALLERY = 4;
+    public static final int PERMISSION_REQUEST_CAMERA = 5;
+    public static final int PERMISSION_REQUEST_EXTERNAL_STORAGE = 6;
+    public static final int CHOOSE_ACCOUNT = 99;
 
     private AccountManager accountManager;
     private static Context contextOfApplication;
