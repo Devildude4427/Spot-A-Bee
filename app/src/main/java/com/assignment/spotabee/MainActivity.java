@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -22,7 +21,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.anthonycr.grant.PermissionsManager;
@@ -50,19 +48,12 @@ import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS = 0;
-    public static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 1;
-    public static final int PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS = 2;
-    public static final int IMAGE_CAPTURE = 3;
-    public static final int ACCESS_IMAGE_GALLERY = 4;
-    public static final int PERMISSION_REQUEST_CAMERA = 5;
-    public static final int PERMISSION_REQUEST_EXTERNAL_STORAGE = 6;
+
     public static final int CHOOSE_ACCOUNT = 99;
 
     private AccountManager accountManager;
     private static Context contextOfApplication;
     private AppDatabase db;
-    public static final int PICK_IMAGE = 100;
     private DrawerLayout mDrawerLayout;
     private static final String TAG = "Main Activity Debug";
 
@@ -88,12 +79,12 @@ public class MainActivity extends AppCompatActivity
                         new PermissionsResultAction() {
                             @Override
                             public void onGranted() {
-                                Log.v(TAG, "All Bueno");
+                                Log.v(TAG, "All permissions accepted");
                             }
 
                             @Override
                             public void onDenied(String permission) {
-                                Log.v(TAG, "Cocks said no");
+                                Log.v(TAG, "Not all permissions accepted");
                             }
                         });
 
@@ -139,10 +130,6 @@ public class MainActivity extends AppCompatActivity
 
 //        Intent intent = new Intent(this, ScreenService.class);
 //        startService(intent);
-    }
-
-    public AccountManager getAccountManager() {
-        return accountManager;
     }
 
     public AppCompatActivity getActivity() {
@@ -257,12 +244,14 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
-            String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+            String accountName
+                    = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
             Log.v(TAG, accountName);
         } else if (requestCode == CHOOSE_ACCOUNT) {
             Log.v(TAG, "There was an error in the account picker");
         } else if (requestCode == Activity.RESULT_CANCELED) {
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            FragmentTransaction fragmentTransaction
+                    = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.content_frame, new FragmentHome());
             fragmentTransaction.commit();
         } else if (requestCode == PAYPAL_REQUEST_CODE) {
@@ -270,23 +259,40 @@ public class MainActivity extends AppCompatActivity
             payPalData = data;
             payPalResultCode = resultCode;
         } else {
-            Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
+            Log.v(TAG, "Nothing exists to handle that request code"
+                    + requestCode);
         }
     }
 
+    /**
+     * Handles the destruction of the
+     * MainActivity when the app is closed.
+     */
     @Override
     protected void onDestroy() {
         AppDatabase.destroyInstance();
         super.onDestroy();
     }
 
+    /**
+     * Handles the results of the PayPal transaction.
+     *
+     * @param resultCode If the result when through or not.
+     *                   Will equal 'RESULT_OK' if there
+     *                   were no errors.
+     * @param data The intent data that can be retrieved
+     *             from the PayPal result.
+     */
     public void payPalResult(final int resultCode,
                              final Intent data) {
         if (resultCode == RESULT_OK) {
-            PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+            PaymentConfirmation confirmation
+                    = data.getParcelableExtra(PaymentActivity
+                    .EXTRA_RESULT_CONFIRMATION);
             if (confirmation != null) {
                 try {
-                    String paymentDetails = confirmation.toJSONObject().toString(7);
+                    String paymentDetails
+                            = confirmation.toJSONObject().toString(7);
                     PaymentInfo paymentInfo = new PaymentInfo();
                     Bundle args = new Bundle();
                     args.putString("paymentInfo", paymentDetails);
@@ -300,13 +306,17 @@ public class MainActivity extends AppCompatActivity
             }
         } else if (resultCode == Activity.RESULT_CANCELED) {
             Toast.makeText(getActivity(), "Cancel", Toast.LENGTH_SHORT).show();
-
-        } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
+        } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID) {
             Toast.makeText(getActivity(), "Invalid", Toast.LENGTH_SHORT).show();
-
+        }
     }
 
 
+    /**
+     * Handles the resuming of the app
+     * from the PayPayl feature. Causes issues
+     * if does not reset the mReturningWithResult.
+     */
     @Override
     protected void onPostResume() {
         super.onPostResume();

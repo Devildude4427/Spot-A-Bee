@@ -21,7 +21,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.assignment.spotabee.MainActivity;
-import com.assignment.spotabee.OutdatedClassMap;
+import com.assignment.spotabee.outdated.OutdatedClassMap;
 import com.assignment.spotabee.R;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
@@ -31,13 +31,13 @@ import java.util.Date;
 
 import static android.support.v4.content.FileProvider.getUriForFile;
 import static android.location.LocationManager.GPS_PROVIDER;
-import static com.assignment.spotabee.MainActivity.IMAGE_CAPTURE;
-import static com.assignment.spotabee.MainActivity.PICK_IMAGE;
 import static com.assignment.spotabee.MainActivity.getContextOfApplication;
 
 public class FragmentHome extends Fragment  {
 
     private static final String TAG = "Home Debug";
+    public static final int IMAGE_CAPTURE = 1;
+    public static final int IMAGE_GALLERY = 2;
     private LocationManager locationManager;
     private LocationListener locationListener;
     private ImageView buttonCamera;
@@ -193,7 +193,7 @@ public class FragmentHome extends Fragment  {
      */
     public void onImageGallery() {
         Log.v(TAG, "onImageGallery");
-        getActivity().startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), PICK_IMAGE);
+        getActivity().startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), IMAGE_GALLERY);
     }
 
 }

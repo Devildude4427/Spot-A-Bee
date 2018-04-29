@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,7 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.assignment.spotabee.OutdatedClassMap;
+import com.assignment.spotabee.outdated.OutdatedClassMap;
 import com.assignment.spotabee.R;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
