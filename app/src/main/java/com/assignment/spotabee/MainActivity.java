@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -48,28 +49,55 @@ import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    /**
+     * The activity request code for choosing an account.
+     */
+    public static final int CHOOSE_ACCOUNT = 1;
 
-    public static final int CHOOSE_ACCOUNT = 99;
-
-    private AccountManager accountManager;
-    private static Context contextOfApplication;
-    private AppDatabase db;
-    private DrawerLayout mDrawerLayout;
-    private static final String TAG = "Main Activity Debug";
-
+    /**
+     * The activity request code for PayPal result.
+     */
     private int payPalResultCode;
+
+    /**
+     * The context of the application that is called
+     * throughout the fragments and classes.
+     */
+    private static Context contextOfApplication;
+
+    /**
+     * A debugging tag for the log, so that the user can see
+     * where the message is being created.
+     */
+    private static final String TAG = "MainActivityDebug";
+
+    /**
+     * An intent contains the data from PayPal.
+     */
     private Intent payPalData;
 
+    /**
+     *
+     */
     private boolean mReturningWithResult = false;
 
+    /**
+     * Handles the main creation of application wide resources.
+     * Examples of this include requesting permissions,
+     * saving a context, initializing the database, and
+     * starting the account manager.
+     *
+     * @param savedInstanceState The state that the application
+     *                           is saved in.
+     */
     @RequiresApi(api = Build.VERSION_CODES.M)
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        accountManager = (AccountManager)
+        AccountManager accountManager = (AccountManager)
                 getSystemService(Context.ACCOUNT_SERVICE);
 
         contextOfApplication = this;
@@ -83,8 +111,10 @@ public class MainActivity extends AppCompatActivity
                             }
 
                             @Override
-                            public void onDenied(String permission) {
+                            public void onDenied(final String permission) {
                                 Log.v(TAG, "Not all permissions accepted");
+                                Log.v(TAG, "Turned down permission: "
+                                        + permission);
                             }
                         });
 
@@ -101,11 +131,13 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-        db = AppDatabase.getAppDatabase(getApplicationContext());
+        AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
 
-        //This clears out the database, and is called every time! Remove if you need persistence!
+        //This clears out the database, and is called every time!
+        // Remove if you need persistence!
         db.descriptionDao().nukeTable();
-        //This clears out the database, and is called every time! Remove if you need persistence!
+        //This clears out the database, and is called every time!
+        // Remove if you need persistence!
 
         DatabaseInitializer.populateAsync(db);
 
@@ -117,13 +149,15 @@ public class MainActivity extends AppCompatActivity
         db.descriptionDao().insertDescriptions(description);
 
 
-        mDrawerLayout = findViewById(R.id.drawer_layout);
+        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, mDrawerLayout, toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
         mDrawerLayout.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         displaySelectedScreen(R.id.nav_home);
@@ -132,12 +166,19 @@ public class MainActivity extends AppCompatActivity
 //        startService(intent);
     }
 
+    /**
+     * Allows fragments or java classes
+     * to retrieve the activity from anywhere in the
+     * app.
+     *
+     * @return The activity.
+     */
     public AppCompatActivity getActivity() {
         return this;
     }
 
     /**
-     * A static method that retrieves Activity context
+     * A static method that retrieves Activity context.
      *
      * @return The context for the current activity
      */
@@ -145,9 +186,15 @@ public class MainActivity extends AppCompatActivity
         return contextOfApplication;
     }
 
+    /**
+     * Handles navigation when device back button is pressed.
+     * As of now, it navigates to the previous screen, though
+     * in unique cases it makes sense for this to be changed.
+     * Like navigating around login or PayPal pages.
+     */
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -155,6 +202,13 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Creates the option menu.
+     *
+     * @param menu The list of menu items.
+     * @return Boolean whether or not it was created without
+     * any error.
+     */
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -162,6 +216,13 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * Handles what happens when an item is selected in the
+     * options menu. This is blank for now.
+     *
+     * @param item The selected item.
+     * @return Which item the user has tapped on.
+     */
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -210,22 +271,34 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_resources:
                 fragment = new FragmentDownloadPdfGuide();
                 break;
+            default:
+                Log.v(TAG, itemId + " is being requested"
+                        + " in 'displaySelectedScreen, but nothing"
+                        + " exists to handle that.");
+
         }
 
         //replacing the fragment
         if (fragment != null) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            FragmentTransaction ft
+                    = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_frame, fragment);
             ft.commit();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
+    /**
+     * Starts the process of changing fragments
+     * when an item is selected from the Nav menu.
+     *
+     * @param item The menu item that should be loaded.
+     * @return Returns a boolean.
+     */
     @Override
-    public boolean onNavigationItemSelected(final MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
         displaySelectedScreen(item.getItemId());
         return true;
     }
