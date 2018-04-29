@@ -6,5 +6,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorOrange">#f2b20e</color>
     <color name="colorTranparentOrange">#7bf2b20e</color>
+    <color name="button_text_color">#d1d1d1</color>
 
 </resources>
