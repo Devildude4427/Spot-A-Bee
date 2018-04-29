@@ -49,7 +49,7 @@ public class OutdatedClassMap extends Fragment
      * TAG used in Log statements that can narrow down where the message
      * or error is coming from.
      */
-    private static final String TAG = "OutdatedClassMap Debug";
+    private static final String TAG = "OutdatedClassMapDebug";
 
     /**
      * Google map object that is used to create the background.
