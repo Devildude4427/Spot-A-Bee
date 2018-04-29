@@ -1,5 +1,8 @@
 package com.assignment.spotabee.customutils;
 
+// Adapted from: https://www.geeksforgeeks.org/quick-sort/
+// Changed to deal with our UserScore objects and order from largest score to smallest
+
 import com.assignment.spotabee.database.UserScore;
 
 import java.util.Collections;
@@ -22,7 +25,7 @@ public class CustomQuickSort
         {
             // If current element is smaller than or
             // equal to pivot
-            if (arr.get(j).getScore() <= pivot)
+            if (arr.get(j).getScore() >= pivot)
             {
                 i++;
 

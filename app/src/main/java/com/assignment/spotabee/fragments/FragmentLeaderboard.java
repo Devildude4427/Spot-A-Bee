@@ -39,7 +39,6 @@ public class FragmentLeaderboard extends Fragment implements AdapterView.OnItemC
 
         CustomQuickSort cqs = new CustomQuickSort();
         cqs.sort(userScores, 0, userScores.size()-1);
-        Collections.reverse(userScores);
         doCustomAdapterExample(userScores);
         return rootView;
     }
