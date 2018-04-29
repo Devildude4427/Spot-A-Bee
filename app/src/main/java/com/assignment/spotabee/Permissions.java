@@ -19,6 +19,7 @@ import com.assignment.spotabee.fragments.PaymentInfo;
 import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
 import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
+import static com.assignment.spotabee.MainActivity.getContextOfApplication;
 
 import org.json.JSONException;
 
@@ -35,12 +36,15 @@ public class Permissions extends AppCompatActivity
     public static final int CHOOSE_ACCOUNT = 99;
     private  static AccountManager accountManager;
     private static final String TAG = "Permissions Debug";
+    private static final Context context = getContextOfApplication();
+
+
 
     /**
      * Checks each permission if it is given, and, if not, requests them.
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void checkIfPermissionsGiven(Context context) {
+    public static void checkIfPermissionsGiven() {
 
         MainActivity mainActivity = new MainActivity();
         AppCompatActivity activity = mainActivity.getActivity();
@@ -87,28 +91,26 @@ public class Permissions extends AppCompatActivity
      * @param resultCode If the result succeeded or failed
      * @param data The intent that is being requested
      */
-//    protected void onActivityResult(final int requestCode, final int resultCode,
-//                                    final Intent data){
-//        try {
-//            if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
-//                String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-//                Log.v(TAG, accountName);
-//            } else if (requestCode == CHOOSE_ACCOUNT) {
-//                Log.v(TAG, "There was an error in the account picker");
-//            } else if (requestCode == PAYPAL_REQUEST_CODE){
-//                payPalResult(requestCode, resultCode, data);
-//            } else{
-//                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
-//            }
-//        } catch (Exception e) {
-//            Log.v(TAG, "Exception " + e);
-//        }
-//    }
+    protected void onActivityResult(final int requestCode, final int resultCode,
+                                    final Intent data){
+        try {
+            if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
+                String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                Log.v(TAG, accountName);
+            } else if (requestCode == CHOOSE_ACCOUNT) {
+                Log.v(TAG, "There was an error in the account picker");
+            } else{
+                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
+            }
+        } catch (Exception e) {
+            Log.v(TAG, "Exception " + e);
+        }
+    }
 
     /**
      * Requests permissions to use device location and access accounts.
      */
-    private void requestLocationAccountPermission(AppCompatActivity activity) {
+    private static void requestLocationAccountPermission(AppCompatActivity activity) {
         // Permission has not been granted and must be requested.
         // Request the permission. The result will be received in onRequestPermissionResult().
         Log.v(TAG, " " + activity);
@@ -171,14 +173,18 @@ public class Permissions extends AppCompatActivity
             case PERMISSION_REQUEST_ACCESS_FINE_LOCATION_AND_ACCOUNTS: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        && grantResults[0]
+                        == PackageManager.PERMISSION_GRANTED) {
                     Log.v(TAG, "Permission to both granted");
 
                     try {
-                        Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
+                        Intent intent =
+                                accountManager.newChooseAccountIntent(null,
+                                        null, new String[]{"com.google"},
+                                        null, null,
+                                        null, null);
                         startActivityForResult(intent, CHOOSE_ACCOUNT);
-
-//                        checkIfPermissionsGiven(this, );
+                        checkIfPermissionsGiven();
 
                     } catch (Exception e) {
                         Log.v(TAG, "Exception " + e);
@@ -193,9 +199,10 @@ public class Permissions extends AppCompatActivity
             case PERMISSION_REQUEST_ACCESS_FINE_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        && grantResults[0]
+                        == PackageManager.PERMISSION_GRANTED) {
                     Log.v(TAG, "Permission to only location granted");
-//                    checkIfPermissionsGiven(this);
+                    checkIfPermissionsGiven();
                 }
             }
             return;
@@ -203,13 +210,17 @@ public class Permissions extends AppCompatActivity
             case PERMISSION_REQUEST_ACCESS_ACCOUNT_DETAILS: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        && grantResults[0]
+                        == PackageManager.PERMISSION_GRANTED) {
                     Log.v(TAG, "Permission to only account granted");
                     try {
-                        Intent intent = accountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, null, null, null, null);
+                        Intent intent =
+                                accountManager.newChooseAccountIntent(null,
+                                        null, new String[]{"com.google"},
+                                        null, null,
+                                        null, null);
                         startActivityForResult(intent, CHOOSE_ACCOUNT);
                         Log.v(TAG, "Intent to choose just account a go");
-//                        checkIfPermissionsGiven(this);
                     } catch (Exception e) {
                         Log.v(TAG, "Exception " + e);
                     }
@@ -224,46 +235,30 @@ public class Permissions extends AppCompatActivity
             case PERMISSION_REQUEST_CAMERA: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        && grantResults[0]
+                        == PackageManager.PERMISSION_GRANTED) {
                     Log.v(TAG, "Permission to use camera granted");
-//                    checkIfPermissionsGiven(this);
+                    checkIfPermissionsGiven();
                 }
             }
+            return;
+
+            case PERMISSION_REQUEST_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0]
+                        == PackageManager.PERMISSION_GRANTED) {
+                    Log.v(TAG, "Permission to use external storage granted");
+                }
+            }
+            return;
+
             default: {
-                Log.v(TAG, "Unknown permission request");
+                Log.v(TAG, "Nothing exists to handle that permission request");
             }
 
             // other 'case' lines to check for other
             // permissions this app might request.
         }
-    }
-
-    public void payPalResult(final int requestCode, final int resultCode,
-                             final Intent data){
-        Log.d(TAG, "We are in payPalResult");
-        String amount = "test amount";
-        if (resultCode == RESULT_OK) {
-            PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
-            if (confirmation != null) {
-                try {
-                    String paymentDetails = confirmation.toJSONObject().toString(7);
-                    PaymentInfo paymentInfo = new PaymentInfo();
-                    Bundle args = new Bundle();
-                    args.putString("amount", "$100");
-                    args.putString("paymentInfo", paymentDetails);
-                    paymentInfo.setArguments(args);
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.content_frame, paymentInfo).commit();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        } else if (resultCode == Activity.RESULT_CANCELED) {
-            Toast.makeText(this, "Cancel", Toast.LENGTH_SHORT).show();
-
-        } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
-            Toast.makeText(this, "Invalid", Toast.LENGTH_SHORT).show();
-
     }
 }
