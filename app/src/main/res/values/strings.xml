@@ -8,7 +8,12 @@
     <string name="flower_type">Flower type</string>
     <string name="any_further_details">Any further details?</string>
     <string name="submit">Submit</string>
-    <string name="einstein_quote">Einstein said If the bee disappeared off the surface of the globe then man would only have  four years of life left. No more bees, no  more pollination, no more plants, no  more animals, no more manThis single quote captures the key role that bees play in the survival of planet earth.</string>
+    <string name="einstein_quote">Einstein said If the bee disappeared off the surface
+        of the globe then man would only have  four years of life left.
+        No more bees, no  more pollination, no more plants, no
+        more animals, no more manThis single quote captures the
+        key role that bees play in the survival of planet earth.
+      </string>
     <string name="about_us_title">About Us!</string>
     <string name="how_to">How #to</string>
     <string name="form">Form</string>
