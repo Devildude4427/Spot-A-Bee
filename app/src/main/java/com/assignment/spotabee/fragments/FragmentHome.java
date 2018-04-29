@@ -176,7 +176,7 @@ public class FragmentHome extends Fragment  {
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        String imageFileName = "JPEG_" + "Image_for_Stack" + "_";
         File storageDir = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DCIM), "Camera");
         File image = File.createTempFile(
@@ -191,19 +191,6 @@ public class FragmentHome extends Fragment  {
     }
 
     private void dispatchTakePictureIntent() {
-//        try {
-//            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//            imageUri = FileProvider.getUriForFile(getContextOfApplication(),
-//                    BuildConfig.APPLICATION_ID + ".provider",
-//                    createImageFile());
-//            takePictureIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, imageUri);
-//            takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//            startActivityForResult(takePictureIntent, IMAGE_CAPTURE);
-//        } catch (Exception e) {
-//            Log.v(TAG, "Exception in dispatch " + e);
-//        }
-
-
         try {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             // Ensure that there's a camera activity to handle the intent
@@ -219,7 +206,7 @@ public class FragmentHome extends Fragment  {
                 if (photoFile != null) {
                     photoURI = FileProvider.getUriForFile(getContextOfApplication(),
                     BuildConfig.APPLICATION_ID + ".provider",
-                    createImageFile());
+                    photoFile);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                     startActivityForResult(takePictureIntent, IMAGE_CAPTURE);
                 }
@@ -238,11 +225,15 @@ public class FragmentHome extends Fragment  {
     }
 
     private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(currentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        getContextOfApplication().sendBroadcast(mediaScanIntent);
+        try {
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            File f = new File(currentPhotoPath);
+            Uri contentUri = Uri.fromFile(f);
+            mediaScanIntent.setData(contentUri);
+            getContextOfApplication().sendBroadcast(mediaScanIntent);
+        } catch (Exception e) {
+            Log.v(TAG, "Exception " + e);
+        }
     }
 
     public void onActivityResult(final int requestCode, final int resultCode,
@@ -288,11 +279,9 @@ public class FragmentHome extends Fragment  {
                         }
                     });
                 }
+
             } else if (requestCode == IMAGE_CAPTURE) {
                 galleryAddPic();
-                Log.v(TAG, "Request went through for Image Capture");
-                Log.v(TAG, "External storage state: " + Environment.getExternalStorageState()
-                + "External Storage directory: " + Environment.getExternalStorageDirectory());
 
                 Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
                 File f = new File(currentPhotoPath);
@@ -313,9 +302,7 @@ public class FragmentHome extends Fragment  {
                     return;
                 }
                 client = ClarifaiClientGenerator.generate(API_KEY);
-                Log.v(TAG, "Entering imageBytes");
                 final byte[] imageBytes = FileOp.getByteArrayFromIntentData(getContextOfApplication(), mediaScanIntent);
-                Log.v(TAG, "Exiting imageBytes");
                 if (imageBytes != null) {
                     AsyncTask.execute(new Runnable() {
                         @Override
