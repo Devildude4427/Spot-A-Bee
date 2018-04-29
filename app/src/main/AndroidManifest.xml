@@ -33,7 +33,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".DownloadService" />
+        <service android:name=".ScreenService" />
     </application>
 
 </manifest>

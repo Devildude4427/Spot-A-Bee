@@ -54,6 +54,8 @@
     <string name="thanks_for_your_help">Thank you for your help</string>
     <string name="flower_sighting">Flower Sighting</string>
     <string name="thank_you_for_your_help">Thank you for your help!</string>
+    <string name="download_pdf_fragment_title">Download Our Guide</string>
+    <string name="go_to_youtube_to_see_our_mission">Go to YouTube to see our mission</string>
 
 
 </resources>
