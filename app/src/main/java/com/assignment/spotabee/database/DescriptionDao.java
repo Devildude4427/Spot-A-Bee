@@ -40,4 +40,7 @@ public interface DescriptionDao {
 
     @Query("SELECT * FROM UserScore")
     List<UserScore> getAllUserScores();
+
+    @Query("DELETE FROM UserScore")
+    void nukeUserScores();
 }

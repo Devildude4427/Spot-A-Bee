@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity
 
         //This clears out the database, and is called every time! Remove if you need persistence!
         db.descriptionDao().nukeTable();
+        db.descriptionDao().nukeUserScores();
         //This clears out the database, and is called every time! Remove if you need persistence!
 
         DatabaseInitializer.populateAsync(db);
