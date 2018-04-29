@@ -301,6 +301,8 @@ public class FragmentHome extends Fragment  {
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+//                Log.v(TAG, data.getData().toString());
                 client = ClarifaiClientGenerator.generate(API_KEY);
                 final byte[] imageBytes = FileOp.getByteArrayFromIntentData(getContextOfApplication(), mediaScanIntent);
                 if (imageBytes != null) {
