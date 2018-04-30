@@ -1,45 +1,50 @@
 package com.assignment.spotabee;
 
-import android.Manifest;
-import android.accounts.AccountManager;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.anthonycr.grant.PermissionsManager;
-import com.anthonycr.grant.PermissionsResultAction;
-import com.assignment.spotabee.database.AppDatabase;
-import com.assignment.spotabee.database.DatabaseInitializer;
-import com.assignment.spotabee.database.Description;
-import com.assignment.spotabee.fragments.DonationLogin;
-import com.assignment.spotabee.fragments.FragmentAboutUs;
-import com.assignment.spotabee.fragments.FragmentHome;
-import com.assignment.spotabee.fragments.FragmentHowTo;
-import com.assignment.spotabee.fragments.FragmentLeaderboard;
-import com.assignment.spotabee.fragments.FragmentMap;
-import com.assignment.spotabee.fragments.PaymentInfo;
+import com.assignment.spotabee.R;
 import com.paypal.android.sdk.payments.PaymentActivity;
-import com.paypal.android.sdk.payments.PaymentConfirmation;
 
-import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
+        import android.Manifest;
+        import android.accounts.AccountManager;
+        import android.app.Activity;
+        import android.content.Context;
+        import android.content.Intent;
+        import android.content.pm.PackageManager;
+        import android.os.Build;
+        import android.os.Bundle;
+        import android.support.annotation.NonNull;
+        import android.support.annotation.RequiresApi;
+        import android.support.design.widget.NavigationView;
+        import android.support.v4.app.Fragment;
+        import android.support.v4.app.FragmentTransaction;
+        import android.support.v4.content.ContextCompat;
+        import android.support.v4.view.GravityCompat;
+        import android.support.v4.widget.DrawerLayout;
+        import android.support.v7.app.ActionBarDrawerToggle;
+        import android.support.v7.app.AppCompatActivity;
+        import android.support.v7.widget.Toolbar;
+        import android.util.Log;
+        import android.view.Menu;
+        import android.view.MenuItem;
+        import android.widget.Toast;
+
+        import com.anthonycr.grant.PermissionsManager;
+        import com.anthonycr.grant.PermissionsResultAction;
+        import com.assignment.spotabee.database.AppDatabase;
+        import com.assignment.spotabee.database.DatabaseInitializer;
+        import com.assignment.spotabee.database.Description;
+        import com.assignment.spotabee.fragments.DonationLogin;
+        import com.assignment.spotabee.fragments.FragmentAboutUs;
+        import com.assignment.spotabee.fragments.FragmentHome;
+        import com.assignment.spotabee.fragments.FragmentHowTo;
+        import com.assignment.spotabee.fragments.FragmentLeaderboard;
+        import com.assignment.spotabee.fragments.FragmentMap;
+        import com.assignment.spotabee.fragments.PaymentInfo;
+        import com.paypal.android.sdk.payments.PaymentActivity;
+        import com.paypal.android.sdk.payments.PaymentConfirmation;
+
+        import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
 
 
 /**
@@ -136,6 +141,7 @@ public class MainActivity extends AppCompatActivity
         //This clears out the database, and is called every time!
         // Remove if you need persistence!
         db.descriptionDao().nukeTable();
+        db.descriptionDao().nukeUserScores();
         //This clears out the database, and is called every time!
         // Remove if you need persistence!
 
@@ -313,7 +319,7 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onActivityResult(final int requestCode, final int resultCode,
-                                    final Intent data) {
+                                 final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
@@ -387,7 +393,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Handles the resuming of the app
-     * from the PayPayl feature. Causes issues
+     * from the PayPal feature. Causes issues
      * if does not reset the mReturningWithResult.
      */
     @Override
@@ -400,4 +406,3 @@ public class MainActivity extends AppCompatActivity
         mReturningWithResult = false;
     }
 }
-

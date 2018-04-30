@@ -3,6 +3,9 @@ package com.assignment.spotabee.database;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Transaction;
+import android.arch.persistence.room.Update;
+
 import java.util.List;
 
 /**
@@ -18,6 +21,7 @@ public interface DescriptionDao {
      * @param descriptions Takes any number of Description
      *                     objects.
      */
+
     @Insert
     void insertDescriptions(Description... descriptions);
 
@@ -35,4 +39,22 @@ public interface DescriptionDao {
      */
     @Query("DELETE FROM Description")
     void nukeTable();
+
+    // UserScore
+    @Insert
+    void insertUserScore(UserScore... UserScore);
+
+    @Query("SELECT * FROM UserScore")
+    List<UserScore> getAllUserScores();
+
+    @Query("DELETE FROM UserScore")
+    void nukeUserScores();
+
+    @Transaction
+    @Query("SELECT * FROM UserScore WHERE account_name = :name")
+    UserScore getUserScoreByName(String name);
+
+    @Update
+    void updateUserScore(UserScore userScore);
+
 }
