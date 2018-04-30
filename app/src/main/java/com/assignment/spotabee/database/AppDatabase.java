@@ -5,10 +5,12 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
+
 /**
  * Starts or retrieves the database.
  */
-@Database(entities = {Description.class}, version = 4, exportSchema = false)
+@Database(entities = {Description.class, UserScore.class}, version = 5, exportSchema = false)
+
 public abstract class AppDatabase extends RoomDatabase {
 
     /**
