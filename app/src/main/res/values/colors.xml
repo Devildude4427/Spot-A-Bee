@@ -4,7 +4,7 @@
     <!--<color name="colorPrimaryDark">#c28e0a</color>-->
     <color name="colorPrimaryDark">#f2b210</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="colorOrange">#f2b20e</color>
+    <color name="colorOrange">#f2b10e</color>
     <color name="colorTranparentOrange">#7bf2b20e</color>
 
 </resources>
