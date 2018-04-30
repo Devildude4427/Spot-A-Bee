@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -51,16 +52,11 @@ public class FragmentHome extends Fragment  {
     public static final int IMAGE_GALLERY = 2;
     private LocationManager locationManager;
     private LocationListener locationListener;
-    private ImageView buttonCamera;
-    private ImageView buttonDescriptionForm;
-    private ImageView buttonUploadPictures;
     private AppDatabase db;
     private static final String API_KEY = "d984d2d494394104bb4bee0b8149523d";
     private static ClarifaiClient client;
     private String currentPhotoPath;
-    private Uri photoURI;
-
-    Intent intent;
+    private Intent intent;
 
 
     @Nullable
@@ -81,15 +77,14 @@ public class FragmentHome extends Fragment  {
         db = AppDatabase.getAppDatabase(getContext());
 
 
-        buttonCamera = view.findViewById(R.id.button_camera);
-
-        buttonCamera.setOnClickListener(new View.OnClickListener(){
+        ImageView buttonCamera = view.findViewById(R.id.button_camera);
+        buttonCamera.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int id = v.getId();
                     //Open the camera HOPEFULLY
 
-                    if (id == R.id.button_camera){
+                    if (id == R.id.button_camera) {
                         dispatchTakePictureIntent();
                     } else {
                         //Go back to main button
@@ -121,7 +116,7 @@ public class FragmentHome extends Fragment  {
             }
         });
 
-        buttonDescriptionForm = view.findViewById(R.id.button_no_image_upload);
+        ImageView buttonDescriptionForm = view.findViewById(R.id.button_no_image_upload);
         buttonDescriptionForm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,10 +133,10 @@ public class FragmentHome extends Fragment  {
             }
         });
 
-        buttonUploadPictures = view.findViewById(R.id.button_image_upload);
+        ImageView buttonUploadPictures = view.findViewById(R.id.button_image_upload);
         buttonUploadPictures.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 onImageGallery();
             }
         });
@@ -149,7 +144,8 @@ public class FragmentHome extends Fragment  {
     }
 
         @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(final @NonNull View view,
+                              final @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles
         getActivity().setTitle("Home");
@@ -186,7 +182,7 @@ public class FragmentHome extends Fragment  {
                 }
                 // Continue only if the File was successfully created
                 if (photoFile != null) {
-                    photoURI = FileProvider.getUriForFile(getContextOfApplication(),
+                    Uri photoURI = FileProvider.getUriForFile(getContextOfApplication(),
                     BuildConfig.APPLICATION_ID + ".provider",
                     photoFile);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
@@ -219,7 +215,7 @@ public class FragmentHome extends Fragment  {
     }
 
     public void onActivityResult(final int requestCode, final int resultCode,
-                                    final Intent data){
+                                    final Intent data) {
         try {
             if (requestCode == IMAGE_GALLERY) {
 
@@ -262,18 +258,7 @@ public class FragmentHome extends Fragment  {
                     });
                 }
 
-            } else if (requestCode == IMAGE_CAPTURE) {
-//                galleryAddPic();
-//
-//                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-//                File f = new File(currentPhotoPath);
-//                Uri contentUri = Uri.fromFile(f);
-//                mediaScanIntent.setData(contentUri);
-
-                Log.v(TAG, "image hopefully saved");
-
-            }
-            else {
+            }else {
                 Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
             }
         } catch (Exception e) {
