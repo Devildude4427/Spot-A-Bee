@@ -144,13 +144,16 @@
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/submit"
-        android:translationZ="4dp"
-        android:elevation="15dp"
-        android:layout_below="@id/description_container"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        android:background="@drawable/button_background"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_height="70dp"
-        android:layout_width="140dp"
-        android:layout_marginTop="30dp"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/button_text_color"
+        android:layout_marginBottom="40dp"
+        android:elevation="@dimen/default_elevation"
+        android:text="@string/submit"
         android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -158,7 +161,8 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        android:text="@string/submit"/>
+        android:textSize="@dimen/default_small_text_size"
+        android:translationZ="@dimen/default_translationz" />
 
 
 </RelativeLayout>
