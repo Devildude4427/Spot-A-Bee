@@ -17,19 +17,33 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <uses-library android:name="com.google.android.maps" />
+        <service android:name=".ScreenService" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.assignment.spotabee.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/fileprovider" />
+        </provider>
+
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".ScreenService" />
     </application>
 
 </manifest>

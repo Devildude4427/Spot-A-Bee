@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/thankYouForSubmission"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/deafult_heading_margin_top"
+        android:text="@string/thank_you_for_your_help"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="@dimen/default_large_text_size" />
+
+    <RelativeLayout
+        android:id="@+id/goHome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/white_border"
+        android:elevation="@dimen/default_elevation"
+        android:translationZ="@dimen/default_translationz">
+
+        <ImageView
+            android:id="@+id/go_home"
+            android:layout_width="@dimen/home_icon_width"
+            android:layout_height="@dimen/home_icon_width"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="23dp"
+            android:src="@drawable/ic_home" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/go_home"
+            android:layout_centerHorizontal="true"
+            android:text="Go Home"
+            android:textSize="@dimen/deafult_medium_text_size" />
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

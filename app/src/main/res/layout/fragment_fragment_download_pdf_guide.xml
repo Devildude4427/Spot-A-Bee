@@ -1,0 +1,66 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.assignment.spotabee.FragmentDownloadPdfGuide">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/download_pdf_bee"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="14dp"
+            android:layout_marginEnd="6dp"
+            android:src="@drawable/ic_bee_flying" />
+
+        <ImageView
+            android:id="@+id/download_pdf_bee"
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            android:layout_above="@+id/downloadGuideBtn"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="47dp"
+            android:gravity="center_horizontal"
+            android:src="@drawable/bee_2" />
+
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/downloadGuideBtn"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:background="@drawable/button_background"
+            android:textColor="@color/button_text_color"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="40dp"
+            android:elevation="@dimen/default_elevation"
+            android:text="@string/download_guide"
+            android:textAllCaps="false"
+            android:textSize="@dimen/default_small_text_size"
+            android:translationZ="@dimen/default_translationz" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/guideTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            android:padding="2dp"
+            android:text="@string/help_the_bees_more"
+            android:textAllCaps="false"
+            android:textSize="@dimen/deafult_medium_text_size" />
+    </RelativeLayout>
+
+</FrameLayout>
+
