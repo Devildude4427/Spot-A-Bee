@@ -52,7 +52,7 @@
     <string name="number_of_bees_spotted_on_the_flower">Number of bees on the flower</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="incentive_every_ten_sub_message">Well done! You have now made %d submissions! The bees thank you!</string>
+    <string name="incentive_every_ten_sub_message">Well done! You have now made %d submissions!</string>
     <string name="help_the_bees_more">Please download our PDF to \nfind out what more you can you to help\n the bees!</string>
     <string name="download_guide">Download Guide</string>
     <string name="help_the_bees">Help the bees</string>

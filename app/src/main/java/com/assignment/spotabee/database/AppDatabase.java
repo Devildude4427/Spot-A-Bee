@@ -5,26 +5,50 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
+
+/**
+ * Starts or retrieves the database.
+ */
 @Database(entities = {Description.class, UserScore.class}, version = 5, exportSchema = false)
+
 public abstract class AppDatabase extends RoomDatabase {
 
-    private static AppDatabase INSTANCE;
+    /**
+     * Instance of the database.
+     */
+    private static AppDatabase instance;
 
+    /**
+     * Description of the flower data.
+     *
+     * @return the DescriptionDAO.
+     */
     public abstract DescriptionDao descriptionDao();
 
-    public static AppDatabase getAppDatabase(Context context) {
-        if (INSTANCE == null) {
-            INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
+    /**
+     * Creates a new instance of the database if one
+     * does not already exist.
+     *
+     * @param context Context of the application.
+     * @return The instance. If it doesn't exist, it will be
+     * a new instance. Otherwise, it will get the existing instance.
+     */
+    public static AppDatabase getAppDatabase(final Context context) {
+        if (instance == null) {
+            instance = Room.databaseBuilder(context.getApplicationContext(),
                     AppDatabase.class, "App Database")
                     .allowMainThreadQueries()
                     .fallbackToDestructiveMigration()
                     .build();
         }
-        return INSTANCE;
+        return instance;
     }
 
+    /**
+     * Destroys the database instance entirely.
+     */
     public static void destroyInstance() {
-        INSTANCE = null;
+        instance = null;
     }
 }
 

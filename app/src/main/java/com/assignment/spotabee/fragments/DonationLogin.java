@@ -1,16 +1,12 @@
 package com.assignment.spotabee.fragments;
 
-// Tutorial for PayPal Button: https://developer.paypal.com/docs/classic/mobile/ht_mpl-itemPayment-Android/
+// Tutorial for PayPal Button: https://developer
+// .paypal.com/docs/classic/mobile/ht_mpl-itemPayment-Android/
 
-
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,99 +15,87 @@ import com.assignment.spotabee.Config.Config;
 import com.assignment.spotabee.R;
 
 import android.content.Intent;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.assignment.spotabee.customutils.CheckNetworkConnection;
-import com.assignment.spotabee.customutils.FileOp;
-import com.assignment.spotabee.imagerecognition.ClarifaiClientGenerator;
-import com.assignment.spotabee.imagerecognition.ClarifaiRequest;
 import com.paypal.android.MEP.CheckoutButton;
 import com.paypal.android.MEP.PayPal;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
 import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
-import com.paypal.android.sdk.payments.PaymentConfirmation;
-
-import org.json.JSONException;
-
 import java.math.BigDecimal;
 
-import clarifai2.api.ClarifaiClient;
-
-import static android.app.Activity.RESULT_OK;
 import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
-import static com.assignment.spotabee.MainActivity.PICK_IMAGE;
-import static com.assignment.spotabee.MainActivity.getContextOfApplication;
 import com.assignment.spotabee.AmountPayed;
 
+/**
+ * Donation Login fragment. Controls all content that goes
+ * on the 'Donation' page.
+ */
+public class DonationLogin extends Fragment
+        implements View.OnClickListener {
 
-public class DonationLogin extends Fragment implements View.OnClickListener{
-   private View rootView;
-    private static final String API_KEY = "d984d2d494394104bb4bee0b8149523d";
-    private static ClarifaiClient client;
-    private static final String TAG = "Donation Login Debug";
-    private CheckoutButton launchPayPalButton;
-    private static final int PAYPAL_BUTTON_ID = 13098;
-    private boolean _paypalLibraryInit;
+    /**
+     * Fragment view. Used to get resources.
+     */
+    private View rootView;
 
+    /**
+     * TAG used in Log statements that can narrow down where the message
+     * or error is coming from.
+     */
+    private static final String TAG = "DonationLoginDebug";
 
-    private static PayPalConfiguration config = new PayPalConfiguration()
-            .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)//Using Sandbox as it is a mock payment
-            .clientId(Config.PAYPAL_CLIENT_ID);
+    /**
+     * Unique ID for calling methods with requests.
+     */
+    private static final int PAYPAL_BUTTON_ID = 1;
 
-    //Declare the buttons
-    Button btnPayNow;
-    EditText editAmount;
+    /**
+     * Boolean that states whether or not the library
+     * has been initialized.
+     */
+    private boolean paypalLibraryInitialize;
 
-    String amount = "";
+    /**
+     * An editable text box that is the amount of money
+     * for donation.
+     */
+    private EditText editAmount;
 
-    //This method will help the app to destroy any information realated to the transaction when the user stop it
-    protected void onDistroy() {
-        getActivity().stopService(new Intent(getActivity(), PayPalService.class));
-        super.onDestroy();
-    }
-
-    public DonationLogin() {
-        // Required empty public constructor
-    }
-
-    public static DonationLogin newInstance(String param1, String param2) {
-        DonationLogin fragment = new DonationLogin();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    /**
+     * On create of the fragment, loads the layout
+     * of the page.
+     *
+     * @param inflater Creates the layout for the fragment.
+     * @param container Assigns the overall container
+     *                  that the fragment sits in.
+     * @param savedInstanceState Save the state so that the
+     *                           fragment can be opened and
+     *                           shut without losing your
+     *                           changes.
+     * @return The finished view for the fragment.
+     */
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+    public View onCreateView(final @NonNull LayoutInflater inflater,
+                             final @Nullable ViewGroup container,
+                             final @Nullable Bundle savedInstanceState) {
+        //returning our layout file
+        //change R.layout.yourlayoutfilename for each of your fragments
 
-        }
-    }
+        rootView = inflater.inflate(R.layout.fragment_donation,
+                container, false);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_donation, container, false);
-
-        getActivity().setTitle(getString(R.string.donate));
         //Start Paypal Service
         Intent intent = new Intent(getActivity(), PayPalService.class);
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
         getActivity().startService(intent);
-        _paypalLibraryInit = false;
-
-
-        //Declare the buttons
+        paypalLibraryInitialize = false;
+        editAmount = rootView.findViewById(R.id.editAmount);
 //        btnPayNow = (Button) rootView.findViewById(R.id.btnPayNow);
-        editAmount = (EditText) rootView.findViewById(R.id.editAmount);
 
 //        btnPayNow.setOnClickListener(new View.OnClickListener()
 //
@@ -122,35 +106,66 @@ public class DonationLogin extends Fragment implements View.OnClickListener{
 //                processPayment();
 //            }
 //        });
-
         initLibrary();
         showPayPalButton();
-
         return rootView;
     }
 
+    /**
+     * Once the view is created, it sets the title
+     * and will handle any other fragment methods.
+     *
+     * @param view The view return from 'onCreateView'
+     * @param savedInstanceState What instance state the
+     *                           fragment is currently on.
+     */
     @Override
-    public void onClick(View v) {
-        int id = v.getId();
-        switch (id){
-            case PAYPAL_BUTTON_ID:
-                processPayment();
-                break;
+    public void onViewCreated(final @NonNull View view,
+                              final @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //you can set the title for your toolbar here
+        // for different fragments different titles
+        getActivity().setTitle(getString(R.string.donate));
+    }
+
+    /**
+     * The PayPal configuration data. Currently, it is set to only
+     * be in a sandbox, or a closed environment.
+     */
+    private static PayPalConfiguration config = new PayPalConfiguration()
+            .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
+            //Using Sandbox as it is a mock payment
+            .clientId(Config.PAYPAL_CLIENT_ID);
+
+    /**
+     * On button click, starts the transaction.
+     *
+     * @param v The current view on the fragment.
+     */
+    @Override
+    public void onClick(final View v) {
+        if (v.getId() == PAYPAL_BUTTON_ID) {
+            processPayment();
         }
     }
 
+    /**
+     * Gets the inputted dollar amount, and starts the
+     * transaction.
+     */
     private void processPayment() {
-
-        amount = editAmount.getText().toString();
+        String amount = editAmount.getText().toString();
         AmountPayed.setAmountPayed(amount);
         try {
-            PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(String.valueOf(amount)),
-                    "USD", "Donate for Spot a Bee", PayPalPayment.PAYMENT_INTENT_SALE);
+            PayPalPayment payPalPayment = new PayPalPayment(
+                    new BigDecimal(String.valueOf(amount)),
+                    "USD", "Donate for Spot a Bee",
+                    PayPalPayment.PAYMENT_INTENT_SALE);
             Intent intent = new Intent(getActivity(), PaymentActivity.class);
             intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
             intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payPalPayment);
             getActivity().startActivityForResult(intent, PAYPAL_REQUEST_CODE);
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             Toast.makeText(getActivity(),
                     "Please enter numerical characters only. E.g, 10 for $10",
                     Toast.LENGTH_SHORT).show();
@@ -158,50 +173,47 @@ public class DonationLogin extends Fragment implements View.OnClickListener{
 
     }
 
+    /**
+     * Shows the PayPal button when called.
+     */
     private void showPayPalButton() {
-
-        // Generate the PayPal checkout button and save it for later use
         PayPal pp = PayPal.getInstance();
-        launchPayPalButton = pp.getCheckoutButton(getActivity(), PayPal.BUTTON_278x43, CheckoutButton.TEXT_PAY);
-
-        // The OnClick listener for the checkout button
+        CheckoutButton launchPayPalButton = pp.getCheckoutButton(getActivity(),
+                PayPal.BUTTON_278x43, CheckoutButton.TEXT_PAY);
         launchPayPalButton.setOnClickListener(this);
-
-        // Add the listener to the layout
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT,
+        RelativeLayout.LayoutParams params = new RelativeLayout
+                .LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         params.bottomMargin = 10;
         launchPayPalButton.setLayoutParams(params);
         launchPayPalButton.setId(PAYPAL_BUTTON_ID);
-        ((RelativeLayout) rootView.findViewById(R.id.payPalButtonContainer)).addView(launchPayPalButton);
-//        ((RelativeLayout) rootView.findViewById(R.id.payPalButtonContainer)).setGravity(Gravity.CENTER_HORIZONTAL);
+        ((RelativeLayout) rootView.findViewById(R.id.payPalButtonContainer))
+                .addView(launchPayPalButton);
+//      ((RelativeLayout) rootView.findViewById(R.id.payPalButtonContainer))
+//              .setGravity(Gravity.CENTER_HORIZONTAL);
     }
 
+    /**
+     * Initializes the PayPal library for further usage.
+     */
     public void initLibrary() {
         PayPal pp = PayPal.getInstance();
-
-        if (pp == null) {  // Test to see if the library is already initialized
-
-            // This main initialization call takes your Context, AppID, and target server
-            pp = PayPal.initWithAppID(getActivity(), Config.PAYPAL_CLIENT_ID, PayPal.ENV_NONE);
-
-            // Required settings:
-
-            // Set the language for the library
+        if (pp == null) {
+            // This main initialization call takes your Context,
+            // AppID, and target server
+            pp = PayPal.initWithAppID(getActivity(),
+                    Config.PAYPAL_CLIENT_ID, PayPal.ENV_NONE);
             pp.setLanguage("en_US");
 
-            // Some Optional settings:
-
             // Sets who pays any transaction fees. Value is:
-            // FEEPAYER_SENDER, FEEPAYER_PRIMARYRECEIVER, FEEPAYER_EACHRECEIVER, and FEEPAYER_SECONDARYONLY
+            // FEEPAYER_SENDER, FEEPAYER_PRIMARYRECEIVER,
+            // FEEPAYER_EACHRECEIVER, and FEEPAYER_SECONDARYONLY
             pp.setFeesPayer(PayPal.FEEPAYER_EACHRECEIVER);
 
             // true = transaction requires shipping
             pp.setShippingEnabled(true);
-
-            _paypalLibraryInit = true;
+            paypalLibraryInitialize = true;
         }
     }
-
 }
