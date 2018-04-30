@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Spot A Bee</string>
-    <string name="title_activity_maps">Map</string>
 
     <string name="button">Button</string>
 
@@ -9,14 +8,21 @@
     <string name="flower_type">Flower type</string>
     <string name="any_further_details">Any further details?</string>
     <string name="submit">Submit</string>
-    <string name="einstein_quote">Einstein said If the bee disappeared off the surface of the globe then man would only have  four years of life left. No more bees, no  more pollination, no more plants, no  more animals, no more manThis single quote captures the key role that bees play in the survival of planet earth.</string>
+    <string name="einstein_quote">Einstein said If the bee disappeared off the surface
+        of the globe then man would only have  four years of life left.
+        No more bees, no  more pollination, no more plants, no
+        more animals, no more manThis single quote captures the
+        key role that bees play in the survival of planet earth.
+      </string>
     <string name="about_us_title">About Us!</string>
+    <string name="download_pdf_fragment_title">Download Our Guide</string>
     <string name="how_to">How #to</string>
     <string name="form">Form</string>
-    <string name="donate">DONATE</string>
+    <string name="donate">Donate</string>
     <string name="about_us">About Us</string>
     <string name="how_to_menu">How to</string>
     <string name="upload_picture">Upload Picture</string>
+    <string name="you_have_donated_x">You have donated $%s\n to Spot A Bee</string>
     <string name="flowers_in_cardiff">Flowers in Cardiff</string>
 
     <string name="home_button_label_camera">Camera</string>
@@ -33,12 +39,11 @@
 
     <string name="drawer_menu_item_home">Home</string>
     <string name="drawer_menu_item_howto">How To</string>
-    <string name="drawer_menu_item_map">Map</string>
+    <string name="drawer_menu_item_results">Results</string>
     <string name="drawer_menu_item_aboutus">About Us</string>
     <string name="drawer_menu_item_form">Form</string>
     <string name="drawer_menu_item_leaderboard">Leaderboard</string>
 
-    <string name="nav_form">Form</string>
     <string name="identify_a_flower">Identify a flower</string>
     <string name="details_title">Details</string>
     <string name="flowers_spotted">Flowers Spotted</string>
@@ -47,8 +52,7 @@
     <string name="number_of_bees_spotted_on_the_flower">Number of bees on the flower</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="incentive_every_ten_sub_message">Well done! You have now made %d submissions! The bees thank you!</string>
+    <string name="incentive_every_ten_sub_message">Well done! You have now made %d submissions!</string>
     <string name="help_the_bees_more">Please download our PDF to \nfind out what more you can you to help\n the bees!</string>
     <string name="download_guide">Download Guide</string>
     <string name="help_the_bees">Help the bees</string>
@@ -56,6 +60,21 @@
     <string name="thanks_for_your_help">Thank you for your help</string>
     <string name="flower_sighting">Flower Sighting</string>
     <string name="thank_you_for_your_help">Thank you for your help!</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="pay_now">Pay now</string>
+    <string name="donation_completed">Donation completed</string>
+    <string name="amount">Amount</string>
+    <string name="id">Id</string>
+    <string name="thanks_for_your_donation_the_bees_thank_you">Thanks for your donation! The bees thank you!</string>
+    <string name="status">Status</string>
+    <string name="btnhome">Home</string>
+    <string name="state">Status</string>
+    <string name="enter_amount_you_d_nlike_to_donate_in">Enter amount you\'d \n like to donate in $</string>
+    <string name="amount_here">Amount Here</string>
+    <string name="go_to_youtube_to_see_our_mission">Go to YouTube to see our mission</string>
+    <string name="go_to_paypal">Go to PayPal</string>
 
 
 </resources>
