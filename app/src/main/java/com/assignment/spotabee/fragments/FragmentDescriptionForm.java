@@ -317,14 +317,13 @@ public class FragmentDescriptionForm extends Fragment
 
     }
 
-    public void firstScoredSubmission(final String accountName){
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                db.descriptionDao()
-                        .insertUserScore(new UserScore(accountName, 1));
-            }
-        });
+    public boolean userScoreExists(String name){
+        if(db.descriptionDao().getUserScoreByName(name) == null){
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 
     public void updateUserScore(){
@@ -335,20 +334,16 @@ public class FragmentDescriptionForm extends Fragment
 
                 try {
                     String currentUserAccountName = UserAccount.getAccountName();
-//                    if(db.descriptionDao()
-//                            .getUserByAccountName(currentUserAccountName) == null){
-//                        firstScoredSubmission(currentUserAccountName);
-//                    } else {
-//                        db.descriptionDao()
-//                                .insertUserScore(new UserScore(currentUserAccountName,
-//                                        db.descriptionDao()
-//                                                .getUserByAccountName(currentUserAccountName) + 1));
-//                    }
 
-                        db.descriptionDao()
-                                .insertUserScore(new UserScore(currentUserAccountName,
-                                        db.descriptionDao()
-                                                .getUserByAccountName(currentUserAccountName) + 1));
+                    if(userScoreExists(currentUserAccountName)){
+                        UserScore userScore = db.descriptionDao().getUserScoreByName(currentUserAccountName);
+                        userScore.setScore(userScore.getScore() + 1);
+                        db.descriptionDao().updateUserScore(userScore);
+                    } else {
+                        UserScore newUserScore = new UserScore(currentUserAccountName,  1);
+                        db.descriptionDao().insertUserScore(newUserScore);
+                    }
+
 
 
                     List<UserScore> allUserScores = db.descriptionDao()
