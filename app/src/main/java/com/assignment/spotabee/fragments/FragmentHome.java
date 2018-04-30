@@ -216,27 +216,25 @@ public class FragmentHome extends Fragment  {
 
     public void onActivityResult(final int requestCode, final int resultCode,
                                     final Intent data) {
+        final ProgressDialog progress = new ProgressDialog(getContextOfApplication());
         try {
-            if (requestCode == IMAGE_GALLERY) {
+            progress.setTitle("Loading");
+            progress.setMessage("Identify your flower..");
+            progress.setCancelable(false);
+            progress.show();
 
-                final ProgressDialog progress = new ProgressDialog(getContextOfApplication());
-                progress.setTitle("Loading");
-                progress.setMessage("Identify your flower..");
-                progress.setCancelable(false);
-                progress.show();
+            if (!CheckNetworkConnection.isInternetAvailable(getContextOfApplication())) {
+                progress.dismiss();
+                Toast.makeText(getContextOfApplication(),
+                        "Internet connection unavailable.",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            client = ClarifaiClientGenerator.generate(API_KEY);
+            final byte[] imageBytes = FileOp.getByteArrayFromIntentData(getContextOfApplication(), data);
+            if (imageBytes != null) {
 
-                if (!CheckNetworkConnection.isInternetAvailable(getContextOfApplication())) {
-                    progress.dismiss();
-                    Toast.makeText(getContextOfApplication(),
-                            "Internet connection unavailable.",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                client = ClarifaiClientGenerator.generate(API_KEY);
-                final byte[] imageBytes = FileOp.getByteArrayFromIntentData(getContextOfApplication(), data);
-                if (imageBytes != null) {
-
-                    AsyncTask.execute(new Runnable() {
+                AsyncTask.execute(new Runnable() {
                         @Override
                         public void run() {
                             Log.d(TAG, "We have started run thread");
@@ -258,10 +256,17 @@ public class FragmentHome extends Fragment  {
                     });
                 }
 
-            }else {
-                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
-            }
         } catch (Exception e) {
+            try {
+                progress.dismiss();
+            } catch (Exception ex){
+
+            }
+//            getActivity().getSupportFragmentManager()
+//                    .beginTransaction()
+//                    .replace(R.id.content_frame, new FragmentDescriptionForm())
+//                    .commit();
+
             Log.v(TAG, "Exception with Activity Start " + e);
             e.printStackTrace();
         }
