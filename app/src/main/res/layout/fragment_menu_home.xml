@@ -2,10 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/homespotabee"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-    <!--android:background="@drawable/background">-->
-
 
 
     <!--<android.support.v7.widget.AppCompatButton-->
@@ -49,23 +48,23 @@
     </RelativeLayout>
     <ImageView
         android:id="@+id/bee_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_below="@+id/textView3"
+        android:layout_width="150dp"
+        android:layout_height="140dp"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_vertical"
-        android:layout_marginTop="12dp"
-        android:src="@drawable/bee_1" />
+        android:layout_marginTop="50dp"
+        android:src="@drawable/transparent" />
 
     <ImageView
         android:id="@+id/button_camera"
-        android:layout_width="350dp"
-        android:layout_height="175dp"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
         android:layout_above="@+id/button_image_upload"
         android:layout_below="@+id/bee_logo"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="34dp"
-        android:src="@drawable/ic_camera_svg"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/cameraeye"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -96,7 +95,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="70dp"
         android:fontFamily="casual"
         android:text="@string/spot_a_bee"
         android:textColor="#000000"
