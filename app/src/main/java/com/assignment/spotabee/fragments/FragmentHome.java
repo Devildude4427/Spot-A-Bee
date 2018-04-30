@@ -1,12 +1,14 @@
 package com.assignment.spotabee.fragments;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -14,22 +16,31 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.assignment.spotabee.BuildConfig;
 import com.assignment.spotabee.MainActivity;
+import com.assignment.spotabee.customutils.CheckNetworkConnection;
+import com.assignment.spotabee.customutils.FileOp;
+import com.assignment.spotabee.imagerecognition.ClarifaiClientGenerator;
+import com.assignment.spotabee.imagerecognition.ClarifaiRequest;
 import com.assignment.spotabee.outdated.OutdatedClassMap;
 import com.assignment.spotabee.R;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static android.support.v4.content.FileProvider.getUriForFile;
+import clarifai2.api.ClarifaiClient;
+
 import static android.location.LocationManager.GPS_PROVIDER;
 import static com.assignment.spotabee.MainActivity.getContextOfApplication;
 
@@ -45,6 +56,9 @@ public class FragmentHome extends Fragment  {
     private ImageView buttonUploadPictures;
     private AppDatabase db;
     private static final String API_KEY = "d984d2d494394104bb4bee0b8149523d";
+    private static ClarifaiClient client;
+    private String currentPhotoPath;
+    private Uri photoURI;
 
     Intent intent;
 
@@ -141,50 +155,46 @@ public class FragmentHome extends Fragment  {
         getActivity().setTitle("Home");
     }
 
-    private File createImageFile() {
-        try {
-            // Create an image file name
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String imageFileName = "JPEG_" + timeStamp + "_";
-            File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-            File image = File.createTempFile(
-                    imageFileName,  /* prefix */
-                    ".jpg",         /* suffix */
-                    storageDir      /* directory */
-            );
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM), "Camera");
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",   /* suffix */
+                storageDir      /* directory */
+        );
 
-            // Save a file: path for use with ACTION_VIEW intents
-            return image;
-
-        } catch (Exception e) {
-            Log.v(TAG, "Exception " + e);
-        }
-        return null;
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = "file: " + image.getAbsolutePath();
+        return image;
     }
 
     private void dispatchTakePictureIntent() {
-        Log.v(TAG, "Started Pic Intent");
         try {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             // Ensure that there's a camera activity to handle the intent
             if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
                 // Create the File where the photo should go
                 File photoFile = null;
-                photoFile = createImageFile();
-
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+                    Log.v(TAG, "IO Exception " + ex);
+                }
                 // Continue only if the File was successfully created
                 if (photoFile != null) {
-
-                    Uri contentUri = getUriForFile(getContext(), "com.assignment.spotabee.provider" , photoFile);
-                    Uri photoURI = getUriForFile(getContextOfApplication(),
-                            "com.assignment.spotabee.fragments.fileprovider",
-                            photoFile);
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
-                    getActivity().startActivityForResult(takePictureIntent, IMAGE_CAPTURE);
+                    photoURI = FileProvider.getUriForFile(getContextOfApplication(),
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    photoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, IMAGE_CAPTURE);
                 }
             }
         } catch (Exception e) {
-            Log.v(TAG, "Exception " + e);
+            Log.v(TAG, "Exception in dispatch " + e);
         }
     }
 
@@ -193,7 +203,83 @@ public class FragmentHome extends Fragment  {
      */
     public void onImageGallery() {
         Log.v(TAG, "onImageGallery");
-        getActivity().startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), IMAGE_GALLERY);
+        startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), IMAGE_GALLERY);
+    }
+
+    private void galleryAddPic() {
+        try {
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            File f = new File(currentPhotoPath);
+            Uri contentUri = Uri.fromFile(f);
+            mediaScanIntent.setData(contentUri);
+            getContextOfApplication().sendBroadcast(mediaScanIntent);
+        } catch (Exception e) {
+            Log.v(TAG, "Exception " + e);
+        }
+    }
+
+    public void onActivityResult(final int requestCode, final int resultCode,
+                                    final Intent data){
+        try {
+            if (requestCode == IMAGE_GALLERY) {
+
+                final ProgressDialog progress = new ProgressDialog(getContextOfApplication());
+                progress.setTitle("Loading");
+                progress.setMessage("Identify your flower..");
+                progress.setCancelable(false);
+                progress.show();
+
+                if (!CheckNetworkConnection.isInternetAvailable(getContextOfApplication())) {
+                    progress.dismiss();
+                    Toast.makeText(getContextOfApplication(),
+                            "Internet connection unavailable.",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                client = ClarifaiClientGenerator.generate(API_KEY);
+                final byte[] imageBytes = FileOp.getByteArrayFromIntentData(getContextOfApplication(), data);
+                if (imageBytes != null) {
+
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d(TAG, "We have started run thread");
+                            ClarifaiRequest clarifaiRequest = new ClarifaiRequest(client, "flower_species", imageBytes);
+                            String flowerType = clarifaiRequest.executRequest();
+                            Log.d(TAG, "Flower Type: " + flowerType);
+
+                            Bundle descriptionFormBundle = new Bundle();
+                            descriptionFormBundle.putString("flowerName", flowerType);
+
+                            FragmentDescriptionForm fragmentDescriptionForm = new FragmentDescriptionForm();
+                            fragmentDescriptionForm.setArguments(descriptionFormBundle);
+
+                            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                            fragmentTransaction.replace(R.id.content_frame, fragmentDescriptionForm);
+                            fragmentTransaction.commit();
+                            progress.dismiss();
+                        }
+                    });
+                }
+
+            } else if (requestCode == IMAGE_CAPTURE) {
+//                galleryAddPic();
+//
+//                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//                File f = new File(currentPhotoPath);
+//                Uri contentUri = Uri.fromFile(f);
+//                mediaScanIntent.setData(contentUri);
+
+                Log.v(TAG, "image hopefully saved");
+
+            }
+            else {
+                Log.v(TAG, "Nothing exists to handle that request code" + requestCode);
+            }
+        } catch (Exception e) {
+            Log.v(TAG, "Exception with Activity Start " + e);
+            e.printStackTrace();
+        }
     }
 
 }
