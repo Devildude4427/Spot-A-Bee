@@ -1,5 +1,6 @@
 package com.assignment.spotabee.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
@@ -7,6 +8,7 @@ import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
@@ -19,19 +21,24 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.assignment.spotabee.R;
+import com.assignment.spotabee.UserAccount;
 import com.assignment.spotabee.customutils.Time;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
+import com.assignment.spotabee.database.UserScore;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static com.assignment.spotabee.MainActivity.getContextOfApplication;
 
 
 public class FragmentDescriptionForm extends Fragment
@@ -44,7 +51,7 @@ public class FragmentDescriptionForm extends Fragment
     private AppCompatEditText description;
     private AppCompatEditText numberOfBeesField;
     private ImageView flowerIdentify;
-    private FrameLayout flowerSearch;
+    private RelativeLayout flowerSearch;
     private Spinner addressSpinner;
 
     // Database
@@ -79,7 +86,7 @@ public class FragmentDescriptionForm extends Fragment
 
 
         addressSpinner = (Spinner) rootView.findViewById(R.id.addressSpinner);
-        addressSpinner.setVisibility(View.GONE);
+        addressSpinner.setVisibility(View.VISIBLE);
 
         flower = rootView.findViewById(R.id.flowerField);
         if(flowerIdentification != null){
@@ -105,10 +112,11 @@ public class FragmentDescriptionForm extends Fragment
         userLocation = null;
         geocoder = new Geocoder(context.getApplicationContext());
 
+
         addressSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 location.setText(parent.getItemAtPosition(position).toString());
-                setCoordinatesToStore(parent, view, position, id);
+                setCoordinatesToStore(parent, position);
 
             }
 
@@ -117,6 +125,7 @@ public class FragmentDescriptionForm extends Fragment
         });
         return rootView;
     }
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -133,6 +142,10 @@ public class FragmentDescriptionForm extends Fragment
         return fragment;
     }
 
+    /**
+     * Takes a user to Wolfram's separate web app that a user can use to identify
+     * and image with. Done by Intent.
+     */
     public void goToImageIdentify(){
         Intent imageIdentify = new Intent(Intent.ACTION_VIEW);
         imageIdentify.setData(Uri.parse(imageIdentifyUrl));
@@ -144,6 +157,7 @@ public class FragmentDescriptionForm extends Fragment
         int viewId = view.getId();
 
         switch (viewId) {
+            // Intent to Wolfram's web app
             case R.id.flower_search:
                 goToImageIdentify();
                 break;
@@ -152,11 +166,21 @@ public class FragmentDescriptionForm extends Fragment
                 if (userLocationIsNull()) return;
 
                 commitFormDataToDB();
+                updateUserScore();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.content_frame, new FragmentAfterSubmission())
+                        .commit();
                 break;
 
+                // Search for a user's input location
             case R.id.search_location:
                 Log.d(TAG, "Search icon has been selected");
-                this.addressSpinner.setVisibility(View.VISIBLE);
+                final ProgressDialog progress = new ProgressDialog(getContextOfApplication());
+                progress.setTitle("Loading");
+                progress.setMessage("Searching for locations");
+                progress.setCancelable(false);
+                progress.show();
 
                 try {
                     ArrayAdapter<String> stringAddressAdapter = getStringArrayAdapter();
@@ -172,9 +196,16 @@ public class FragmentDescriptionForm extends Fragment
                     Log.d(TAG, e.getMessage());
                     this.userLocation = new LatLng(51.5842, 2.9977);
                 }
+                progress.dismiss();
+                break;
         }
     }
 
+    /**
+     * Check if the user has searched for their location before
+     * submitting the form
+     * @return boolean
+      */
     private boolean userLocationIsNull() {
         Log.d(TAG, "We are in setCoordinatesToStore");
         if (this.userLocation == null) {
@@ -187,12 +218,21 @@ public class FragmentDescriptionForm extends Fragment
         return false;
     }
 
+    /**
+     * @param stringAddressAdapter address search results produced by geocoder
+     *  Updates the drop down menu of locations for the user to select when a
+     *  new search is made
+     */
     private void updateSpinner(ArrayAdapter<String> stringAddressAdapter) {
         Log.d(TAG, "We are in updateSpinner");
         stringAddressAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
         addressSpinner.setAdapter(stringAddressAdapter);
     }
 
+    /**
+     * @return an ArrayAdapter with address objects to populate the Spinner with
+     * @throws IOException
+     */
     @Nullable
     private ArrayAdapter<String> getStringArrayAdapter() throws IOException {
         Log.d(TAG, "We are in getStringArrayAdapter");
@@ -229,6 +269,9 @@ public class FragmentDescriptionForm extends Fragment
         return stringAddressAdapter;
     }
 
+    /**
+     * Takes information from EditText fields and commits them to the database
+     */
     private void commitFormDataToDB() {
         Log.d(TAG, "We are in commitFormToDB");
         AsyncTask.execute(new Runnable() {
@@ -264,6 +307,7 @@ public class FragmentDescriptionForm extends Fragment
 
 
                 } catch (Exception e) {
+                    Looper.prepare();
                     Toast.makeText(context,
                             "Sorry. An error occurred. We can't save your information right now...",
                             Toast.LENGTH_SHORT).show();
@@ -274,7 +318,13 @@ public class FragmentDescriptionForm extends Fragment
         });
     }
 
-    private Address setCoordinatesToStore(AdapterView<?> parent, View view, int position, long id) {
+    /**
+     * @param parent AdapterView that the address object returned is selected from
+     * @param position of address in ArrayAdapter
+     * @return Address object user selected. Co-ordinates later extracted and a
+     * used to make a LatLang userLocation object commitToDatabase can use
+     */
+    private Address setCoordinatesToStore(AdapterView<?> parent, int position) {
         Log.d(TAG, "We are in setCoordinatesToStore");
         String addressLineToMatch = parent.getItemAtPosition(position).toString();
         Address addressToFind = null;
@@ -296,6 +346,60 @@ public class FragmentDescriptionForm extends Fragment
 
     }
 
+    public boolean userScoreExists(String name){
+        if(db.descriptionDao().getUserScoreByName(name) == null){
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    public void updateUserScore(){
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    String currentUserAccountName = UserAccount.getAccountName();
+
+                    if(userScoreExists(currentUserAccountName)){
+                        UserScore userScore = db.descriptionDao().getUserScoreByName(currentUserAccountName);
+                        userScore.setScore(userScore.getScore() + 1);
+                        db.descriptionDao().updateUserScore(userScore);
+                    } else {
+                        UserScore newUserScore = new UserScore(currentUserAccountName,  1);
+                        db.descriptionDao().insertUserScore(newUserScore);
+                    }
+
+
+
+                    List<UserScore> allUserScores = db.descriptionDao()
+                            .getAllUserScores();
+
+                    for (UserScore userScore : allUserScores) {
+                        Log.d(TAG, userScore.getAccountName());
+                        Log.d(TAG, userScore.getScore() + "");
+                    }
+
+
+                } catch (NullPointerException e){
+                    Looper.prepare();
+                    Toast.makeText(context,
+                            "Make sure you log in next time to add to your score!",
+                            Toast.LENGTH_SHORT).show();
+                }catch (Exception e) {
+                    Looper.prepare();
+                    Toast.makeText(context,
+                            "Sorry. An error occurred. We can't save your information right now...",
+                            Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error: " + e.getMessage());
+                }
+
+            }
+        });
+    }
 
 
 }
