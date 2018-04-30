@@ -113,7 +113,7 @@ public class FragmentDescriptionForm extends Fragment
         addressSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 location.setText(parent.getItemAtPosition(position).toString());
-                setCoordinatesToStore(parent, view, position, id);
+                setCoordinatesToStore(parent, position);
 
             }
 
@@ -138,6 +138,10 @@ public class FragmentDescriptionForm extends Fragment
         return fragment;
     }
 
+    /**
+     * Takes a user to Wolfram's separate web app that a user can use to identify
+     * and image with. Done by Intent.
+     */
     public void goToImageIdentify(){
         Intent imageIdentify = new Intent(Intent.ACTION_VIEW);
         imageIdentify.setData(Uri.parse(imageIdentifyUrl));
@@ -149,6 +153,7 @@ public class FragmentDescriptionForm extends Fragment
         int viewId = view.getId();
 
         switch (viewId) {
+            // Intent to Wolfram's web app
             case R.id.flower_search:
                 goToImageIdentify();
                 break;
@@ -163,6 +168,7 @@ public class FragmentDescriptionForm extends Fragment
                         .commit();
                 break;
 
+                // Search for a user's input location
             case R.id.search_location:
                 Log.d(TAG, "Search icon has been selected");
                 final ProgressDialog progress = new ProgressDialog(getContextOfApplication());
@@ -190,6 +196,11 @@ public class FragmentDescriptionForm extends Fragment
         }
     }
 
+    /**
+     * Check if the user has searched for their location before
+     * submitting the form
+     * @return boolean
+      */
     private boolean userLocationIsNull() {
         Log.d(TAG, "We are in setCoordinatesToStore");
         if (this.userLocation == null) {
@@ -202,12 +213,21 @@ public class FragmentDescriptionForm extends Fragment
         return false;
     }
 
+    /**
+     * @param stringAddressAdapter address search results produced by geocoder
+     *  Updates the drop down menu of locations for the user to select when a
+     *  new search is made
+     */
     private void updateSpinner(ArrayAdapter<String> stringAddressAdapter) {
         Log.d(TAG, "We are in updateSpinner");
         stringAddressAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
         addressSpinner.setAdapter(stringAddressAdapter);
     }
 
+    /**
+     * @return an ArrayAdapter with address objects to populate the Spinner with
+     * @throws IOException
+     */
     @Nullable
     private ArrayAdapter<String> getStringArrayAdapter() throws IOException {
         Log.d(TAG, "We are in getStringArrayAdapter");
@@ -244,6 +264,9 @@ public class FragmentDescriptionForm extends Fragment
         return stringAddressAdapter;
     }
 
+    /**
+     * Takes information from EditText fields and commits them to the database
+     */
     private void commitFormDataToDB() {
         Log.d(TAG, "We are in commitFormToDB");
         AsyncTask.execute(new Runnable() {
@@ -290,7 +313,13 @@ public class FragmentDescriptionForm extends Fragment
         });
     }
 
-    private Address setCoordinatesToStore(AdapterView<?> parent, View view, int position, long id) {
+    /**
+     * @param parent AdapterView that the address object returned is selected from
+     * @param position of address in ArrayAdapter
+     * @return Address object user selected. Co-ordinates later extracted and a
+     * used to make a LatLang userLocation object commitToDatabase can use
+     */
+    private Address setCoordinatesToStore(AdapterView<?> parent, int position) {
         Log.d(TAG, "We are in setCoordinatesToStore");
         String addressLineToMatch = parent.getItemAtPosition(position).toString();
         Address addressToFind = null;
