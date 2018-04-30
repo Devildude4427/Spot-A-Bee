@@ -2,6 +2,7 @@ package com.assignment.spotabee.fragments;
 
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -51,11 +52,16 @@ public class FragmentLeaderboard extends Fragment implements AdapterView.OnItemC
         rootView = inflater.inflate(R.layout.fragment_menu_leaderboard, container, false);
         db = AppDatabase.getAppDatabase(getContext());
 
-        List<UserScore> userScores = db.descriptionDao().getAllUserScores();
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                List<UserScore> userScores = db.descriptionDao().getAllUserScores();
 
-        CustomQuickSort cqs = new CustomQuickSort();
-        cqs.sort(userScores, 0, userScores.size()-1);
-        doCustomAdapterExample(userScores);
+                CustomQuickSort cqs = new CustomQuickSort();
+                cqs.sort(userScores, 0, userScores.size()-1);
+                doCustomAdapterExample(userScores);
+            }
+        });
         return rootView;
     }
 
