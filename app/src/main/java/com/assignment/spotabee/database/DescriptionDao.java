@@ -45,6 +45,10 @@ public interface DescriptionDao {
     void nukeUserScores();
 
     @Transaction
-    @Query("SELECT score FROM UserScore WHERE account_name = :name")
-    int getUserByAccountName(String name);
+    @Query("SELECT * FROM UserScore WHERE account_name = :name")
+    UserScore getUserScoreByName(String name);
+
+    @Update
+    void updateUserScore(UserScore userScore);
+
 }
