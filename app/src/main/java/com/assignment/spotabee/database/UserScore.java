@@ -19,7 +19,7 @@ public class UserScore {
     @ColumnInfo(name = "score")
     private int score;
 
-    
+
     public UserScore(String userName, int score) {
         this.accountName = userName;
         this.score = score;
