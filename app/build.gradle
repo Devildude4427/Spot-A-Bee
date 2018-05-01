@@ -57,6 +57,7 @@ android {
         androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
         implementation 'junit:junit:4.12'
         implementation 'com.anthonycr.grant:permissions:1.0'
+        implementation 'com.ramotion.paperonboarding:paper-onboarding:1.1.1'
     }
 }
 dependencies {
