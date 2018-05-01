@@ -1,50 +1,56 @@
 package com.assignment.spotabee;
 
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.support.v4.app.FragmentManager;
 import android.widget.Toast;
 
-import com.assignment.spotabee.R;
+
 import com.paypal.android.sdk.payments.PaymentActivity;
+import android.Manifest;
+import android.accounts.AccountManager;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
-        import android.Manifest;
-        import android.accounts.AccountManager;
-        import android.app.Activity;
-        import android.content.Context;
-        import android.content.Intent;
-        import android.content.pm.PackageManager;
-        import android.os.Build;
-        import android.os.Bundle;
-        import android.support.annotation.NonNull;
-        import android.support.annotation.RequiresApi;
-        import android.support.design.widget.NavigationView;
-        import android.support.v4.app.Fragment;
-        import android.support.v4.app.FragmentTransaction;
-        import android.support.v4.content.ContextCompat;
-        import android.support.v4.view.GravityCompat;
-        import android.support.v4.widget.DrawerLayout;
-        import android.support.v7.app.ActionBarDrawerToggle;
-        import android.support.v7.app.AppCompatActivity;
-        import android.support.v7.widget.Toolbar;
-        import android.util.Log;
-        import android.view.Menu;
-        import android.view.MenuItem;
-        import android.widget.Toast;
+import com.anthonycr.grant.PermissionsManager;
+import com.anthonycr.grant.PermissionsResultAction;
+import com.assignment.spotabee.database.AppDatabase;
+import com.assignment.spotabee.database.DatabaseInitializer;
+import com.assignment.spotabee.database.Description;
+import com.assignment.spotabee.fragments.DonationLogin;
+import com.assignment.spotabee.fragments.FragmentAboutUs;
+import com.assignment.spotabee.fragments.FragmentHome;
+import com.assignment.spotabee.fragments.FragmentHowTo;
+import com.assignment.spotabee.fragments.FragmentLeaderboard;
+import com.assignment.spotabee.fragments.FragmentMap;
+import com.assignment.spotabee.fragments.PaymentInfo;
+import com.paypal.android.sdk.payments.PaymentActivity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
+import com.ramotion.paperonboarding.PaperOnboardingFragment;
+import com.ramotion.paperonboarding.PaperOnboardingPage;
+import com.ramotion.paperonboarding.listeners.PaperOnboardingOnRightOutListener;
 
-        import com.anthonycr.grant.PermissionsManager;
-        import com.anthonycr.grant.PermissionsResultAction;
-        import com.assignment.spotabee.database.AppDatabase;
-        import com.assignment.spotabee.database.DatabaseInitializer;
-        import com.assignment.spotabee.database.Description;
-        import com.assignment.spotabee.fragments.DonationLogin;
-        import com.assignment.spotabee.fragments.FragmentAboutUs;
-        import com.assignment.spotabee.fragments.FragmentHome;
-        import com.assignment.spotabee.fragments.FragmentHowTo;
-        import com.assignment.spotabee.fragments.FragmentLeaderboard;
-        import com.assignment.spotabee.fragments.FragmentMap;
-        import com.assignment.spotabee.fragments.PaymentInfo;
-        import com.paypal.android.sdk.payments.PaymentActivity;
-        import com.paypal.android.sdk.payments.PaymentConfirmation;
+import java.util.ArrayList;
 
-        import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
+import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
 
 
 /**
@@ -86,6 +92,10 @@ public class MainActivity extends AppCompatActivity
      */
     private boolean mReturningWithResult = false;
 
+    private FragmentManager fragmentManager;
+
+    private SharedPreferences preferences = null;
+
     /**
      * Handles the main creation of application wide resources.
      * Examples of this include requesting permissions,
@@ -99,6 +109,32 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        preferences = getSharedPreferences("com.assigment.spotabee", MODE_PRIVATE);
+
+        if (preferences.getBoolean("firstrun", true)) {
+            fragmentManager = getSupportFragmentManager();
+
+            final PaperOnboardingFragment onBoardingFragment
+                    = PaperOnboardingFragment.newInstance(
+                    getDataForOnboarding());
+
+            FragmentTransaction ft
+                    = getSupportFragmentManager().beginTransaction();
+            ft.add(R.id.content_frame, onBoardingFragment);
+            ft.commit();
+            preferences.edit().putBoolean("firstrun", false).apply();
+
+            onBoardingFragment.setOnRightOutListener(new PaperOnboardingOnRightOutListener() {
+                @Override
+                public void onRightOut() {
+                    displaySelectedScreen(R.id.nav_home);
+                }
+            });
+        } else {
+            displaySelectedScreen(R.id.nav_home);
+        }
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -166,10 +202,36 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        displaySelectedScreen(R.id.nav_home);
+//
 
-//        Intent intent = new Intent(this, ScreenService.class);
-//        startService(intent);
+    }
+
+    private ArrayList<PaperOnboardingPage> getDataForOnboarding() {
+        // prepare data
+        PaperOnboardingPage scr1 = new PaperOnboardingPage("Welcome!", "Bees are one of the most"
+                + " useful animals on Earth. Without their help in pollination, much"
+                + " of the plant life you know today would die out. Bees are in danger,"
+                + " and we would like your help in gathering data about them through"
+                + " your interactions in everyday life.",
+                Color.parseColor("#678FB4"), R.drawable.bee_2, R.drawable.bee);
+        PaperOnboardingPage scr2 = new PaperOnboardingPage("How We Will Use Data", "Using"
+                + " the pictures uploaded by you, we would like to identify which"
+                + " plants in Wales are attracting bees, along with the locations"
+                + " of those plants. Therefore we can deduce where we need more plant"
+                + " life and what kinds of plants to help these bees in their mission.",
+                Color.parseColor("#65B0B4"), R.drawable.bee_trail_1, R.drawable.bee);
+        PaperOnboardingPage scr3 = new PaperOnboardingPage("So How Do I Help?", "All you"
+                + " need to do to help is to keep an eye out for any bees you might see"
+                + " and to snap a picture if you can. On the home screen, there are options"
+                + " to take a picture from the app, use an existing photo, or to submit"
+                + " information without a picture. ",
+                Color.parseColor("#9B90BC"), R.drawable.bee_trail_3, R.drawable.bee);
+
+        ArrayList<PaperOnboardingPage> elements = new ArrayList<>();
+        elements.add(scr1);
+        elements.add(scr2);
+        elements.add(scr3);
+        return elements;
     }
 
     /**
