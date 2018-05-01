@@ -100,6 +100,8 @@ public class FragmentHome extends Fragment  {
      */
     private Intent intent;
 
+    private String currentPhotoPath;
+
 
     /**
      * On create of the fragment, loads the layout
@@ -185,7 +187,7 @@ public class FragmentHome extends Fragment  {
             @Override
             public void onClick(final View v) {
                 //creating fragment object
-                Fragment fragment;
+                Fragment fragment = null;
 
                 //initializing the fragment object which is selected
                 fragment = new FragmentDescriptionForm();
@@ -236,6 +238,8 @@ public class FragmentHome extends Fragment  {
      *                  to rights or invalid directory.
      */
     private File createImageFile() throws IOException {
+        File image = null;
+        try {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
                 .format(new Date());
@@ -244,14 +248,19 @@ public class FragmentHome extends Fragment  {
         File storageDir = new File(Environment
                 .getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DCIM), "Camera");
-        File image = File.createTempFile(
+        image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",   /* suffix */
                 storageDir      /* directory */
         );
 
         // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = "filepath: " + image.getAbsolutePath();
         Log.v(TAG, "filepath: " + image.getAbsolutePath());
+        return image;
+        } catch (Exception e) {
+            Log.v(TAG, "Exception in dispatch " + e);
+        }
         return image;
     }
 
@@ -281,12 +290,26 @@ public class FragmentHome extends Fragment  {
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                             photoURI);
                     startActivityForResult(takePictureIntent, IMAGE_CAPTURE);
+                    Log.v(TAG, "Exiting");
                 }
             }
         } catch (Exception e) {
             Log.v(TAG, "Exception in dispatch " + e);
         }
     }
+
+    private void galleryAddPic() {
+        try {
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            File f = new File(currentPhotoPath);
+            Uri contentUri = Uri.fromFile(f);
+            mediaScanIntent.setData(contentUri);
+            getContextOfApplication().sendBroadcast(mediaScanIntent);
+        } catch (Exception e) {
+            Log.v(TAG, "Exception " + e);
+        }
+    }
+
 
     /**
      * Allows user to upload picture from phone's storage.
@@ -309,29 +332,34 @@ public class FragmentHome extends Fragment  {
      */
     public void onActivityResult(final int requestCode, final int resultCode,
                                     final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
         final ProgressDialog progress
                 = new ProgressDialog(getContextOfApplication());
+        Log.v(TAG, "entering");
+
         try {
-            progress.setTitle("Loading");
-            progress.setMessage("Identify your flower..");
-            progress.setCancelable(false);
-            progress.show();
+            if (requestCode == IMAGE_GALLERY) {
+                progress.setTitle("Loading");
+                progress.setMessage("Identify your flower..");
+                progress.setCancelable(false);
+                progress.show();
 
-            if (!CheckNetworkConnection.isInternetAvailable(
-                    getContextOfApplication())) {
-                progress.dismiss();
-                Toast.makeText(getContextOfApplication(),
-                        "Internet connection unavailable.",
-                        Toast.LENGTH_SHORT).show();
-                return;
-            }
-            client = ClarifaiClientGenerator.generate(API_KEY);
-            final byte[] imageBytes
-                    = FileOp.getByteArrayFromIntentData(
-                            getContextOfApplication(), data);
-            if (imageBytes != null) {
+                if (!CheckNetworkConnection.isInternetAvailable(
+                        getContextOfApplication())) {
+                    progress.dismiss();
+                    Toast.makeText(getContextOfApplication(),
+                            "Internet connection unavailable.",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                client = ClarifaiClientGenerator.generate(API_KEY);
+                final byte[] imageBytes
+                        = FileOp.getByteArrayFromIntentData(
+                        getContextOfApplication(), data);
+                if (imageBytes != null) {
 
-                AsyncTask.execute(new Runnable() {
+                    AsyncTask.execute(new Runnable() {
                         @Override
                         public void run() {
                             Log.d(TAG, "We have started run thread");
@@ -360,12 +388,15 @@ public class FragmentHome extends Fragment  {
                         }
                     });
                 }
-
+            } if (requestCode == IMAGE_CAPTURE) {
+                Log.v(TAG, "Entering Image captured");
+                galleryAddPic();
+            }
         } catch (Exception e) {
             try {
                 progress.dismiss();
             } catch (Exception ex) {
-
+                Log.v(TAG, "Exception " + ex);
             }
 //            getActivity().getSupportFragmentManager()
 //                    .beginTransaction()
