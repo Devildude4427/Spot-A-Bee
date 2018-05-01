@@ -92,10 +92,6 @@ public class MainActivity extends AppCompatActivity
      */
     private boolean mReturningWithResult = false;
 
-    private FragmentManager fragmentManager;
-
-    private SharedPreferences preferences = null;
-
     /**
      * Handles the main creation of application wide resources.
      * Examples of this include requesting permissions,
@@ -110,10 +106,11 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        preferences = getSharedPreferences("com.assigment.spotabee", MODE_PRIVATE);
+
+        SharedPreferences preferences = getSharedPreferences("com.assigment.spotabee", MODE_PRIVATE);
+        preferences.edit().putBoolean("firstrun", true).apply();
 
         if (preferences.getBoolean("firstrun", true)) {
-            fragmentManager = getSupportFragmentManager();
 
             final PaperOnboardingFragment onBoardingFragment
                     = PaperOnboardingFragment.newInstance(
