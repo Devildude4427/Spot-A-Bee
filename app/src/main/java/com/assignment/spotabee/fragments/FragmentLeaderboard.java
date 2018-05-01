@@ -25,7 +25,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class FragmentLeaderboard extends Fragment implements AdapterView.OnItemClickListener{
+public class FragmentLeaderboard extends Fragment
+        implements AdapterView.OnItemClickListener{
+
     private View rootView;
     private AppDatabase db;
 
