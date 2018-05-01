@@ -100,6 +100,10 @@ public class FragmentHome extends Fragment  {
      */
     private Intent intent;
 
+    /**
+     * File path for the current photo. Used
+     * to save a final version of it.
+     */
     private String currentPhotoPath;
 
 
@@ -300,9 +304,13 @@ public class FragmentHome extends Fragment  {
         }
     }
 
+    /**
+     * Method for saving the image.
+     */
     private void galleryAddPic() {
         try {
-            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            Intent mediaScanIntent = new Intent(
+                    Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
             File f = new File(currentPhotoPath);
             Uri contentUri = Uri.fromFile(f);
             mediaScanIntent.setData(contentUri);
@@ -390,7 +398,7 @@ public class FragmentHome extends Fragment  {
                         }
                     });
                 }
-            } if (requestCode == IMAGE_CAPTURE) {
+            } else if (requestCode == IMAGE_CAPTURE) {
                 Log.v(TAG, "Entering Image captured");
                 galleryAddPic();
             }
