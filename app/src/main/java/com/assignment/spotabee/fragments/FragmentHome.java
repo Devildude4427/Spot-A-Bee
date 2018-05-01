@@ -131,7 +131,9 @@ public class FragmentHome extends Fragment  {
         locationManager = (LocationManager)
                 getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-        locationListener = new FragmentMap().new MyLocationListener();
+        locationListener = new OutdatedClassMap().new MyLocationListener();
+
+//        locationListener = new FragmentMap().new MyLocationListener();
 
         db = AppDatabase.getAppDatabase(getContext());
 
