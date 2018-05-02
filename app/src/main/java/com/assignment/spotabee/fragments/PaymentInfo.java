@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.assignment.spotabee.AmountPayed;
 import com.assignment.spotabee.R;
 
 import org.json.JSONException;
@@ -66,12 +65,12 @@ public class PaymentInfo extends Fragment {
     public View onCreateView(final @NonNull LayoutInflater inflater,
                              final @Nullable ViewGroup container,
                              final @Nullable Bundle savedInstanceState) {
-//        amount = AmountPayed.getAmountPayed();
+
         View rootView = inflater.inflate(
                 R.layout.fragment_payment_info, container, false);
 
         try {
-            amount = getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
+            amount = getActivity().getSharedPreferences("com.assignment.spotabee", Context.MODE_PRIVATE)
                     .getString("amount_payed", null);
         } catch (NullPointerException e){
             Toast.makeText(getActivity(),
@@ -100,7 +99,7 @@ public class PaymentInfo extends Fragment {
             }
         });
 
-        getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
+        getActivity().getSharedPreferences("com.assignment.spotabee", Context.MODE_PRIVATE)
                 .edit()
                 .putString("amount_payed", null)
                 .apply();

@@ -53,7 +53,7 @@ public class Receiver extends BroadcastReceiver {
         Intent fileIntent = new Intent(Intent.ACTION_VIEW);
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
         // Grabs the Uri for the file that was downloaded.
-        long downloadReference = context.getSharedPreferences("pref", Context.MODE_PRIVATE)
+        long downloadReference = context.getSharedPreferences("com.assignment.spotabee", Context.MODE_PRIVATE)
                 .getLong("download_reference", 1);
 
         Uri mostRecentDownload =
