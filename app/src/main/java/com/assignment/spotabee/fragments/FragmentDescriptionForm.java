@@ -26,7 +26,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.assignment.spotabee.R;
-import com.assignment.spotabee.UserAccount;
 import com.assignment.spotabee.customutils.Time;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
@@ -185,9 +184,11 @@ public class FragmentDescriptionForm extends Fragment
                 try {
                     ArrayAdapter<String> stringAddressAdapter = getStringArrayAdapter();
                     if (stringAddressAdapter == null) return;
+                    progress.dismiss();
 
                     updateSpinner(stringAddressAdapter);
                 } catch (IOException e) {
+                    progress.dismiss();
                     Toast.makeText(context,
                             "Woops! Couldn't find your address..."
                                     + "Maybe try a different search?",
@@ -362,7 +363,10 @@ public class FragmentDescriptionForm extends Fragment
             public void run() {
 
                 try {
-                    String currentUserAccountName = UserAccount.getAccountName();
+
+                    // Hard coded to demonstrate the connection to database storage.
+                    // Not enough  time to link to accounts.
+                    String currentUserAccountName = "Test User";
 
                     if(userScoreExists(currentUserAccountName)){
                         UserScore userScore = db.descriptionDao().getUserScoreByName(currentUserAccountName);
@@ -387,12 +391,12 @@ public class FragmentDescriptionForm extends Fragment
                 } catch (NullPointerException e){
                     Looper.prepare();
                     Toast.makeText(context,
-                            "Make sure you log in next time to add to your score!",
+                            R.string.make_sure_you_sign_in_for_score_message,
                             Toast.LENGTH_SHORT).show();
                 }catch (Exception e) {
                     Looper.prepare();
                     Toast.makeText(context,
-                            "Sorry. An error occurred. We can't save your information right now...",
+                            R.string.database_commit_error_message,
                             Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Error: " + e.getMessage());
                 }

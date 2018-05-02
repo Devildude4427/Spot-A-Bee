@@ -55,9 +55,9 @@ public class ScreenService extends Service {
             if (nManager.getNotificationChannel(SERVICE_CHANNEL_ID) == null) {
                 NotificationChannel channel = new NotificationChannel(
                         SERVICE_CHANNEL_ID,
-                        "Test Service",
+                        getString(R.string.pdf_notification_channel_name),
                         NotificationManager.IMPORTANCE_DEFAULT);
-                channel.setDescription("Test");
+                channel.setDescription(getString(R.string.pdf_download_channel_description));
 
                 nManager.createNotificationChannel(channel);
             }
@@ -91,9 +91,15 @@ public class ScreenService extends Service {
                 Environment.DIRECTORY_DOWNLOADS,"Bee_Guide.pdf");
 
         downloadReference = downloadManager.enqueue(request);
+        getBaseContext()
+                .getSharedPreferences("com.assignment.spotabee", MODE_PRIVATE)
+                .edit()
+                .putLong("download_reference", downloadReference)
+                .apply();
+
+
         check_download_Status(downloadReference);
         this.downloadReference = downloadReference;
-        DownloadReference.setDownloadReference(downloadReference);
         return downloadReference;
     }
 
@@ -149,74 +155,74 @@ public class ScreenService extends Service {
 
         switch(status){
             case DownloadManager.STATUS_FAILED:
-                statusText = "Status: FAILED";
+                statusText = getString(R.string.status_failed);
                 switch(reason){
                     case DownloadManager.ERROR_CANNOT_RESUME:
-                        reasonText = "Error: Cannot resume";
+                        reasonText = getString(R.string.error_cannot_resume);
                         break;
                     case DownloadManager.ERROR_DEVICE_NOT_FOUND:
-                        reasonText = "Error: Device not found.";
+                        reasonText = getString(R.string.error_device_not_found);
                         break;
                     case DownloadManager.ERROR_FILE_ALREADY_EXISTS:
-                        reasonText = "Error: File already exists.";
+                        reasonText = getString(R.string.error_file_already_exists);
                         break;
                     case DownloadManager.ERROR_FILE_ERROR:
-                        reasonText = "Error: File error";
+                        reasonText = getString(R.string.error_file_error);
                         break;
                     case DownloadManager.ERROR_HTTP_DATA_ERROR:
-                        reasonText = "Error: HTTP error";
+                        reasonText = getString(R.string.error_http_error);
                         break;
                     case DownloadManager.ERROR_INSUFFICIENT_SPACE:
-                        reasonText = "Error: Insufficient space";
+                        reasonText = getString(R.string.error_insufficient_space);
                         break;
                     case DownloadManager.ERROR_TOO_MANY_REDIRECTS:
-                        reasonText = "Error: Too many redirects";
+                        reasonText = getString(R.string.error_too_many_redirects);
                         break;
                     case DownloadManager.ERROR_UNHANDLED_HTTP_CODE:
-                        reasonText = "Error: Unhandled HTTP exception";
+                        reasonText = getString(R.string.error_unhandled_exception);
                         break;
                     case DownloadManager.ERROR_UNKNOWN:
-                        reasonText = "Error: Unknown";
+                        reasonText = getString(R.string.error_unknown);
                         break;
                 }
                 break;
             case DownloadManager.STATUS_PAUSED:
-                statusText = "Status paused.";
+                statusText = getString(R.string.status_paused);
                 switch(reason){
                     case DownloadManager.PAUSED_QUEUED_FOR_WIFI:
-                        reasonText = "Paused. Queued for wifi.";
+                        reasonText = getString(R.string.paused_queue_for_wifi);
                         break;
                     case DownloadManager.PAUSED_UNKNOWN:
-                        reasonText = "Paused. Unknown.";
+                        reasonText = getString(R.string.paused_unknown);
                         break;
                     case DownloadManager.PAUSED_WAITING_FOR_NETWORK:
-                        reasonText = "Paused. Waiting for network.";
+                        reasonText = getString(R.string.paused_waiting_for_network);
                         break;
                     case DownloadManager.PAUSED_WAITING_TO_RETRY:
-                        reasonText = "Paused. Waiting to retry.";
+                        reasonText = getString(R.string.paused_waiting_to_retry);
                         break;
                 }
                 break;
             case DownloadManager.STATUS_PENDING:
-                statusText = "Status pending";
+                statusText = getString(R.string.status_pending);
                 break;
             case DownloadManager.STATUS_RUNNING:
-                statusText = "Status running";
+                statusText = getString(R.string.status_running);
                 break;
             case DownloadManager.STATUS_SUCCESSFUL:
-                statusText = "Status successful";
-                reasonText = "Successfully downloaded";
+                statusText = getString(R.string.status_successful);
+                reasonText = getString(R.string.successfully_downloaded);
 
                 break;
         }
 
         if(downloadId == downloadReference) {
 
-//            Toast toast = Toast.makeText(getBaseContext(),
-//                    "PDF download:" + "\n" + statusText + reasonText,
-//                    Toast.LENGTH_LONG);
-//            toast.setGravity(Gravity.TOP, 25, 400);
-//            toast.show();
+            Toast toast = Toast.makeText(getBaseContext(),
+                    getString(R.string.pdf_download) + "\n" + statusText + reasonText,
+                    Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.TOP, 25, 400);
+            toast.show();
         }
     }
 }

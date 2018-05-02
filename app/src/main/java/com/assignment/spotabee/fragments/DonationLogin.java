@@ -3,6 +3,7 @@ package com.assignment.spotabee.fragments;
 // Tutorial for PayPal Button: https://developer
 // .paypal.com/docs/classic/mobile/ht_mpl-itemPayment-Android/
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,7 +29,6 @@ import com.paypal.android.sdk.payments.PaymentActivity;
 import java.math.BigDecimal;
 
 import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
-import com.assignment.spotabee.AmountPayed;
 
 /**
  * Donation Login fragment. Controls all content that goes
@@ -155,7 +155,8 @@ public class DonationLogin extends Fragment
      */
     private void processPayment() {
         String amount = editAmount.getText().toString();
-        AmountPayed.setAmountPayed(amount);
+        getActivity().getSharedPreferences("com.assignment.spotabee", Context.MODE_PRIVATE)
+                .edit().putString("amount_payed", amount).apply();
         try {
             PayPalPayment payPalPayment = new PayPalPayment(
                     new BigDecimal(String.valueOf(amount)),
@@ -167,7 +168,7 @@ public class DonationLogin extends Fragment
             getActivity().startActivityForResult(intent, PAYPAL_REQUEST_CODE);
         } catch (NumberFormatException e) {
             Toast.makeText(getActivity(),
-                    "Please enter numerical characters only. E.g, 10 for $10",
+                    R.string.error_toast_message_pay_pal,
                     Toast.LENGTH_SHORT).show();
         }
 
