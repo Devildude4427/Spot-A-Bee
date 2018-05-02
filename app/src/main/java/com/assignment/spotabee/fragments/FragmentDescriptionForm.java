@@ -391,12 +391,12 @@ public class FragmentDescriptionForm extends Fragment
                 } catch (NullPointerException e){
                     Looper.prepare();
                     Toast.makeText(context,
-                            "Make sure you log in next time to add to your score!",
+                            R.string.make_sure_you_sign_in_for_score_message,
                             Toast.LENGTH_SHORT).show();
                 }catch (Exception e) {
                     Looper.prepare();
                     Toast.makeText(context,
-                            "Sorry. An error occurred. We can't save your information right now...",
+                            R.string.database_commit_error_message,
                             Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Error: " + e.getMessage());
                 }

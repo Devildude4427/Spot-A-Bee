@@ -168,7 +168,7 @@ public class DonationLogin extends Fragment
             getActivity().startActivityForResult(intent, PAYPAL_REQUEST_CODE);
         } catch (NumberFormatException e) {
             Toast.makeText(getActivity(),
-                    "Please enter numerical characters only. E.g, 10 for $10",
+                    R.string.error_toast_message_pay_pal,
                     Toast.LENGTH_SHORT).show();
         }
 

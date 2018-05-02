@@ -87,11 +87,11 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
         downloadManager = (DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(uri);
 
-        request.setTitle("Help the Bees");
-        request.setDescription("Guide on helping to preserve the bee population");
+        request.setTitle(getString(R.string.download_pdf_title));
+        request.setDescription(getString(R.string.download_pdf_description));
 
         request.setDestinationInExternalFilesDir(getActivity(),
-                Environment.DIRECTORY_DOWNLOADS,"Bee_Guide.pdf");
+                Environment.DIRECTORY_DOWNLOADS,getString(R.string.bee_pdf_guide));
 
         downloadReference = downloadManager.enqueue(request);
         check_download_Status(downloadReference);
@@ -140,63 +140,63 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
 
         switch(status){
             case DownloadManager.STATUS_FAILED:
-                statusText = "Status: FAILED";
+                statusText = getString(R.string.status_failed);
                 switch(reason){
                     case DownloadManager.ERROR_CANNOT_RESUME:
-                        reasonText = "Error: Cannot resume";
+                        reasonText = getString(R.string.error_cannot_resume);
                         break;
                     case DownloadManager.ERROR_DEVICE_NOT_FOUND:
-                        reasonText = "Error: Device not found.";
+                        reasonText = getString(R.string.error_device_not_found);
                         break;
                     case DownloadManager.ERROR_FILE_ALREADY_EXISTS:
-                        reasonText = "Error: File already exists.";
+                        reasonText = getString(R.string.error_file_already_exists);
                         break;
                     case DownloadManager.ERROR_FILE_ERROR:
-                        reasonText = "Error: File error";
+                        reasonText = getString(R.string.error_file_error);
                         break;
                     case DownloadManager.ERROR_HTTP_DATA_ERROR:
-                        reasonText = "Error: HTTP error";
+                        reasonText = getString(R.string.error_http_error);
                         break;
                     case DownloadManager.ERROR_INSUFFICIENT_SPACE:
-                        reasonText = "Error: Insufficient space";
+                        reasonText = getString(R.string.error_insufficient_space);
                         break;
                     case DownloadManager.ERROR_TOO_MANY_REDIRECTS:
-                        reasonText = "Error: Too many redirects";
+                        reasonText = getString(R.string.error_too_many_redirects);
                         break;
                     case DownloadManager.ERROR_UNHANDLED_HTTP_CODE:
-                        reasonText = "Error: Unhandled HTTP exception";
+                        reasonText = getString(R.string.error_unhandled_exception);
                         break;
                     case DownloadManager.ERROR_UNKNOWN:
-                        reasonText = "Error: Unknown";
+                        reasonText = getString(R.string.error_unknown);
                         break;
                 }
                 break;
             case DownloadManager.STATUS_PAUSED:
-                statusText = "Status paused.";
+                statusText = getString(R.string.status_paused);
                 switch(reason){
                     case DownloadManager.PAUSED_QUEUED_FOR_WIFI:
-                        reasonText = "Paused. Queued for wifi.";
+                        reasonText = getString(R.string.paused_queue_for_wifi);
                         break;
                     case DownloadManager.PAUSED_UNKNOWN:
-                        reasonText = "Paused. Unknown.";
+                        reasonText = getString(R.string.paused_unknown);
                         break;
                     case DownloadManager.PAUSED_WAITING_FOR_NETWORK:
-                        reasonText = "Paused. Waiting for network.";
+                        reasonText = getString(R.string.paused_waiting_for_network);
                         break;
                     case DownloadManager.PAUSED_WAITING_TO_RETRY:
-                        reasonText = "Paused. Waiting to retry.";
+                        reasonText = getString(R.string.paused_waiting_to_retry);
                         break;
                 }
                 break;
             case DownloadManager.STATUS_PENDING:
-                statusText = "Status pending";
+                statusText = getString(R.string.status_pending);
                 break;
             case DownloadManager.STATUS_RUNNING:
-                statusText = "Status running";
+                statusText = getString(R.string.status_running);
                 break;
             case DownloadManager.STATUS_SUCCESSFUL:
-                statusText = "Status successful";
-                reasonText = "Successfully downloaded";
+                statusText = getString(R.string.status_successful);
+                reasonText = getString(R.string.successfully_downloaded);
 
                 break;
         }
@@ -204,7 +204,7 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
         if(downloadId == downloadReference) {
 
             Toast toast = Toast.makeText(getActivity(),
-                    "PDF download:" + "\n" + statusText + reasonText,
+                    getString(R.string.pdf_download) + "\n" + statusText + reasonText,
                     Toast.LENGTH_LONG);
             toast.setGravity(Gravity.TOP, 25, 400);
             toast.show();

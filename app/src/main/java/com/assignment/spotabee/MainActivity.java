@@ -204,23 +204,14 @@ public class MainActivity extends AppCompatActivity
 
     private ArrayList<PaperOnboardingPage> getDataForOnboarding() {
         // prepare data
-        PaperOnboardingPage scr1 = new PaperOnboardingPage("Welcome!", "Bees are one of the most"
-                + " useful animals on Earth. Without their help in pollination, much"
-                + " of the plant life you know today would die out. Bees are in danger,"
-                + " and we would like your help in gathering data about them through"
-                + " your interactions in everyday life.",
+        PaperOnboardingPage scr1 = new PaperOnboardingPage(getString(R.string.onboarding_heading_one),
+                getString(R.string.papar_onboarding_text_one),
                 Color.parseColor("#FFFFFF"), R.drawable.bee_2, R.drawable.bee);
-        PaperOnboardingPage scr2 = new PaperOnboardingPage("How We Will Use Data", "Using"
-                + " the pictures uploaded by you, we would like to identify which"
-                + " plants in Wales are attracting bees, along with the locations"
-                + " of those plants. Therefore we can deduce where we need more plant"
-                + " life and what kinds of plants to help these bees in their mission.",
+        PaperOnboardingPage scr2 = new PaperOnboardingPage(getString(R.string.onboarding_heading_two),
+                getString(R.string.onboarding_text_two),
                 Color.parseColor("#FFFFFF"), R.drawable.bee_trail_1, R.drawable.bee);
-        PaperOnboardingPage scr3 = new PaperOnboardingPage("So How Do I Help?", "All you"
-                + " need to do to help is to keep an eye out for any bees you might see"
-                + " and to snap a picture if you can. On the home screen, there are options"
-                + " to take a picture from the app, use an existing photo, or to submit"
-                + " information without a picture. ",
+        PaperOnboardingPage scr3 = new PaperOnboardingPage(getString(R.string.onboarding_heading_three),
+                getString(R.string.onboarding_text_three),
                 Color.parseColor("#FFFFFF"), R.drawable.bee_trail_horizontal, R.drawable.bee);
 
         ArrayList<PaperOnboardingPage> elements = new ArrayList<>();
