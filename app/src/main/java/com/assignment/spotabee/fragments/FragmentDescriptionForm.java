@@ -364,9 +364,9 @@ public class FragmentDescriptionForm extends Fragment
 
                 try {
 
-                    String currentUserAccountName = getActivity().getSharedPreferences("com.assignment.spotabee", Context.MODE_PRIVATE)
-                            .getString("user_account", "FAIL");
-                    Log.d(TAG, "ACCOUNT_NAME: " + currentUserAccountName);
+                    // Hard coded to demonstrate the connection to database storage.
+                    // Not enough  time to link to accounts.
+                    String currentUserAccountName = "Test User";
 
                     if(userScoreExists(currentUserAccountName)){
                         UserScore userScore = db.descriptionDao().getUserScoreByName(currentUserAccountName);
