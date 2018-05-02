@@ -185,9 +185,11 @@ public class FragmentDescriptionForm extends Fragment
                 try {
                     ArrayAdapter<String> stringAddressAdapter = getStringArrayAdapter();
                     if (stringAddressAdapter == null) return;
+                    progress.dismiss();
 
                     updateSpinner(stringAddressAdapter);
                 } catch (IOException e) {
+                    progress.dismiss();
                     Toast.makeText(context,
                             "Woops! Couldn't find your address..."
                                     + "Maybe try a different search?",

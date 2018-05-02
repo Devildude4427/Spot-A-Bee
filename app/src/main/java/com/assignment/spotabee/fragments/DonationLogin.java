@@ -3,6 +3,7 @@ package com.assignment.spotabee.fragments;
 // Tutorial for PayPal Button: https://developer
 // .paypal.com/docs/classic/mobile/ht_mpl-itemPayment-Android/
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -155,7 +156,9 @@ public class DonationLogin extends Fragment
      */
     private void processPayment() {
         String amount = editAmount.getText().toString();
-        AmountPayed.setAmountPayed(amount);
+//        AmountPayed.setAmountPayed(amount);
+        getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
+                .edit().putString("amount_payed", amount).apply();
         try {
             PayPalPayment payPalPayment = new PayPalPayment(
                     new BigDecimal(String.valueOf(amount)),

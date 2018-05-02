@@ -1,5 +1,6 @@
 package com.assignment.spotabee.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.assignment.spotabee.AmountPayed;
 import com.assignment.spotabee.R;
@@ -64,9 +66,24 @@ public class PaymentInfo extends Fragment {
     public View onCreateView(final @NonNull LayoutInflater inflater,
                              final @Nullable ViewGroup container,
                              final @Nullable Bundle savedInstanceState) {
-        amount = AmountPayed.getAmountPayed();
+//        amount = AmountPayed.getAmountPayed();
         View rootView = inflater.inflate(
                 R.layout.fragment_payment_info, container, false);
+
+        try {
+            amount = getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
+                    .getString("amount_payed", null);
+        } catch (NullPointerException e){
+            Toast.makeText(getActivity(),
+                    "Error. Transaction has not been processed",
+                    Toast.LENGTH_SHORT).show();
+
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.content_frame, new FragmentHome())
+                    .commit();
+        }
+
         txtAmount = rootView.findViewById(R.id.txtAmount);
         txtStatus = rootView.findViewById(R.id.txtStatus);
 
@@ -82,6 +99,12 @@ public class PaymentInfo extends Fragment {
                         .commit();
             }
         });
+
+        getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
+                .edit()
+                .putString("amount_payed", null)
+                .apply();
+
         setUpScreen();
         return rootView;
     }
