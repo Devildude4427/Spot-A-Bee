@@ -25,8 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class FragmentLeaderboard extends Fragment
-        implements AdapterView.OnItemClickListener{
+public class FragmentLeaderboard extends Fragment {
 
     private View rootView;
     private AppDatabase db;
@@ -83,28 +82,30 @@ public class FragmentLeaderboard extends Fragment
         getActivity().setTitle("Leaderboard");
     }
 
-    private void doCustomAdapterExample(List<UserScore> userScores){
+    private void doCustomAdapterExample(final List<UserScore> userScores){
 
-        ArrayList<UserScore> arrlistOfBooks= new ArrayList<UserScore>(userScores);
-        LeaderBoardAdapter leaderBoardAdapter = new LeaderBoardAdapter(
-                getActivity(),
-                R.layout.gray_user_score_layout,
-                arrlistOfBooks
-        );
 
-        //Fetch the listview and connect to the adapter
 //        ListViewCompat lv = rootView.findViewById(R.id.userScoreLv); //Make sure that your listview in your layout file has this id
 //        lv.setAdapter(myCustomAdapter);
 
-        ListView testListView = rootView.findViewById(R.id.testListView);
-        testListView.setAdapter(leaderBoardAdapter);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<UserScore> arrlistOfBooks= new ArrayList<UserScore>(userScores);
+                LeaderBoardAdapter leaderBoardAdapter = new LeaderBoardAdapter(
+                        getActivity(),
+                        R.layout.gray_user_score_layout,
+                        arrlistOfBooks
+                );
+                ListView testListView = rootView.findViewById(R.id.testListView);
+                testListView.setAdapter(leaderBoardAdapter);
+            }
+        });
+
 
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Toast.makeText(getActivity(), String.format("Item clicked on = %d", i), Toast.LENGTH_SHORT).show();
-    }
+
 
     //Custom adapter used in Example 2
     private class LeaderBoardAdapter extends BaseAdapter {

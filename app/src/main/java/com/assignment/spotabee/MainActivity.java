@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity
 
 
         preferences = getSharedPreferences("com.assignment.spotabee", MODE_PRIVATE);
-//        preferences.edit().putBoolean("firstrun", true).apply();
+        preferences.edit().putBoolean("firstrun", true).apply();
         preferences.edit().putString("user_account", "Test User").apply();
         if (preferences.getBoolean("firstrun", true)) {
 
