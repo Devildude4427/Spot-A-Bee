@@ -75,6 +75,55 @@
     <string name="amount_here">Amount Here</string>
     <string name="go_to_youtube_to_see_our_mission">Go to YouTube to see our mission</string>
     <string name="go_to_paypal">Go to PayPal</string>
-
+    <string name="papar_onboarding_text_one">"Bees are one of the most"
+                + " useful animals on Earth. Without their help in pollination, much"
+                + " of the plant life you know today would die out. Bees are in danger,"
+                + " and we would like your help in gathering data about them through"
+                + " your interactions in everyday life."</string>
+    <string name="onboarding_text_two">"Using"
+                + " the pictures uploaded by you, we would like to identify which"
+                + " plants in Wales are attracting bees, along with the locations"
+                + " of those plants. Therefore we can deduce where we need more plant"
+                + " life and what kinds of plants to help these bees in their mission."</string>
+    <string name="onboarding_text_three">"All you"
+                + " need to do to help is to keep an eye out for any bees you might see"
+                + " and to snap a picture if you can. On the home screen, there are options"
+                + " to take a picture from the app, use an existing photo, or to submit"
+                + " information without a picture. "</string>
+    <string name="onboarding_heading_one">Welcome!</string>
+    <string name="onboarding_heading_two">How We Will Use Data</string>
+    <string name="onboarding_heading_three">So How Do I Help?</string>
+    <string name="download_pdf_description">Guide on helping to preserve the bee population</string>
+    <string name="download_pdf_title">Help the Bees</string>
+    <string name="bee_pdf_guide">Bee_Guide.pdf</string>
+    <string name="status_failed">Status: FAILED</string>
+    <string name="error_cannot_resume">Error: Cannot resume</string>
+    <string name="error_device_not_found">Error: Device not found.</string>
+    <string name="error_file_already_exists">Error: File already exists.</string>
+    <string name="error_file_error">Error: File error</string>
+    <string name="error_http_error">Error: HTTP error</string>
+    <string name="error_insufficient_space">Error: Insufficient space</string>
+    <string name="error_too_many_redirects">Error: Too many redirects</string>
+    <string name="error_unhandled_exception">Error: Unhandled HTTP exception</string>
+    <string name="error_unknown">Error: Unknown</string>
+    <string name="status_paused">Status paused.</string>
+    <string name="paused_queue_for_wifi">Paused. Queued for wifi.</string>
+    <string name="paused_unknown">Paused. Unknown.</string>
+    <string name="paused_waiting_for_network">Paused. Waiting for network.</string>
+    <string name="paused_waiting_to_retry">Paused. Waiting to retry.</string>
+    <string name="status_pending">Status pending</string>
+    <string name="status_running">Status running</string>
+    <string name="status_successful">Status successful</string>
+    <string name="successfully_downloaded">Successfully downloaded</string>
+    <string name="pdf_download">PDF download:</string>
+    <string name="notification_title">Spot a Bee</string>
+    <string name="notification_content_text">Help the Bees</string>
+    <string name="open_your_guide">Open your guide</string>
+    <string name="open_your_spot_a_bee_guide">Open your Spot a Bee PDF</string>
+    <string name="pdf_download_channel_description">PDF Download</string>
+    <string name="pdf_notification_channel_name">Spot a Bee</string>
+    <string name="error_toast_message_pay_pal">Please enter numerical characters only. E.g, 10 for $10</string>
+    <string name="make_sure_you_sign_in_for_score_message">Make sure you log in next time to add to your score!</string>
+    <string name="database_commit_error_message">Sorry. An error occurred. We can\'t save your information right now...</string>
 
 </resources>
