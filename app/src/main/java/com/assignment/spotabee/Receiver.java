@@ -53,11 +53,14 @@ public class Receiver extends BroadcastReceiver {
         Intent fileIntent = new Intent(Intent.ACTION_VIEW);
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
         // Grabs the Uri for the file that was downloaded.
+        long downloadReference = context.getSharedPreferences("com.assignment.spotabee", Context.MODE_PRIVATE)
+                .getLong("download_reference", 1);
+
         Uri mostRecentDownload =
-                downloadManager.getUriForDownloadedFile(DownloadReference.getDownloadReference());
+                downloadManager.getUriForDownloadedFile(downloadReference);
         // DownloadManager stores the Mime Type. Makes it really easy for us.
         String mimeType =
-                downloadManager.getMimeTypeForDownloadedFile(DownloadReference.getDownloadReference());
+                downloadManager.getMimeTypeForDownloadedFile(downloadReference);
 //        String mimeType = "application/pdf";
         fileIntent.setDataAndType(mostRecentDownload, mimeType);
         fileIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -71,10 +74,10 @@ public class Receiver extends BroadcastReceiver {
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_bell)
-                .setContentTitle("Spot a Bee")
-                .setContentText("Help the Bees")
+                .setContentTitle(context.getString(R.string.notification_title))
+                .setContentText(context.getString(R.string.notification_content_text))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT) //Set priority for backwards compatibility
-                .addAction(0, "Open your guide", pendingGoToDownloads) //Sets no icon in this example
+                .addAction(0, context.getString(R.string.open_your_guide), pendingGoToDownloads) //Sets no icon in this example
                 .setContentIntent(pendingGoToDownloads)
                 .setAutoCancel(true);
 
@@ -91,7 +94,7 @@ public class Receiver extends BroadcastReceiver {
         else {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                createAnExampleNotificationChannel(nManager, "Open your Spot a Bee PDF");
+                createAnExampleNotificationChannel(nManager, context.getString(R.string.open_your_spot_a_bee_guide));
 
             Notification exampleNotification = createExampleNotification();
 

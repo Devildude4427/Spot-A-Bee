@@ -92,6 +92,8 @@ public class MainActivity extends AppCompatActivity
      */
     private boolean mReturningWithResult = false;
 
+    private SharedPreferences preferences;
+
     /**
      * Handles the main creation of application wide resources.
      * Examples of this include requesting permissions,
@@ -107,9 +109,9 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
 
-        SharedPreferences preferences = getSharedPreferences("com.assigment.spotabee", MODE_PRIVATE);
+        preferences = getSharedPreferences("com.assignment.spotabee", MODE_PRIVATE);
         preferences.edit().putBoolean("firstrun", true).apply();
-
+        preferences.edit().putString("user_account", "Test User").apply();
         if (preferences.getBoolean("firstrun", true)) {
 
             final PaperOnboardingFragment onBoardingFragment
@@ -198,31 +200,19 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-//
-
     }
 
     private ArrayList<PaperOnboardingPage> getDataForOnboarding() {
         // prepare data
-        PaperOnboardingPage scr1 = new PaperOnboardingPage("Welcome!", "Bees are one of the most"
-                + " useful animals on Earth. Without their help in pollination, much"
-                + " of the plant life you know today would die out. Bees are in danger,"
-                + " and we would like your help in gathering data about them through"
-                + " your interactions in everyday life.",
-                Color.parseColor("#678FB4"), R.drawable.bee_2, R.drawable.bee);
-        PaperOnboardingPage scr2 = new PaperOnboardingPage("How We Will Use Data", "Using"
-                + " the pictures uploaded by you, we would like to identify which"
-                + " plants in Wales are attracting bees, along with the locations"
-                + " of those plants. Therefore we can deduce where we need more plant"
-                + " life and what kinds of plants to help these bees in their mission.",
-                Color.parseColor("#65B0B4"), R.drawable.bee_trail_1, R.drawable.bee);
-        PaperOnboardingPage scr3 = new PaperOnboardingPage("So How Do I Help?", "All you"
-                + " need to do to help is to keep an eye out for any bees you might see"
-                + " and to snap a picture if you can. On the home screen, there are options"
-                + " to take a picture from the app, use an existing photo, or to submit"
-                + " information without a picture. ",
-                Color.parseColor("#9B90BC"), R.drawable.bee_trail_3, R.drawable.bee);
+        PaperOnboardingPage scr1 = new PaperOnboardingPage(getString(R.string.onboarding_heading_one),
+                getString(R.string.papar_onboarding_text_one),
+                Color.parseColor("#FFFFFF"), R.drawable.bee_2, R.drawable.bee);
+        PaperOnboardingPage scr2 = new PaperOnboardingPage(getString(R.string.onboarding_heading_two),
+                getString(R.string.onboarding_text_two),
+                Color.parseColor("#FFFFFF"), R.drawable.bee_trail_1, R.drawable.bee);
+        PaperOnboardingPage scr3 = new PaperOnboardingPage(getString(R.string.onboarding_heading_three),
+                getString(R.string.onboarding_text_three),
+                Color.parseColor("#FFFFFF"), R.drawable.bee_trail_horizontal, R.drawable.bee);
 
         ArrayList<PaperOnboardingPage> elements = new ArrayList<>();
         elements.add(scr1);
@@ -277,7 +267,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+//        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -385,6 +375,7 @@ public class MainActivity extends AppCompatActivity
             String accountName
                     = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
             Log.v(TAG, accountName);
+
         } else if (requestCode == CHOOSE_ACCOUNT) {
             Log.v(TAG, "There was an error in the account picker");
         } else if (requestCode == Activity.RESULT_CANCELED) {
