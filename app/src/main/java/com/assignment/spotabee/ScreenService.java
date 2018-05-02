@@ -92,7 +92,7 @@ public class ScreenService extends Service {
 
         downloadReference = downloadManager.enqueue(request);
         getBaseContext()
-                .getSharedPreferences("pref", MODE_PRIVATE)
+                .getSharedPreferences("com.assignment.spotabee", MODE_PRIVATE)
                 .edit()
                 .putLong("download_reference", downloadReference)
                 .apply();

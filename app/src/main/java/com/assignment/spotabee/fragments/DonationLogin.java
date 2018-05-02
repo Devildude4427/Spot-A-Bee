@@ -29,7 +29,6 @@ import com.paypal.android.sdk.payments.PaymentActivity;
 import java.math.BigDecimal;
 
 import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
-import com.assignment.spotabee.AmountPayed;
 
 /**
  * Donation Login fragment. Controls all content that goes
@@ -156,8 +155,7 @@ public class DonationLogin extends Fragment
      */
     private void processPayment() {
         String amount = editAmount.getText().toString();
-//        AmountPayed.setAmountPayed(amount);
-        getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
+        getActivity().getSharedPreferences("com.assignment.spotabee", Context.MODE_PRIVATE)
                 .edit().putString("amount_payed", amount).apply();
         try {
             PayPalPayment payPalPayment = new PayPalPayment(

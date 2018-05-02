@@ -92,6 +92,8 @@ public class MainActivity extends AppCompatActivity
      */
     private boolean mReturningWithResult = false;
 
+    private SharedPreferences preferences;
+
     /**
      * Handles the main creation of application wide resources.
      * Examples of this include requesting permissions,
@@ -107,9 +109,9 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
 
-        SharedPreferences preferences = getSharedPreferences("com.assigment.spotabee", MODE_PRIVATE);
-        preferences.edit().putBoolean("firstrun", true).apply();
-
+        preferences = getSharedPreferences("com.assignment.spotabee", MODE_PRIVATE);
+//        preferences.edit().putBoolean("firstrun", true).apply();
+        preferences.edit().putString("user_account", "Test User").apply();
         if (preferences.getBoolean("firstrun", true)) {
 
             final PaperOnboardingFragment onBoardingFragment
@@ -382,6 +384,7 @@ public class MainActivity extends AppCompatActivity
             String accountName
                     = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
             Log.v(TAG, accountName);
+
         } else if (requestCode == CHOOSE_ACCOUNT) {
             Log.v(TAG, "There was an error in the account picker");
         } else if (requestCode == Activity.RESULT_CANCELED) {

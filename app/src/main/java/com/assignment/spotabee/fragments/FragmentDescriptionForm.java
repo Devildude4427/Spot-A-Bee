@@ -26,7 +26,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.assignment.spotabee.R;
-import com.assignment.spotabee.UserAccount;
 import com.assignment.spotabee.customutils.Time;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
@@ -364,7 +363,10 @@ public class FragmentDescriptionForm extends Fragment
             public void run() {
 
                 try {
-                    String currentUserAccountName = UserAccount.getAccountName();
+
+                    String currentUserAccountName = getActivity().getSharedPreferences("com.assignment.spotabee", Context.MODE_PRIVATE)
+                            .getString("user_account", "FAIL");
+                    Log.d(TAG, "ACCOUNT_NAME: " + currentUserAccountName);
 
                     if(userScoreExists(currentUserAccountName)){
                         UserScore userScore = db.descriptionDao().getUserScoreByName(currentUserAccountName);
