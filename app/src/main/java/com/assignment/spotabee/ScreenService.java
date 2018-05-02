@@ -91,9 +91,15 @@ public class ScreenService extends Service {
                 Environment.DIRECTORY_DOWNLOADS,"Bee_Guide.pdf");
 
         downloadReference = downloadManager.enqueue(request);
+        getBaseContext()
+                .getSharedPreferences("pref", MODE_PRIVATE)
+                .edit()
+                .putLong("download_reference", downloadReference)
+                .apply();
+
+
         check_download_Status(downloadReference);
         this.downloadReference = downloadReference;
-        DownloadReference.setDownloadReference(downloadReference);
         return downloadReference;
     }
 
@@ -125,7 +131,6 @@ public class ScreenService extends Service {
     }
 
     private void check_download_Status(long downloadReference) {
-
         DownloadManager.Query pdfDownloadQuery = new DownloadManager.Query();
 
         pdfDownloadQuery.setFilterById(downloadReference);

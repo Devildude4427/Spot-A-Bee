@@ -53,11 +53,14 @@ public class Receiver extends BroadcastReceiver {
         Intent fileIntent = new Intent(Intent.ACTION_VIEW);
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
         // Grabs the Uri for the file that was downloaded.
+        long downloadReference = context.getSharedPreferences("pref", Context.MODE_PRIVATE)
+                .getLong("download_reference", 1);
+
         Uri mostRecentDownload =
-                downloadManager.getUriForDownloadedFile(DownloadReference.getDownloadReference());
+                downloadManager.getUriForDownloadedFile(downloadReference);
         // DownloadManager stores the Mime Type. Makes it really easy for us.
         String mimeType =
-                downloadManager.getMimeTypeForDownloadedFile(DownloadReference.getDownloadReference());
+                downloadManager.getMimeTypeForDownloadedFile(downloadReference);
 //        String mimeType = "application/pdf";
         fileIntent.setDataAndType(mostRecentDownload, mimeType);
         fileIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
