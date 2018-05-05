@@ -14,9 +14,6 @@ import clarifai2.api.ClarifaiClient;
 
 
 
-/**
- * Created by Lauren on 4/22/2018.
- */
 
 public class TestClarifai {
     private static final Logger LOGGER = Logger.getLogger( TestClarifai.class.getName());

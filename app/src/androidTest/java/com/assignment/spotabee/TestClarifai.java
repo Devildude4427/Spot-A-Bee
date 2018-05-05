@@ -27,7 +27,6 @@ import clarifai2.api.ClarifaiClient;
 import static junit.framework.Assert.assertEquals;
 
 /**
- * Created by Lauren on 4/25/2018.
  * Tests Clarifai business logic away from UI
  */
 
@@ -40,16 +39,7 @@ public class TestClarifai {
 
     @Before
     public void initialise() {
-        try {
-            context = InstrumentationRegistry.getInstrumentation().getContext();
-            InputStream inputSteamOfImage = context.getAssets().open("testimage/comparativeSunflower.jpg");
-            byte[] testImageBytes = getBitMap(inputSteamOfImage);
-
-            clarifaiRequest = new ClarifaiRequest(client, "flower_species", testImageBytes);
-        } catch (IOException e){
-            LOGGER.log(Level.SEVERE, "IOException occurred when retrieving image file");
-        }
-
+        context = InstrumentationRegistry.getInstrumentation().getContext();
     }
 
     public byte[] getBitMap(InputStream inputStream){
@@ -79,7 +69,6 @@ public class TestClarifai {
     @Test
     public void testCorrectIdentification() {
         try {
-            context = InstrumentationRegistry.getInstrumentation().getContext();
             InputStream inputSteamOfImage = context.getAssets().open("testimages/comparativeSunflower.jpg");
             byte[] testImageBytes = getBitMap(inputSteamOfImage);
 

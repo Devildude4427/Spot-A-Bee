@@ -3,7 +3,6 @@ package com.assignment.spotabee.imagerecognition;
 import java.io.File;
 
 /**
- * Created by Lauren on 4/22/2018.
  * Stores file/ byte[] that will be used in a Clarifai request
  * to identify an image and the String name that is returned from
  * such request

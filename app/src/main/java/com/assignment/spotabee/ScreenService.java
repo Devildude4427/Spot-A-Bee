@@ -26,7 +26,7 @@ import static java.security.AccessController.getContext;
 
 
 // * Created by Lauren on 4/25/2018.
-// *
+// * (Download Manager tutorial) Reference: https://www.codeproject.com/Articles/1112730/Android-Download-Manager-Tutorial-How-to-Download
 // */
 
 public class ScreenService extends Service {

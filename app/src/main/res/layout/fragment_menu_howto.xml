@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
         android:layout_alignTop="@+id/imageView4"
         app:srcCompat="@drawable/bad_plant" />
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -58,9 +58,9 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="94dp"
         android:padding="10dp"
-        android:text="The image on the left is a very good image of a bee. With this, we can try to get it's exact type. On the right, we can barely make out the bee, so while it is a good plant image, it isn't a good bee image." />
+        android:text="@string/good_image_of_bee_text" />
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -68,6 +68,6 @@
         android:layout_alignParentStart="true"
         android:layout_marginBottom="154dp"
         android:padding="10dp"
-        android:text="The image on the right is a good plant image, as we can see the entire plant in a clear image. On the right, the image is a bit zoomed in, so we can't see the entire flower and would have a hard time guessing what plant that is." />
+        android:text="@string/good_image_of_a_plant_text" />
 
 </RelativeLayout>
