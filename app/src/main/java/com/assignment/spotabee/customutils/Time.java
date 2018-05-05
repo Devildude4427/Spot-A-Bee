@@ -29,6 +29,7 @@ public class Time {
         System.out.println(getTodaysDate(testDate));
         System.out.println(getCurrentTime(testDate));
     }
+
     public static String getTodaysDate(Date dateNow){
 
         return dateFormat.format(dateNow);

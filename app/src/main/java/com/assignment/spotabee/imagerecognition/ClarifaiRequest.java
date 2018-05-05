@@ -14,7 +14,6 @@ import clarifai2.dto.model.output.ClarifaiOutput;
 import clarifai2.dto.prediction.Prediction;
 
 /**
- * Created by Lauren on 4/22/2018.
  * Executes image recognition request with a custom model in order to receive application
  * specific outputs.
  */

@@ -73,17 +73,4 @@ public class CustomQuickSort
         System.out.println();
     }
 
-//    // Driver program
-//    public static void main(String args[])
-//    {
-//        int arr[] = {10, 7, 8, 9, 1, 5};
-//        int n = arr.length;
-//
-//        CustomQuickSort ob = new CustomQuickSort();
-//        ob.sort(arr, 0, n-1);
-//
-//        System.out.println("sorted array");
-//        printArray(arr);
-//    }
 }
-/*This code is contributed by Rajat Mishra */

@@ -26,7 +26,7 @@ import android.widget.Toast;
 import static android.content.Context.DOWNLOAD_SERVICE;
 
 
-//
+// (Download Manager tutorial) Reference: https://www.codeproject.com/Articles/1112730/Android-Download-Manager-Tutorial-How-to-Download
 public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickListener{
     private DownloadManager downloadManager;
     private ImageView downloadPdf;

@@ -125,5 +125,7 @@
     <string name="error_toast_message_pay_pal">Please enter numerical characters only. E.g, 10 for $10</string>
     <string name="make_sure_you_sign_in_for_score_message">Make sure you log in next time to add to your score!</string>
     <string name="database_commit_error_message">Sorry. An error occurred. We can\'t save your information right now...</string>
+    <string name="good_image_of_bee_text">The image on the left is a very good image of a bee. With this, we can try to get it\'s exact type. On the right, we can barely make out the bee, so while it is a good plant image, it isn\'t a good bee image.</string>
+    <string name="good_image_of_a_plant_text">The image on the right is a good plant image, as we can see the entire plant in a clear image. On the right, the image is a bit zoomed in, so we can\'t see the entire flower and would have a hard time guessing what plant that is.</string>
 
 </resources>

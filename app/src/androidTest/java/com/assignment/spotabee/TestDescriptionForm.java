@@ -1,7 +1,6 @@
 package com.assignment.spotabee;
 
 /**
- * Created by Lauren on 4/24/2018.
  * Tests UI  and  user journey for description form
  */
 

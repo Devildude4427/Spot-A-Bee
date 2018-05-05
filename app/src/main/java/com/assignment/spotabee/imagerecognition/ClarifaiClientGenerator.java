@@ -10,7 +10,6 @@ import okhttp3.OkHttpClient;
 
 
 /**
- * Created by Lauren on 4/22/2018.
  * Purpose to provide a ClarifaiClient that can be used to make
  * image recognition requests
  */
