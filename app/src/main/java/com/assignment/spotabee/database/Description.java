@@ -219,6 +219,7 @@ public class Description {
      * @return NumOfBees of database entry.
      */
     public int getNumOfBees() {
+
         return numOfBees;
     }
 
@@ -228,7 +229,9 @@ public class Description {
      * @param numOfBees How many bees were seen.
      */
     public void setNumOfBees(final int numOfBees) {
-        this.numOfBees = numOfBees;
+        if (numOfBees <= 50){
+            this.numOfBees = numOfBees;
+        }
     }
 
     /**
