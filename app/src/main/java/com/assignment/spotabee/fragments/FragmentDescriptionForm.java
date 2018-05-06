@@ -25,7 +25,10 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.assignment.spotabee.Flower;
 import com.assignment.spotabee.R;
+import com.assignment.spotabee.customexceptions.ObsceneNumberException;
+import com.assignment.spotabee.customutils.CheckNetworkConnection;
 import com.assignment.spotabee.customutils.Time;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
@@ -65,7 +68,8 @@ public class FragmentDescriptionForm extends Fragment
     private LatLng userLocation;
     private static final String TAG = "Description_form_debug";
     private final static String imageIdentifyUrl = "https://www.imageidentify.com/";
-    String flowerIdentification;
+    private String flowerIdentification;
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,13 +167,7 @@ public class FragmentDescriptionForm extends Fragment
 
             case R.id.submit:
                 if (userLocationIsNull()) return;
-
-                commitFormDataToDB();
-                updateUserScore();
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.content_frame, new FragmentAfterSubmission())
-                        .commit();
+                createFlower();
                 break;
 
                 // Search for a user's input location
@@ -202,6 +200,33 @@ public class FragmentDescriptionForm extends Fragment
         }
     }
 
+    private void createFlower(){
+        Date todaysDate = new Date();
+        try {
+            Flower newFlower = new Flower(
+                    flower.getText().toString(),
+                    Time.getTodaysDate(todaysDate),
+                    Time.getCurrentTime(todaysDate),
+                    Integer.parseInt(numberOfBeesField.getText().toString()),
+                    userLocation.latitude,
+                    userLocation.longitude,
+                    location.getText().toString(),
+                    description.getText().toString()
+
+            );
+
+            commitFormDataToDB(newFlower);
+            updateUserScore();
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.content_frame, new FragmentAfterSubmission())
+                    .commit();
+
+        } catch (ObsceneNumberException e){
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+    }
     /**
      * Check if the user has searched for their location before
      * submitting the form
@@ -270,28 +295,28 @@ public class FragmentDescriptionForm extends Fragment
         return stringAddressAdapter;
     }
 
+
     /**
      * Takes information from EditText fields and commits them to the database
      */
-    private void commitFormDataToDB() {
+    private void commitFormDataToDB(final Flower flowerDescription) {
         Log.d(TAG, "We are in commitFormToDB");
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
 
                 try {
-                    Date todaysDate = new Date();
                     db.descriptionDao()
                             .insertDescriptions(new Description(
-                                    ( userLocation.latitude),
-                                    userLocation.longitude,
-                                    location.getText().toString(),
-                                    flower.getText().toString(),
-                                    description.getText().toString(),
-                                    Integer.parseInt(numberOfBeesField.getText().toString()),
-                                    Time.getTodaysDate(todaysDate),
-                                    Time.getCurrentTime(todaysDate)
-                            ));
+                                    flowerDescription.getLatitude(),
+                                    flowerDescription.getLongitude(),
+                                    flowerDescription.getLocation(),
+                                    flowerDescription.getSpecies(),
+                                    flowerDescription.getDescription(),
+                                    flowerDescription.getNumOfBees(),
+                                    flowerDescription.getDate(),
+                                    flowerDescription.getTime()));
+
 
                     List<Description> allDescriptions = db.descriptionDao()
                             .getAllDescriptions();
