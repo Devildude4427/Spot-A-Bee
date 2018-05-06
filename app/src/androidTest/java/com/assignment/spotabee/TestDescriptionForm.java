@@ -8,13 +8,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
+import android.support.test.espresso.ViewFinder;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
+import android.widget.Spinner;
 
 import com.assignment.spotabee.MainActivity;
 import com.assignment.spotabee.R;
+import com.assignment.spotabee.customexceptions.ObsceneNumberException;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.fragments.FragmentDescriptionForm;
 
@@ -128,14 +131,8 @@ public class TestDescriptionForm {
                         closeSoftKeyboard()
                 );
 
-
-
-//        onData(anything()) // Attempt to simulate selecting a location provided by the geocoder
-//                .inAdapterView(
-//                        withId(R.id.addressSpinner)
-//                ).atPosition(0)
-//                .perform(click());
-
+        onView(withId(R.id.search_location))
+                .perform(click());
 
 
         onView(withId(R.id.search_location))
@@ -166,6 +163,58 @@ public class TestDescriptionForm {
 
         assertTrue(database.descriptionDao()
         .getAllDescriptions().size() == 1);
+    }
+
+    @Test
+    public void testObsceneNumberExceptionIsThrown(){
+        String testFlowerType = "Alliums";
+        String testNumberOfBees = "70";
+        String testDescriptiveDetails = "None";
+        String testAddress = "Cardiff Queens Street";
+
+        onView(withId(R.id.locationField))
+                .perform(
+                        typeText(testAddress),
+                        closeSoftKeyboard()
+                );
+
+        onView(withId(R.id.search_location))
+                .perform(click());
+
+
+        onView(withId(R.id.search_location))
+                .perform(click());
+
+        onView(withId(R.id.flowerField))
+                .perform(
+                        typeText(testFlowerType),
+                        closeSoftKeyboard()
+                );
+
+
+        onView(withId(R.id.numOfBees))
+                .perform(
+                        typeText(testNumberOfBees),
+                        closeSoftKeyboard()
+                );
+
+        onView(withId(R.id.descriptionField))
+                .perform(
+                        typeText(testDescriptiveDetails),
+                        closeSoftKeyboard()
+                );
+
+
+        onView(withId(R.id.submit))
+                .perform(click());
+
+
+
+        // Asserts that the submission does not save since the ObsceneNumberException
+        // would have been caught
+        assertTrue(database.descriptionDao()
+                .getAllDescriptions().size() == 0);
+
     }
 
 }
