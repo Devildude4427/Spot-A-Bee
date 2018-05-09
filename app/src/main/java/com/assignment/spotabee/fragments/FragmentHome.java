@@ -1,8 +1,10 @@
 package com.assignment.spotabee.fragments;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationListener;
@@ -19,6 +21,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -144,19 +147,19 @@ public class FragmentHome extends Fragment  {
 
         ImageView buttonCamera = view.findViewById(R.id.button_camera);
         buttonCamera.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View v) {
-                    int id = v.getId();
-                    //Open the camera HOPEFULLY
+            @Override
+            public void onClick(final View v) {
+                int id = v.getId();
+                //Open the camera HOPEFULLY
 
-                    if (id == R.id.button_camera) {
-                        dispatchTakePictureIntent();
-                    } else {
-                        //Go back to main button
-                        intent = new Intent(getActivity()
-                                .getApplicationContext(), MainActivity.class);
-                        startActivity(intent);
-                    }
+                if (id == R.id.button_camera) {
+                    dispatchTakePictureIntent();
+                } else {
+                    //Go back to main button
+                    intent = new Intent(getActivity()
+                            .getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                }
 
 
                 try {
@@ -246,24 +249,24 @@ public class FragmentHome extends Fragment  {
     private File createImageFile() throws IOException {
         File image = null;
         try {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
-                .format(new Date());
-        String imageFileName = "JPEG_"
-                + timeStamp + "_";
-        File storageDir = new File(Environment
-                .getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DCIM), "Camera");
-        image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",   /* suffix */
-                storageDir      /* directory */
-        );
+            // Create an image file name
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+                    .format(new Date());
+            String imageFileName = "JPEG_"
+                    + timeStamp + "_";
+            File storageDir = new File(Environment
+                    .getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_DCIM), "Camera");
+            image = File.createTempFile(
+                    imageFileName,  /* prefix */
+                    ".jpg",   /* suffix */
+                    storageDir      /* directory */
+            );
 
-        // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = "filepath: " + image.getAbsolutePath();
-        Log.v(TAG, "filepath: " + image.getAbsolutePath());
-        return image;
+            // Save a file: path for use with ACTION_VIEW intents
+            currentPhotoPath = "filepath: " + image.getAbsolutePath();
+            Log.v(TAG, "filepath: " + image.getAbsolutePath());
+            return image;
         } catch (Exception e) {
             Log.v(TAG, "Exception in dispatch " + e);
         }
@@ -291,8 +294,8 @@ public class FragmentHome extends Fragment  {
                 if (photoFile != null) {
                     Uri photoURI = FileProvider
                             .getUriForFile(getContextOfApplication(),
-                    BuildConfig.APPLICATION_ID + ".provider",
-                    photoFile);
+                                    BuildConfig.APPLICATION_ID + ".provider",
+                                    photoFile);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                             photoURI);
                     startActivityForResult(takePictureIntent, IMAGE_CAPTURE);
@@ -341,11 +344,26 @@ public class FragmentHome extends Fragment  {
      *             be the picture intent itself.
      */
     public void onActivityResult(final int requestCode, final int resultCode,
-                                    final Intent data) {
+                                 final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         final ProgressDialog progress
                 = new ProgressDialog(getContextOfApplication());
+        progress.setOnKeyListener(new Dialog.OnKeyListener() {
+
+            @Override
+            public boolean onKey(DialogInterface arg0, int keyCode,
+                                 KeyEvent event) {
+                // TODO Auto-generated method stub
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    progress.dismiss();
+                }
+                return true;
+            }
+        });
+
+
+
         Log.v(TAG, "entering");
 
         try {

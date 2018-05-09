@@ -49,7 +49,7 @@ public class DonationLogin extends Fragment
     private static final String TAG = "DonationLoginDebug";
 
     /**
-     * Unique ID for calling methods with requests.
+     * ID for PayPal button created dynamically.
      */
     private static final int PAYPAL_BUTTON_ID = 1;
 
@@ -106,6 +106,7 @@ public class DonationLogin extends Fragment
 //                processPayment();
 //            }
 //        });
+
         initLibrary();
         showPayPalButton();
         return rootView;

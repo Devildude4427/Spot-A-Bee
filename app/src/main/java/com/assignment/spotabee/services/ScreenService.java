@@ -1,118 +1,134 @@
-package com.assignment.spotabee;
+package com.assignment.spotabee.services;
 
 import android.app.DownloadManager;
-import android.app.FragmentManager;
-import android.content.BroadcastReceiver;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
+import android.os.Build;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.IBinder;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatTextView;
-import android.util.Log;
+import android.support.annotation.RequiresApi;
 import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import static android.content.Context.DOWNLOAD_SERVICE;
+import com.assignment.spotabee.R;
+import com.assignment.spotabee.receivers.DownloadReceiver;
 
 
-// (Download Manager tutorial) Reference: https://www.codeproject.com/Articles/1112730/Android-Download-Manager-Tutorial-How-to-Download
-public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickListener{
-    private DownloadManager downloadManager;
-    private ImageView downloadPdf;
-    private AppCompatButton downloadBtn;
+// * Created by Lauren on 4/25/2018.
+// * (Download Manager tutorial) Reference: https://www.codeproject.com/Articles/1112730/Android-Download-Manager-Tutorial-How-to-Download
+// */
+
+public class ScreenService extends Service {
+    //Constants used for foreground notification
+    public static final String SERVICE_CHANNEL_ID = "com.assignment.spotabee.service";
+    private static final int SERVICE_NOTIFICATION_ID = 900;
+    public static final String CHANNEL_ID = "com.assignment.spotabee.type11";
+    public static final int NOTIFICATION_ID = 1;
+    private IBinder mBinder;
     private long downloadReference;
-    private Context appContext;
-    private Receiver downloadReceiver;
-    private View rootView;
-    private Uri uri;
-    private View v;
-    public static final String TAG = "Download PDF Debug";
-    public FragmentDownloadPdfGuide() {
-        // Required empty public constructor
-    }
+    private DownloadManager downloadManager;
 
-
-    public static FragmentDownloadPdfGuide newInstance(String param1, String param2) {
-        FragmentDownloadPdfGuide fragment = new FragmentDownloadPdfGuide();
-        Bundle args = new Bundle();
-
-        fragment.setArguments(args);
-        return fragment;
+    //Empty constructor
+    public ScreenService() {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+    public void onCreate() {
+        super.onCreate();
 
+        downloadManager = (DownloadManager) getBaseContext().getSystemService(DOWNLOAD_SERVICE);
+        NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (nManager == null) return;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (nManager.getNotificationChannel(SERVICE_CHANNEL_ID) == null) {
+                NotificationChannel channel = new NotificationChannel(
+                        SERVICE_CHANNEL_ID,
+                        getString(R.string.pdf_notification_channel_name),
+                        NotificationManager.IMPORTANCE_DEFAULT);
+                channel.setDescription(getString(R.string.pdf_download_channel_description));
+
+                nManager.createNotificationChannel(channel);
+            }
         }
+
+
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_fragment_download_pdf_guide, container, false);
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void createAnExampleNotificationChannel(NotificationManager notificationManager, String description) {
 
-        downloadManager = (DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE);
+        if (notificationManager.getNotificationChannel(CHANNEL_ID) == null) {
+            CharSequence name = "Spot a Bee";
 
-        appContext = getActivity().getApplicationContext();
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription(description);
 
-        downloadReceiver = new Receiver();
-
-        downloadBtn = rootView.findViewById(R.id.downloadGuideBtn);
-        downloadBtn.setOnClickListener(this);
-
-        IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-        getActivity().registerReceiver(downloadReceiver, filter);
-
-        getActivity().setTitle(getString(R.string.download_pdf_fragment_title));
-
-        return rootView;
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     private long downloadData (Uri uri) {
-        this.uri = uri;
 
-        downloadManager = (DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE);
+        downloadManager = (DownloadManager) getBaseContext().getSystemService(DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(uri);
 
-        request.setTitle(getString(R.string.download_pdf_title));
-        request.setDescription(getString(R.string.download_pdf_description));
+        request.setTitle("Help the Bees");
+        request.setDescription("Guide on helping to preserve the bee population");
 
-        request.setDestinationInExternalFilesDir(getActivity(),
-                Environment.DIRECTORY_DOWNLOADS,getString(R.string.bee_pdf_guide));
+        request.setDestinationInExternalFilesDir(getBaseContext(),
+                Environment.DIRECTORY_DOWNLOADS,"Bee_Guide.pdf");
 
         downloadReference = downloadManager.enqueue(request);
-        check_download_Status(downloadReference);
+        getBaseContext()
+                .getSharedPreferences("com.assignment.spotabee", MODE_PRIVATE)
+                .edit()
+                .putLong("download_reference", downloadReference)
+                .apply();
 
+
+        check_download_Status(downloadReference);
+        this.downloadReference = downloadReference;
         return downloadReference;
     }
 
+
     @Override
-    public void onClick(View v) {
-        int id = v.getId();
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Toast.makeText(this, "Service is starting", Toast.LENGTH_SHORT).show();
 
-        switch (id){
-            case R.id.downloadGuideBtn:
-//                Uri uriForPdf = Uri.parse("https://friendsoftheearth.uk/sites/default/files/downloads/bees_booklet.pdf");
-//                downloadData(uriForPdf);
-                Intent mService = new Intent(getContext(), ScreenService.class);
-                mService.putExtra("download_id", 1);
-                getContext().startService(mService);
+        Uri uriForPdf = Uri.parse("https://friendsoftheearth.uk/sites/default/files/downloads/bees_booklet.pdf");
+        downloadData(uriForPdf);
 
-                break;
-        }
+        registerScreenEvents();
+
+        stopSelf();
+        return START_STICKY;
+    }
+
+    private void registerScreenEvents(){
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_SCREEN_ON);
+        this.registerReceiver(new DownloadReceiver(), filter);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopSelf();
+    }
+
+
+    @Override
+    public IBinder onBind(Intent intent) {
+//        downloadReference = intent.getLongExtra("download_id", 1);
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     private void check_download_Status(long downloadReference) {
@@ -203,7 +219,7 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
 
         if(downloadId == downloadReference) {
 
-            Toast toast = Toast.makeText(getActivity(),
+            Toast toast = Toast.makeText(getBaseContext(),
                     getString(R.string.pdf_download) + "\n" + statusText + reasonText,
                     Toast.LENGTH_LONG);
             toast.setGravity(Gravity.TOP, 25, 400);
@@ -211,3 +227,4 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
         }
     }
 }
+

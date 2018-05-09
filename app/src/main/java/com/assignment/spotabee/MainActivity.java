@@ -1,11 +1,14 @@
 package com.assignment.spotabee;
 
+import android.app.DownloadManager;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.support.v4.app.FragmentManager;
 import android.widget.Toast;
 
 
+import com.assignment.spotabee.fragments.FragmentDownloadPdfGuide;
+import com.assignment.spotabee.receivers.DownloadReceiver;
 import com.paypal.android.sdk.payments.PaymentActivity;
 import android.Manifest;
 import android.accounts.AccountManager;
@@ -42,13 +45,13 @@ import com.assignment.spotabee.fragments.FragmentHowTo;
 import com.assignment.spotabee.fragments.FragmentLeaderboard;
 import com.assignment.spotabee.fragments.FragmentMap;
 import com.assignment.spotabee.fragments.PaymentInfo;
-import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
 import com.ramotion.paperonboarding.PaperOnboardingFragment;
 import com.ramotion.paperonboarding.PaperOnboardingPage;
 import com.ramotion.paperonboarding.listeners.PaperOnboardingOnRightOutListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
 
@@ -94,6 +97,12 @@ public class MainActivity extends AppCompatActivity
 
     private SharedPreferences preferences;
 
+    private DownloadReceiver downloadReceiver;
+
+    private Fragment currentFragment;
+
+
+
     /**
      * Handles the main creation of application wide resources.
      * Examples of this include requesting permissions,
@@ -107,99 +116,112 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-        preferences = getSharedPreferences("com.assignment.spotabee", MODE_PRIVATE);
-        preferences.edit().putBoolean("firstrun", true).apply();
-        preferences.edit().putString("user_account", "Test User").apply();
-        if (preferences.getBoolean("firstrun", true)) {
-
-            final PaperOnboardingFragment onBoardingFragment
-                    = PaperOnboardingFragment.newInstance(
-                    getDataForOnboarding());
-
-            FragmentTransaction ft
-                    = getSupportFragmentManager().beginTransaction();
-            ft.add(R.id.content_frame, onBoardingFragment);
-            ft.commit();
-            preferences.edit().putBoolean("firstrun", false).apply();
-
-            onBoardingFragment.setOnRightOutListener(new PaperOnboardingOnRightOutListener() {
-                @Override
-                public void onRightOut() {
-                    displaySelectedScreen(R.id.nav_home);
-                }
-            });
+        if(savedInstanceState != null) {
+            currentFragment = getSupportFragmentManager().getFragment(savedInstanceState, KeyChain.getCurrentFragmentKey());
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, currentFragment);
         } else {
-            displaySelectedScreen(R.id.nav_home);
+            preferences = getSharedPreferences("com.assignment.spotabee", MODE_PRIVATE);
+            preferences.edit().putBoolean("firstrun", true).apply();
+            preferences.edit().putString("user_account", "Test User").apply();
+            if (preferences.getBoolean("firstrun", true)) {
+
+                final PaperOnboardingFragment onBoardingFragment
+                        = PaperOnboardingFragment.newInstance(
+                        getDataForOnboarding());
+
+                FragmentTransaction ft
+                        = getSupportFragmentManager().beginTransaction();
+                ft.add(R.id.content_frame, onBoardingFragment);
+                ft.commit();
+                preferences.edit().putBoolean("firstrun", false).apply();
+
+                onBoardingFragment.setOnRightOutListener(new PaperOnboardingOnRightOutListener() {
+                    @Override
+                    public void onRightOut() {
+                        displaySelectedScreen(R.id.nav_home);
+                    }
+                });
+            } else {
+                displaySelectedScreen(R.id.nav_home);
+            }
+
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+
+            AccountManager accountManager = (AccountManager)
+                    getSystemService(Context.ACCOUNT_SERVICE);
+
+            contextOfApplication = this;
+
+            // Reference for our permissions system: https://github.com/anthonycr/Grant
+            // gradle dependency = implementation 'com.anthonycr.grant:permissions:1.0'
+            PermissionsManager.getInstance()
+                    .requestAllManifestPermissionsIfNecessary(this,
+                            new PermissionsResultAction() {
+                                @Override
+                                public void onGranted() {
+                                    Log.v(TAG, "All permissions accepted");
+                                }
+
+                                @Override
+                                public void onDenied(final String permission) {
+                                    Log.v(TAG, "Not all permissions accepted");
+                                    Log.v(TAG, "Turned down permission: "
+                                            + permission);
+                                }
+                            });
+
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.GET_ACCOUNTS)
+                    != PackageManager.PERMISSION_GRANTED
+                    ) {
+                Intent intent =
+                        accountManager.newChooseAccountIntent(null,
+                                null, new String[]{"com.google"},
+                                null, null,
+                                null, null);
+                startActivityForResult(intent, CHOOSE_ACCOUNT);
+            }
+
+
+            AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
+
+            //This clears out the database, and is called every time!
+            // Remove if you need persistence!
+            db.descriptionDao().nukeTable();
+            db.descriptionDao().nukeUserScores();
+            //This clears out the database, and is called every time!
+            // Remove if you need persistence!
+
+            DatabaseInitializer.populateAsync(db);
+
+            Description description = new Description(
+                    51.4816, -3.1791,
+                    "Cardiff", "Rose", "None",
+                    1, "17-05-2018", "15:39");
+
+            db.descriptionDao().insertDescriptions(description);
+
+
+            DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, mDrawerLayout, toolbar,
+                    R.string.navigation_drawer_open,
+                    R.string.navigation_drawer_close);
+            mDrawerLayout.setDrawerListener(toggle);
+            toggle.syncState();
+
+            NavigationView navigationView = findViewById(R.id.nav_view);
+            navigationView.setNavigationItemSelectedListener(this);
+
+            IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+            registerReceiver(downloadReceiver, filter);
         }
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        AccountManager accountManager = (AccountManager)
-                getSystemService(Context.ACCOUNT_SERVICE);
-
-        contextOfApplication = this;
-
-        PermissionsManager.getInstance()
-                .requestAllManifestPermissionsIfNecessary(this,
-                        new PermissionsResultAction() {
-                            @Override
-                            public void onGranted() {
-                                Log.v(TAG, "All permissions accepted");
-                            }
-
-                            @Override
-                            public void onDenied(final String permission) {
-                                Log.v(TAG, "Not all permissions accepted");
-                                Log.v(TAG, "Turned down permission: "
-                                        + permission);
-                            }
-                        });
-
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.GET_ACCOUNTS)
-                != PackageManager.PERMISSION_GRANTED
-                ) {
-            Intent intent =
-                    accountManager.newChooseAccountIntent(null,
-                            null, new String[]{"com.google"},
-                            null, null,
-                            null, null);
-            startActivityForResult(intent, CHOOSE_ACCOUNT);
-        }
 
 
-        AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
 
-        //This clears out the database, and is called every time!
-        // Remove if you need persistence!
-        db.descriptionDao().nukeTable();
-        db.descriptionDao().nukeUserScores();
-        //This clears out the database, and is called every time!
-        // Remove if you need persistence!
-
-        DatabaseInitializer.populateAsync(db);
-
-        Description description = new Description(
-                51.4816, -3.1791,
-                "Cardiff", "Rose", "None",
-                1, "17-05-2018", "15:39");
-
-        db.descriptionDao().insertDescriptions(description);
-
-
-        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, toolbar,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close);
-        mDrawerLayout.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
     }
 
     private ArrayList<PaperOnboardingPage> getDataForOnboarding() {
@@ -218,7 +240,26 @@ public class MainActivity extends AppCompatActivity
         elements.add(scr1);
         elements.add(scr2);
         elements.add(scr3);
+
         return elements;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        if(currentFragment != null){
+            getSupportFragmentManager()
+                    .putFragment(outState, KeyChain.getCurrentFragmentKey(), currentFragment);
+        } else {
+            super.onSaveInstanceState(outState);
+        }
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
     }
 
     /**
@@ -254,6 +295,23 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(downloadReceiver != null){
+            unregisterReceiver(downloadReceiver);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(downloadReceiver != null){
+            unregisterReceiver(downloadReceiver);
         }
     }
 
@@ -301,30 +359,31 @@ public class MainActivity extends AppCompatActivity
      */
     private void displaySelectedScreen(final int itemId) {
         //creating fragment object
-        Fragment fragment = null;
+//        Fragment fragment = null;
 
         //initializing the fragment object which is selected
         switch (itemId) {
+
             case R.id.nav_home:
-                fragment = new FragmentHome();
+                currentFragment = new FragmentHome();
                 break;
             case R.id.nav_howto:
-                fragment = new FragmentHowTo();
+                currentFragment = new FragmentHowTo();
                 break;
             case R.id.nav_results:
-                fragment = new FragmentMap();
+                currentFragment = new FragmentMap();
                 break;
             case R.id.nav_aboutus:
-                fragment = new FragmentAboutUs();
+                currentFragment = new FragmentAboutUs();
                 break;
             case R.id.nav_leaderboard:
-                fragment = new FragmentLeaderboard();
+                currentFragment = new FragmentLeaderboard();
                 break;
             case R.id.nav_donate:
-                fragment = new DonationLogin();
+                currentFragment = new DonationLogin();
                 break;
             case R.id.nav_resources:
-                fragment = new FragmentDownloadPdfGuide();
+                currentFragment = new FragmentDownloadPdfGuide();
                 break;
             default:
                 Log.v(TAG, itemId + " is being requested"
@@ -334,15 +393,17 @@ public class MainActivity extends AppCompatActivity
         }
 
         //replacing the fragment
-        if (fragment != null) {
+        if (currentFragment != null) {
             FragmentTransaction ft
                     = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_frame, fragment);
+            ft.replace(R.id.content_frame, currentFragment);
             ft.commit();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
+        currentFragment = null;
     }
 
     /**
@@ -402,6 +463,8 @@ public class MainActivity extends AppCompatActivity
         AppDatabase.destroyInstance();
         super.onDestroy();
     }
+
+
 
     /**
      * Handles the results of the PayPal transaction.
