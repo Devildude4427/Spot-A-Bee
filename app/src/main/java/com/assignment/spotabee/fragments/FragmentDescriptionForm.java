@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
@@ -26,6 +27,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.assignment.spotabee.Flower;
+import com.assignment.spotabee.KeyChain;
 import com.assignment.spotabee.R;
 import com.assignment.spotabee.customexceptions.ObsceneNumberException;
 import com.assignment.spotabee.customutils.CheckNetworkConnection;
@@ -69,6 +71,7 @@ public class FragmentDescriptionForm extends Fragment
     private static final String TAG = "Description_form_debug";
     private final static String imageIdentifyUrl = "https://www.imageidentify.com/";
     private String flowerIdentification;
+
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -126,6 +129,8 @@ public class FragmentDescriptionForm extends Fragment
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+
         return rootView;
     }
 
@@ -325,7 +330,7 @@ public class FragmentDescriptionForm extends Fragment
                         Log.d(TAG, description.getFlowerType().toString());
                         Log.d(TAG, description.getLatitude().toString());
                         Log.d(TAG, description.getLongitude().toString());
-                        Log.d(TAG, description.getNumOfBees() + "");
+                        Log.d(TAG, "Number Of BEES: " + description.getNumOfBees());
                         Log.d(TAG, description.getFurtherDetails().toString());
                         Log.d(TAG, description.getDate().toString());
                         Log.d(TAG, description.getTime().toString());
@@ -369,6 +374,16 @@ public class FragmentDescriptionForm extends Fragment
             Log.d(TAG, "new user location has been made");
             return addressToFind;
         }
+
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+
+        getActivity().getSupportFragmentManager()
+                .putFragment(outState, KeyChain.getCurrentFragmentKey(), this);
+
+        super.onSaveInstanceState(outState);
 
     }
 

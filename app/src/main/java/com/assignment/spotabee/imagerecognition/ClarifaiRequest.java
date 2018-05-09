@@ -3,6 +3,7 @@ package com.assignment.spotabee.imagerecognition;
 
 import java.io.File;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,26 +56,32 @@ public class ClarifaiRequest {
 
 
     public String executRequest(){
-        String mostLikelyFlowerName = null;
-        ClarifaiResponse<List<ClarifaiOutput<Prediction>>> listClarifaiResponse;
+        try {
+            String mostLikelyFlowerName = null;
+            ClarifaiResponse<List<ClarifaiOutput<Prediction>>> listClarifaiResponse;
 
-        // Decide if request should be made with File or byte[] object
-        if(this.imageBytes == null){
-            listClarifaiResponse = requestWithFile();
+            // Decide if request should be made with File or byte[] object
+            if(this.imageBytes == null){
+                listClarifaiResponse = requestWithFile();
 
-        } else {
-            listClarifaiResponse = requestWithBytes();
+            } else {
+                listClarifaiResponse = requestWithBytes();
+            }
+
+            // Get most likely prediction from Clarifai
+            List<Prediction> predictions = listClarifaiResponse.get().get(0).data();
+            Prediction mostLikelyFlower = predictions.get(0);
+
+            // Get the name of the prediction
+            mostLikelyFlowerName = mostLikelyFlower.asConcept().name();
+            LOGGER.log(Level.SEVERE, mostLikelyFlower.asConcept().name());
+
+            return mostLikelyFlowerName;
+            // Catch in the event the API call was unsuccessful
+        } catch (NoSuchElementException e){
+           return null;
         }
 
-        // Get most likely prediction from Clarifai
-        List<Prediction> predictions = listClarifaiResponse.get().get(0).data();
-        Prediction mostLikelyFlower = predictions.get(0);
-
-        // Get the name of the prediction
-        mostLikelyFlowerName = mostLikelyFlower.asConcept().name();
-        LOGGER.log(Level.SEVERE, mostLikelyFlower.asConcept().name());
-
-        return mostLikelyFlowerName;
     }
 
     // Two versions of a method to make the image recognition request
