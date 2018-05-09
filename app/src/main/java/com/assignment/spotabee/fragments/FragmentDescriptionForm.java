@@ -1,7 +1,9 @@
 package com.assignment.spotabee.fragments;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -15,6 +17,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -179,6 +182,18 @@ public class FragmentDescriptionForm extends Fragment
             case R.id.search_location:
                 Log.d(TAG, "Search icon has been selected");
                 final ProgressDialog progress = new ProgressDialog(getContextOfApplication());
+                progress.setOnKeyListener(new Dialog.OnKeyListener() {
+
+                    @Override
+                    public boolean onKey(DialogInterface arg0, int keyCode,
+                                         KeyEvent event) {
+                        // TODO Auto-generated method stub
+                        if (keyCode == KeyEvent.KEYCODE_BACK) {
+                            progress.dismiss();
+                        }
+                        return true;
+                    }
+                });
                 progress.setTitle("Loading");
                 progress.setMessage("Searching for locations");
                 progress.setCancelable(false);

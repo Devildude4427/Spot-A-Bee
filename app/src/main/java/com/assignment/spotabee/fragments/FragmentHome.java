@@ -354,7 +354,6 @@ public class FragmentHome extends Fragment  {
             @Override
             public boolean onKey(DialogInterface arg0, int keyCode,
                                  KeyEvent event) {
-                // TODO Auto-generated method stub
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
                     progress.dismiss();
                 }
