@@ -1,15 +1,22 @@
 package com.assignment.spotabee;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.assignment.spotabee.customutils.CheckNetworkConnection;
+import com.assignment.spotabee.customutils.CustomQuickSort;
+import com.assignment.spotabee.database.AppDatabase;
+import com.assignment.spotabee.database.UserScore;
 import com.assignment.spotabee.fragments.FragmentDescriptionForm;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -17,12 +24,20 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.maps.model.LatLng;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.List;
+
+import static com.assignment.spotabee.MainActivity.getContextOfApplication;
 
 
 public class LocationHelper extends android.support.v4.app.Fragment{
@@ -44,23 +59,13 @@ public class LocationHelper extends android.support.v4.app.Fragment{
         flowerType = getArguments().getString("flowerName", null);
 
         getCurrentCoOrdinates();
+
     }
 
 
-
-
-    /**
-     * Manager for the location listener, handles it's outputs.
-     */
-    private LocationManager locationManager;
-
-    /**
-     * Checks to see if the device has moved to new locations.
-     */
-    private LocationListener locationListener;
-
     public void makeLocationRequest(){
         Log.d(TAG, "We are in makeLocationRequest()");
+
         if (ContextCompat.checkSelfPermission(context
                         .getApplicationContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -114,42 +119,6 @@ public class LocationHelper extends android.support.v4.app.Fragment{
         return mLocationRequest;
     }
 
-
-    /**
-     * Listener class to get lat and lng of the device.
-     */
-    public class MyLocationListener implements LocationListener {
-
-        /**
-         * Creates a toast when the user's device
-         * sends a coordinates.
-         *
-         * @param loc Current location of the device.
-         */
-        @Override
-        public void onLocationChanged(final Location loc) {
-            Toast.makeText(context, "Location changed : Lat: "
-                            + loc.getLatitude() + " Lng: "
-                            + loc.getLongitude(),
-                    Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onProviderDisabled(final String provider) {
-            // TODO Auto-generated method stub
-        }
-
-        @Override
-        public void onProviderEnabled(final String provider) {
-            // TODO Auto-generated method stub
-        }
-
-        @Override
-        public void onStatusChanged(final String provider,
-                                    final int status, final Bundle extras) {
-            // TODO Auto-generated method stub
-        }
-    }
 
     private class UserLocationCallback extends LocationCallback {
         @Override

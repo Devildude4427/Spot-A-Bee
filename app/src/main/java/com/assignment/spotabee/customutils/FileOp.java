@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -50,4 +51,32 @@ public class FileOp {
             }
         }
     }
+
+    @Nullable
+    public static byte[] getByteArrayFromIntentStoreData(@NonNull Context context, @NonNull Intent data) {
+        InputStream inStream = null;
+        Bitmap bitmap = null;
+        try {
+            Bundle extras = data.getExtras();
+            bitmap = (Bitmap) extras.get("data");
+            final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+
+            return outStream.toByteArray();
+        } catch (Exception e) {
+            Log.v(TAG, "Exception " + e);
+            return null;
+        } finally {
+            if (inStream != null) {
+                try {
+                    inStream.close();
+                } catch (IOException ignored) {
+                }
+            }
+            if (bitmap != null) {
+                bitmap.recycle();
+            }
+        }
+    }
 }
+
