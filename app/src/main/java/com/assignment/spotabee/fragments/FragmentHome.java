@@ -254,7 +254,10 @@ public class FragmentHome extends Fragment  {
                     .format(new Date());
             String imageFileName = "JPEG_"
                     + timeStamp + "_";
-            File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_DCIM);
+            File storageDir = new File(Environment
+                    .getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_DCIM), "Camera");
+
             image = File.createTempFile(
                     imageFileName,  /* prefix */
                     ".jpg",   /* suffix */
@@ -320,7 +323,7 @@ public class FragmentHome extends Fragment  {
             mediaScanIntent.setData(contentUri);
             getContextOfApplication().sendBroadcast(mediaScanIntent);
         } catch (Exception e) {
-            Log.v(TAG, "Exception " + e);
+            Log.e(TAG, "Exception in galleryAddPic(): " + e.getMessage());
         }
     }
 
@@ -334,9 +337,8 @@ public class FragmentHome extends Fragment  {
                 .setType("image/*"), IMAGE_GALLERY);
     }
 
-    private void handleImageIdentification( final int requestCode, final int resultCode,
-                                            final Intent data) {
-
+    private void handleImageIdentification(final Intent data) {
+        Log.d(TAG, "Have started handleImageIdentificatioin()");
             final ProgressDialog progress
                     = new ProgressDialog(getContextOfApplication());
             progress.setOnKeyListener(new Dialog.OnKeyListener() {
@@ -352,7 +354,7 @@ public class FragmentHome extends Fragment  {
             });
 
         try {
-            if (requestCode == IMAGE_GALLERY) {
+
                 progress.setTitle("Loading");
                 progress.setMessage("Identify your flower..");
                 progress.setCancelable(false);
@@ -360,6 +362,7 @@ public class FragmentHome extends Fragment  {
 
                 if (!CheckNetworkConnection.isInternetAvailable(
                         getContextOfApplication())) {
+                    Log.e(TAG, "No internet connection");
                     progress.dismiss();
                     Toast.makeText(getContextOfApplication(),
                             "Internet connection unavailable.",
@@ -367,11 +370,13 @@ public class FragmentHome extends Fragment  {
                     return;
                 }
                 client = ClarifaiClientGenerator.generate(KeyChain.getClarifaiApiKey());
+                Log.d(TAG, "Have made clarifai client");
                 final byte[] imageBytes
-                        = FileOp.getByteArrayFromIntentData(
+                        = FileOp.getByteArrayFromIntentStoreData(
                         getContextOfApplication(), data);
+                Log.e(TAG, "Have gotten image bytes");
                 if (imageBytes != null) {
-
+                    Log.e(TAG, "Image bytes aren't null");
                     AsyncTask.execute(new Runnable() {
                         @Override
                         public void run() {
@@ -387,6 +392,7 @@ public class FragmentHome extends Fragment  {
                             Bundle locationFormBundle = new Bundle();
                             locationFormBundle.putString("flowerName",
                                     flowerType);
+
 
                             locationFormBundle.putBoolean("formSelected", true);
 
@@ -404,8 +410,10 @@ public class FragmentHome extends Fragment  {
                             progress.dismiss();
                         }
                     });
+                } else {
+                    Log.e(TAG, "Image bytes are null");
+                    progress.dismiss();
                 }
-            }
         } catch (Exception e) {
             progress.dismiss();
         }
@@ -426,6 +434,8 @@ public class FragmentHome extends Fragment  {
                                  final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // Creating a progress dialogue to show the user whilst
+        // the Clarifai request is executing that can be dismissed on back press
         final ProgressDialog progress
                 = new ProgressDialog(getContextOfApplication());
         progress.setOnKeyListener(new Dialog.OnKeyListener() {
@@ -446,11 +456,13 @@ public class FragmentHome extends Fragment  {
 
         try {
             if (requestCode == IMAGE_GALLERY) {
+                // Displaying progress dialogue
                 progress.setTitle("Loading");
-                progress.setMessage("Identify your flower..");
+                progress.setMessage("Identifying your flower..");
                 progress.setCancelable(false);
                 progress.show();
 
+                // Verifying internet is available before making a Clarifai request
                 if (!CheckNetworkConnection.isInternetAvailable(
                         getContextOfApplication())) {
                     progress.dismiss();
@@ -459,12 +471,20 @@ public class FragmentHome extends Fragment  {
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                // Creating a ClarifaiClient to handle the request
                 client = ClarifaiClientGenerator.generate(KeyChain.getClarifaiApiKey());
+
+                // Creating a byte array of the image selected by the user that can be passed
+                // to a ClarifaiRequest
                 final byte[] imageBytes
                         = FileOp.getByteArrayFromIntentData(
                         getContextOfApplication(), data);
                 if (imageBytes != null) {
 
+                    // Executing Clarifai request and starting method
+                    // to take a user to the description form with their location automatically
+                    // identified and the flower species field of the form automatically filled out
                     AsyncTask.execute(new Runnable() {
                         @Override
                         public void run() {
@@ -475,25 +495,7 @@ public class FragmentHome extends Fragment  {
                             String flowerType = clarifaiRequest.executRequest();
                             Log.d(TAG, "Flower Type: " + flowerType);
 
-
-
-                            Bundle locationFormBundle = new Bundle();
-                            locationFormBundle.putString("flowerName",
-                                    flowerType);
-
-                            locationFormBundle.putBoolean("formSelected", true);
-
-                            LocationHelper locationHelper
-                                    = new LocationHelper();
-                            locationHelper.setArguments(
-                                    locationFormBundle);
-
-                            FragmentTransaction fragmentTransaction
-                                    = getFragmentManager().beginTransaction();
-                            fragmentTransaction.replace(
-                                    R.id.content_frame,
-                                    locationHelper);
-                            fragmentTransaction.commit();
+                            goToDescriptionFormWithBundle(flowerType);
                             progress.dismiss();
                         }
                     });
@@ -501,7 +503,7 @@ public class FragmentHome extends Fragment  {
             } else if (requestCode == IMAGE_CAPTURE) {
                 Log.v(TAG, "Entering Image captured");
                 galleryAddPic();
-                handleImageIdentification(requestCode, resultCode, data);
+                handleImageIdentification(data);
             }
         } catch (Exception e) {
             try {
@@ -509,15 +511,30 @@ public class FragmentHome extends Fragment  {
             } catch (Exception ex) {
                 Log.v(TAG, "Exception " + ex);
             }
-//            getActivity().getSupportFragmentManager()
-//                    .beginTransaction()
-//                    .replace(R.id.content_frame,
-//                          new FragmentDescriptionForm())
-//                    .commit();
 
             Log.v(TAG, "Exception with Activity Start " + e);
             e.printStackTrace();
         }
+    }
+
+    private void goToDescriptionFormWithBundle(String flowerName){
+        Bundle locationFormBundle = new Bundle();
+        locationFormBundle.putString("flowerName",
+                flowerName);
+
+        locationFormBundle.putBoolean("formSelected", true);
+
+        LocationHelper locationHelper
+                = new LocationHelper();
+        locationHelper.setArguments(
+                locationFormBundle);
+
+        FragmentTransaction fragmentTransaction
+                = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(
+                R.id.content_frame,
+                locationHelper);
+        fragmentTransaction.commit();
     }
 
 }
