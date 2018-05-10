@@ -97,7 +97,7 @@ public class FragmentDescriptionForm extends Fragment
                              Bundle savedInstanceState) {
         View rootView;
         // Inflate the layout for this fragment
-        if(getCurrentLocationAutomatically()){
+        if(haveRetrievedLocation()){
             rootView = inflater.inflate(R.layout.description_form_location_found, container, false);
         } else {
             rootView = inflater.inflate(R.layout.fragment_description_form, container, false);
@@ -479,7 +479,7 @@ public class FragmentDescriptionForm extends Fragment
         });
     }
 
-    public boolean getCurrentLocationAutomatically(){
+    public boolean haveRetrievedLocation(){
         boolean haveLocation;
 
         this.userLocation = new LatLng(

@@ -254,9 +254,7 @@ public class FragmentHome extends Fragment  {
                     .format(new Date());
             String imageFileName = "JPEG_"
                     + timeStamp + "_";
-            File storageDir = new File(Environment
-                    .getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_DCIM), "Camera");
+            File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_DCIM);
             image = File.createTempFile(
                     imageFileName,  /* prefix */
                     ".jpg",   /* suffix */
@@ -268,10 +266,13 @@ public class FragmentHome extends Fragment  {
             Log.v(TAG, "filepath: " + image.getAbsolutePath());
             return image;
         } catch (Exception e) {
-            Log.v(TAG, "Exception in dispatch " + e);
+            Log.e(TAG, "Exception in createImageFile(): " + e.getMessage());
+
         }
         return image;
     }
+
+
 
     /**
      * Starts the process of taking a picture and saving it.
@@ -303,7 +304,7 @@ public class FragmentHome extends Fragment  {
                 }
             }
         } catch (Exception e) {
-            Log.v(TAG, "Exception in dispatch " + e);
+            Log.e(TAG, "Exception in dispatch " + e.getMessage());
         }
     }
 
@@ -331,6 +332,84 @@ public class FragmentHome extends Fragment  {
         Log.v(TAG, "onImageGallery");
         startActivityForResult(new Intent(Intent.ACTION_PICK)
                 .setType("image/*"), IMAGE_GALLERY);
+    }
+
+    private void handleImageIdentification( final int requestCode, final int resultCode,
+                                            final Intent data) {
+
+            final ProgressDialog progress
+                    = new ProgressDialog(getContextOfApplication());
+            progress.setOnKeyListener(new Dialog.OnKeyListener() {
+
+                @Override
+                public boolean onKey(DialogInterface arg0, int keyCode,
+                                     KeyEvent event) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        progress.dismiss();
+                    }
+                    return true;
+                }
+            });
+
+        try {
+            if (requestCode == IMAGE_GALLERY) {
+                progress.setTitle("Loading");
+                progress.setMessage("Identify your flower..");
+                progress.setCancelable(false);
+                progress.show();
+
+                if (!CheckNetworkConnection.isInternetAvailable(
+                        getContextOfApplication())) {
+                    progress.dismiss();
+                    Toast.makeText(getContextOfApplication(),
+                            "Internet connection unavailable.",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                client = ClarifaiClientGenerator.generate(KeyChain.getClarifaiApiKey());
+                final byte[] imageBytes
+                        = FileOp.getByteArrayFromIntentData(
+                        getContextOfApplication(), data);
+                if (imageBytes != null) {
+
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d(TAG, "We have started run thread");
+                            ClarifaiRequest clarifaiRequest
+                                    = new ClarifaiRequest(client,
+                                    "flower_species", imageBytes);
+                            String flowerType = clarifaiRequest.executRequest();
+                            Log.d(TAG, "Flower Type: " + flowerType);
+
+
+
+                            Bundle locationFormBundle = new Bundle();
+                            locationFormBundle.putString("flowerName",
+                                    flowerType);
+
+                            locationFormBundle.putBoolean("formSelected", true);
+
+                            LocationHelper locationHelper
+                                    = new LocationHelper();
+                            locationHelper.setArguments(
+                                    locationFormBundle);
+
+                            FragmentTransaction fragmentTransaction
+                                    = getFragmentManager().beginTransaction();
+                            fragmentTransaction.replace(
+                                    R.id.content_frame,
+                                    locationHelper);
+                            fragmentTransaction.commit();
+                            progress.dismiss();
+                        }
+                    });
+                }
+            }
+        } catch (Exception e) {
+            progress.dismiss();
+        }
+
     }
 
     /**
@@ -422,6 +501,7 @@ public class FragmentHome extends Fragment  {
             } else if (requestCode == IMAGE_CAPTURE) {
                 Log.v(TAG, "Entering Image captured");
                 galleryAddPic();
+                handleImageIdentification(requestCode, resultCode, data);
             }
         } catch (Exception e) {
             try {
