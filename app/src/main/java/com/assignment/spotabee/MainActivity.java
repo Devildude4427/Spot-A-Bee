@@ -53,7 +53,7 @@ import com.ramotion.paperonboarding.listeners.PaperOnboardingOnRightOutListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
+//import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
 
 
 /**
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * The activity request code for choosing an account.
      */
-    public static final int CHOOSE_ACCOUNT = 1;
+//    public static final int CHOOSE_ACCOUNT = 1;
 
     /**
      * The activity request code for PayPal result.
@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity
                                 null, new String[]{"com.google"},
                                 null, null,
                                 null, null);
-                startActivityForResult(intent, CHOOSE_ACCOUNT);
+                startActivityForResult(intent, KeyChain.getChooseAccount());
             }
 
 
@@ -197,8 +197,7 @@ public class MainActivity extends AppCompatActivity
             DatabaseInitializer.populateAsync(db);
 
             Description description = new Description(
-                    51.4816, -3.1791,
-                    "Cardiff", "Rose", "None",
+                    51.4816, -3.1791, "Rose", "None",
                     1, "17-05-2018", "15:39");
 
             db.descriptionDao().insertDescriptions(description);
@@ -432,19 +431,19 @@ public class MainActivity extends AppCompatActivity
                                  final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
+        if (requestCode == KeyChain.getChooseAccount() && resultCode == RESULT_OK) {
             String accountName
                     = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
             Log.v(TAG, accountName);
 
-        } else if (requestCode == CHOOSE_ACCOUNT) {
+        } else if (requestCode == KeyChain.getChooseAccount()) {
             Log.v(TAG, "There was an error in the account picker");
         } else if (requestCode == Activity.RESULT_CANCELED) {
             FragmentTransaction fragmentTransaction
                     = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.content_frame, new FragmentHome());
             fragmentTransaction.commit();
-        } else if (requestCode == PAYPAL_REQUEST_CODE) {
+        } else if (requestCode == KeyChain.getPaypalRequestCode()) {
             mReturningWithResult = true;
             payPalData = data;
             payPalResultCode = resultCode;

@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.assignment.spotabee.R;
 import com.assignment.spotabee.receivers.DownloadReceiver;
-import com.assignment.spotabee.services.ScreenService;
+import com.assignment.spotabee.services.DownloadService;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
 
@@ -106,7 +106,7 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
             case R.id.downloadGuideBtn:
 //                Uri uriForPdf = Uri.parse("https://friendsoftheearth.uk/sites/default/files/downloads/bees_booklet.pdf");
 //                downloadData(uriForPdf);
-                Intent mService = new Intent(getContext(), ScreenService.class);
+                Intent mService = new Intent(getContext(), DownloadService.class);
                 mService.putExtra("download_id", 1);
                 getContext().startService(mService);
 

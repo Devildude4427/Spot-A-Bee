@@ -214,16 +214,11 @@ public class FragmentMap extends Fragment
             for (Description location:descriptions) {
                 LatLng newMarker = new LatLng(location.getLatitude(),
                         location.getLongitude());
-                if (location.getLocation() != null) {
-                    googleMap.addMarker(new MarkerOptions()
-                            .position(newMarker)
-                            .title(location.getLocation())
-                            .icon(icon));
-                } else {
+
                     googleMap.addMarker(new MarkerOptions()
                             .position(newMarker)
                             .icon(icon));
-                }
+                    
                 allMarkers.add(newMarker);
             }
             // Builder calculates the area of the fragment_map_outdated

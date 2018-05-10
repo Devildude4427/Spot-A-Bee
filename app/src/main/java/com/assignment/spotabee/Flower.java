@@ -15,13 +15,11 @@ public class Flower {
     private int numOfBees;
     private double latitude;
     private double longitude;
-    private String location;
     private String description;
 
     public Flower(String species, String date,
                   String time, int numOfBees,
-                  double latitude, double longitude,
-                  String location, String description) throws ObsceneNumberException{
+                  double latitude, double longitude,String description) throws ObsceneNumberException{
         if(numOfBees > 50){
             throw new ObsceneNumberException("That is an obscene number of bees to be spotted" +
                     "on one bunch of flowers! Please enter a number less than pr equal to 50.");
@@ -32,7 +30,6 @@ public class Flower {
         this.numOfBees = numOfBees;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.location = location;
         this.description = description;
     }
 
@@ -87,14 +84,6 @@ public class Flower {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public String getDescription() {

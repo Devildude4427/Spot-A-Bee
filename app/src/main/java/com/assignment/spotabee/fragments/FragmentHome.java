@@ -29,6 +29,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.assignment.spotabee.BuildConfig;
+import com.assignment.spotabee.KeyChain;
+import com.assignment.spotabee.LocationHelper;
 import com.assignment.spotabee.MainActivity;
 import com.assignment.spotabee.customutils.CheckNetworkConnection;
 import com.assignment.spotabee.customutils.FileOp;
@@ -87,10 +89,6 @@ public class FragmentHome extends Fragment  {
      */
     private AppDatabase db;
 
-    /**
-     * API key for use with Clarifai.
-     */
-    private static final String API_KEY = "d984d2d494394104bb4bee0b8149523d";
 
     /**
      * Instance of a ClarifaiClient. Necessary in order to compare images
@@ -198,8 +196,10 @@ public class FragmentHome extends Fragment  {
                 //creating fragment object
                 Fragment fragment = null;
 
-                //initializing the fragment object which is selected
-                fragment = new FragmentDescriptionForm();
+                Bundle locationArgs = new Bundle();
+                locationArgs.putBoolean("formSelected", true);
+                fragment = new LocationHelper();
+                fragment.setArguments(locationArgs);
 
                 //replacing the fragment
                 FragmentTransaction ft = getActivity()
@@ -380,7 +380,7 @@ public class FragmentHome extends Fragment  {
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
-                client = ClarifaiClientGenerator.generate(API_KEY);
+                client = ClarifaiClientGenerator.generate(KeyChain.getClarifaiApiKey());
                 final byte[] imageBytes
                         = FileOp.getByteArrayFromIntentData(
                         getContextOfApplication(), data);

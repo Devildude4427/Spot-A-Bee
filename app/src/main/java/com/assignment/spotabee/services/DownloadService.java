@@ -24,7 +24,7 @@ import com.assignment.spotabee.receivers.DownloadReceiver;
 // * (Download Manager tutorial) Reference: https://www.codeproject.com/Articles/1112730/Android-Download-Manager-Tutorial-How-to-Download
 // */
 
-public class ScreenService extends Service {
+public class DownloadService extends Service {
     //Constants used for foreground notification
     public static final String SERVICE_CHANNEL_ID = "com.assignment.spotabee.service";
     private static final int SERVICE_NOTIFICATION_ID = 900;
@@ -35,7 +35,7 @@ public class ScreenService extends Service {
     private DownloadManager downloadManager;
 
     //Empty constructor
-    public ScreenService() {
+    public DownloadService() {
     }
 
     @Override
