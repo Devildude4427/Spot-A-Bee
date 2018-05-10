@@ -218,7 +218,7 @@ public class FragmentMap extends Fragment
                     googleMap.addMarker(new MarkerOptions()
                             .position(newMarker)
                             .icon(icon));
-                    
+
                 allMarkers.add(newMarker);
             }
             // Builder calculates the area of the fragment_map_outdated

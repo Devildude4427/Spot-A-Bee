@@ -9,6 +9,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import com.assignment.spotabee.customutils.CheckNetworkConnection;
 import com.assignment.spotabee.fragments.FragmentDescriptionForm;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -31,6 +32,7 @@ public class LocationHelper extends android.support.v4.app.Fragment{
     private LocationResult locationResult;
     private static final String TAG = "Location Helper";
     private boolean haveSelectedForm;
+    private String flowerType;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,6 +41,7 @@ public class LocationHelper extends android.support.v4.app.Fragment{
         this.mFusedLocationClient = new FusedLocationProviderClient(context);
 
         haveSelectedForm = getArguments().getBoolean("formSelected");
+        flowerType = getArguments().getString("flowerName", null);
 
         getCurrentCoOrdinates();
     }
@@ -67,11 +70,13 @@ public class LocationHelper extends android.support.v4.app.Fragment{
             if (locationCallback == null)
                 locationCallback = new UserLocationCallback();
             Log.d(TAG, "Have created location callback");
-            this.mFusedLocationClient.requestLocationUpdates(
-                    createSingleLocationRequest(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY),
-                    locationCallback,
-                    null);
-            Log.d(TAG, "Have requested single update");
+            if(CheckNetworkConnection.isInternetAvailable(getActivity())){
+                this.mFusedLocationClient.requestLocationUpdates(
+                        createSingleLocationRequest(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY),
+                        locationCallback,
+                        null);
+                Log.d(TAG, "Have requested single update");
+            }
 
         } else {
 
@@ -159,6 +164,10 @@ public class LocationHelper extends android.support.v4.app.Fragment{
                 Bundle formArgs = new Bundle();
                 formArgs.putDouble("latitude", locationResult.getLastLocation().getLatitude());
                 formArgs.putDouble("longitude", locationResult.getLastLocation().getLongitude());
+
+                if(flowerType != null){
+                    formArgs.putString("flowerName", flowerType);
+                }
 
                 FragmentDescriptionForm descriptionForm = new FragmentDescriptionForm();
                 descriptionForm.setArguments(formArgs);

@@ -396,20 +396,24 @@ public class FragmentHome extends Fragment  {
                             String flowerType = clarifaiRequest.executRequest();
                             Log.d(TAG, "Flower Type: " + flowerType);
 
-                            Bundle descriptionFormBundle = new Bundle();
-                            descriptionFormBundle.putString("flowerName",
+
+
+                            Bundle locationFormBundle = new Bundle();
+                            locationFormBundle.putString("flowerName",
                                     flowerType);
 
-                            FragmentDescriptionForm fragmentDescriptionForm
-                                    = new FragmentDescriptionForm();
-                            fragmentDescriptionForm.setArguments(
-                                    descriptionFormBundle);
+                            locationFormBundle.putBoolean("formSelected", true);
+
+                            LocationHelper locationHelper
+                                    = new LocationHelper();
+                            locationHelper.setArguments(
+                                    locationFormBundle);
 
                             FragmentTransaction fragmentTransaction
                                     = getFragmentManager().beginTransaction();
                             fragmentTransaction.replace(
                                     R.id.content_frame,
-                                    fragmentDescriptionForm);
+                                    locationHelper);
                             fragmentTransaction.commit();
                             progress.dismiss();
                         }
