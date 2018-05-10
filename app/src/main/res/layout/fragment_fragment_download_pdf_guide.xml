@@ -14,10 +14,9 @@
             android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/download_pdf_bee"
-            android:layout_alignParentEnd="true"
-            android:layout_marginBottom="14dp"
-            android:layout_marginEnd="6dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="59dp"
             android:src="@drawable/ic_bee_flying" />
 
         <ImageView
@@ -52,14 +51,17 @@
             android:id="@+id/guideTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp"
-            android:padding="2dp"
+            android:layout_marginTop="18dp"
+            android:padding="5dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
             android:text="@string/help_the_bees_more"
             android:textAllCaps="false"
             android:textSize="@dimen/deafult_medium_text_size" />
+
+
     </RelativeLayout>
 
 </FrameLayout>
