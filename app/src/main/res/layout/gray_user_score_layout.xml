@@ -7,35 +7,39 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/userNameContainer"
-        android:translationZ="@dimen/default_translationz"
-        android:elevation="@dimen/default_elevation"
+        android:background="@android:drawable/dialog_holo_light_frame"
+        android:layout_width="match_parent"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
-        android:background="@drawable/grey_text_input_background"
-        android:layout_width="match_parent"
         android:layout_marginRight="15dp"
         android:layout_marginLeft="@dimen/default_text_view_margin"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/user_name"
-            android:textSize="@dimen/deafult_medium_text_size"
-            android:padding="10dp"
-            android:textStyle="bold"
-            android:layout_marginBottom="5dp"
+        <RelativeLayout
+            android:id="@+id/userNameContainer"
+            android:background="@drawable/grey_text_input_background"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/user_score"
-            android:layout_width="match_parent"
-            android:layout_below="@+id/user_name"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:padding="10dp"
-            android:textSize="@dimen/deafult_medium_text_size" />
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/user_name"
+                android:textSize="@dimen/deafult_medium_text_size"
+                android:padding="10dp"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/user_score"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/user_name"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:padding="10dp"
+                android:textSize="@dimen/deafult_medium_text_size" />
+
+        </RelativeLayout>
     </RelativeLayout>
 
 

@@ -23,29 +23,36 @@
             android:id="@+id/download_pdf_bee"
             android:layout_width="240dp"
             android:layout_height="240dp"
-            android:layout_above="@+id/downloadGuideBtn"
-            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/relativeLayout"
+            android:layout_alignStart="@+id/guideTitle"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="47dp"
+            android:layout_marginBottom="17dp"
+            android:layout_marginStart="46dp"
             android:gravity="center_horizontal"
             android:src="@drawable/bee_2" />
 
-
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/downloadGuideBtn"
-            android:layout_width="150dp"
-            android:layout_height="60dp"
-            android:background="@drawable/button_background"
-            android:textColor="@color/button_text_color"
+        <RelativeLayout
+            android:background="@android:drawable/dialog_holo_light_frame"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="40dp"
-            android:elevation="@dimen/default_elevation"
-            android:text="@string/download_guide"
-            android:textAllCaps="false"
-            android:textSize="@dimen/default_small_text_size"
-            android:translationZ="@dimen/default_translationz" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/relativeLayout">
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/downloadGuideBtn"
+                android:layout_width="150dp"
+                android:layout_height="60dp"
+                android:background="@drawable/button_background"
+                android:textColor="@color/button_text_color"
+
+                android:text="@string/download_guide"
+                android:textAllCaps="false"
+                android:textSize="@dimen/default_small_text_size" />
+        </RelativeLayout>
+
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/guideTitle"
