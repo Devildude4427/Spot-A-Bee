@@ -9,7 +9,7 @@ import android.content.Context;
 /**
  * Starts or retrieves the database.
  */
-@Database(entities = {Description.class, UserScore.class}, version = 5, exportSchema = false)
+@Database(entities = {Description.class, UserScore.class}, version = 6, exportSchema = false)
 
 public abstract class AppDatabase extends RoomDatabase {
 

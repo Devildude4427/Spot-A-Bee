@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.assignment.spotabee.Config.Config;
+import com.assignment.spotabee.KeyChain;
 import com.assignment.spotabee.R;
 
 import android.content.Intent;
@@ -28,7 +29,7 @@ import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
 import java.math.BigDecimal;
 
-import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
+//import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
 
 /**
  * Donation Login fragment. Controls all content that goes
@@ -136,7 +137,7 @@ public class DonationLogin extends Fragment
     private static PayPalConfiguration config = new PayPalConfiguration()
             .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
             //Using Sandbox as it is a mock payment
-            .clientId(Config.PAYPAL_CLIENT_ID);
+            .clientId(KeyChain.getPaypalClientId());
 
     /**
      * On button click, starts the transaction.
@@ -166,7 +167,7 @@ public class DonationLogin extends Fragment
             Intent intent = new Intent(getActivity(), PaymentActivity.class);
             intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
             intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payPalPayment);
-            getActivity().startActivityForResult(intent, PAYPAL_REQUEST_CODE);
+            getActivity().startActivityForResult(intent, KeyChain.getPaypalRequestCode());
         } catch (NumberFormatException e) {
             Toast.makeText(getActivity(),
                     R.string.error_toast_message_pay_pal,
@@ -205,7 +206,7 @@ public class DonationLogin extends Fragment
             // This main initialization call takes your Context,
             // AppID, and target server
             pp = PayPal.initWithAppID(getActivity(),
-                    Config.PAYPAL_CLIENT_ID, PayPal.ENV_NONE);
+                    KeyChain.getPaypalClientId(), PayPal.ENV_NONE);
             pp.setLanguage("en_US");
 
             // Sets who pays any transaction fees. Value is:

@@ -1,12 +1,17 @@
 package com.assignment.spotabee.fragments;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,6 +19,7 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.util.Log;
@@ -31,6 +37,7 @@ import android.widget.Toast;
 
 import com.assignment.spotabee.Flower;
 import com.assignment.spotabee.KeyChain;
+import com.assignment.spotabee.LocationHelper;
 import com.assignment.spotabee.R;
 import com.assignment.spotabee.customexceptions.ObsceneNumberException;
 import com.assignment.spotabee.customutils.CheckNetworkConnection;
@@ -74,6 +81,7 @@ public class FragmentDescriptionForm extends Fragment
     private static final String TAG = "Description_form_debug";
     private final static String imageIdentifyUrl = "https://www.imageidentify.com/";
     private String flowerIdentification;
+    private RelativeLayout searchHolder;
 
 
 
@@ -87,28 +95,49 @@ public class FragmentDescriptionForm extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View rootView;
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_description_form, container, false);
+        if(getCurrentLocationAutomatically()){
+            rootView = inflater.inflate(R.layout.description_form_location_found, container, false);
+        } else {
+            rootView = inflater.inflate(R.layout.fragment_description_form, container, false);
+            addressSpinner = (Spinner) rootView.findViewById(R.id.addressSpinner);
+            addressSpinner.setVisibility(View.VISIBLE);
 
-        ImageView search = rootView.findViewById(R.id.search_location);
-        search.setOnClickListener(this);
+            ImageView search = rootView.findViewById(R.id.search_location);
+            search.setOnClickListener(this);
+
+            searchHolder = rootView.findViewById(R.id.location_n_search);
+
+            location = rootView.findViewById(R.id.locationField);
+
+            addressSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    location.setText(parent.getItemAtPosition(position).toString());
+                    setCoordinatesToStore(parent, position);
+
+                }
+
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+        }
 
 
-        addressSpinner = (Spinner) rootView.findViewById(R.id.addressSpinner);
-        addressSpinner.setVisibility(View.VISIBLE);
+
 
         flower = rootView.findViewById(R.id.flowerField);
         if(flowerIdentification != null){
             flower.setText(flowerIdentification);
         }
 
-        location = rootView.findViewById(R.id.locationField);
         description = rootView.findViewById(R.id.descriptionField);
         numberOfBeesField = rootView.findViewById(R.id.numOfBees);
 
         submit = rootView.findViewById(R.id.submit);
         flowerIdentify = rootView.findViewById(R.id.flowerIdentify);
         flowerSearch = rootView.findViewById(R.id.flower_search);
+
 
         flowerSearch.setOnClickListener(this);
         submit.setOnClickListener(this);
@@ -118,20 +147,12 @@ public class FragmentDescriptionForm extends Fragment
 
         context = getActivity();
 
-        userLocation = null;
         geocoder = new Geocoder(context.getApplicationContext());
 
 
-        addressSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                location.setText(parent.getItemAtPosition(position).toString());
-                setCoordinatesToStore(parent, position);
 
-            }
 
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+
 
 
         return rootView;
@@ -230,7 +251,6 @@ public class FragmentDescriptionForm extends Fragment
                     Integer.parseInt(numberOfBeesField.getText().toString()),
                     userLocation.latitude,
                     userLocation.longitude,
-                    location.getText().toString(),
                     description.getText().toString()
 
             );
@@ -330,7 +350,6 @@ public class FragmentDescriptionForm extends Fragment
                             .insertDescriptions(new Description(
                                     flowerDescription.getLatitude(),
                                     flowerDescription.getLongitude(),
-                                    flowerDescription.getLocation(),
                                     flowerDescription.getSpecies(),
                                     flowerDescription.getDescription(),
                                     flowerDescription.getNumOfBees(),
@@ -460,5 +479,24 @@ public class FragmentDescriptionForm extends Fragment
         });
     }
 
+    public boolean getCurrentLocationAutomatically(){
+        boolean haveLocation;
+
+        this.userLocation = new LatLng(
+                getArguments().getDouble("latitude"),
+                getArguments().getDouble("longitude"));
+
+        if(userLocation.longitude != 0 && userLocation.latitude != 0 && this.userLocation != null){
+            Toast.makeText(getActivity(), "We found your location", Toast.LENGTH_LONG).show();
+            haveLocation = true;
+        } else {
+            Toast.makeText(getActivity(),
+                    "We couldn't find your location. Please edit your location permissions or use the search bar",
+                    Toast.LENGTH_LONG).show();
+            haveLocation = false;
+        }
+
+        return haveLocation;
+    }
 
 }
