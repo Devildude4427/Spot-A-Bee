@@ -177,7 +177,7 @@ public class FragmentHome extends Fragment  {
                                 .getLongitude();
                         Log.v(TAG, "Lat: " + lat + "Lng: " + lng);
 
-                        db.descriptionDao()
+                        db.databasenDao()
                                 .insertDescriptions(new Description(
                                         lat,
                                         lng)
@@ -339,7 +339,7 @@ public class FragmentHome extends Fragment  {
     }
 
     private void handleImageIdentification(final Intent data) {
-        Log.d(TAG, "Have started handleImageIdentificatioin()");
+        Log.d(TAG, "Have started handleImageIdentification()");
             final ProgressDialog progress
                     = new ProgressDialog(getContextOfApplication());
             progress.setOnKeyListener(new Dialog.OnKeyListener() {

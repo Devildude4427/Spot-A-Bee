@@ -189,8 +189,8 @@ public class MainActivity extends AppCompatActivity
 
             //This clears out the database, and is called every time!
             // Remove if you need persistence!
-            db.descriptionDao().nukeTable();
-            db.descriptionDao().nukeUserScores();
+            db.databasenDao().nukeTable();
+            db.databasenDao().nukeUserScores();
             //This clears out the database, and is called every time!
             // Remove if you need persistence!
 
@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity
                     51.4816, -3.1791, "Rose", "None",
                     1, "17-05-2018", "15:39");
 
-            db.descriptionDao().insertDescriptions(description);
+            db.databasenDao().insertDescriptions(description);
 
 
             DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);

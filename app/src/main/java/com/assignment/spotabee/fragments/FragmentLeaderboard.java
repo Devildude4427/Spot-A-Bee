@@ -55,7 +55,7 @@ public class FragmentLeaderboard extends Fragment {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                List<UserScore> userScores = db.descriptionDao().getAllUserScores();
+                List<UserScore> userScores = db.databasenDao().getAllUserScores();
 
                 CustomQuickSort cqs = new CustomQuickSort();
                 cqs.sort(userScores, 0, userScores.size()-1);

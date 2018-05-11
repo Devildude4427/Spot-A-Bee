@@ -49,7 +49,7 @@ public class FragmentHowTo extends Fragment {
         //change R.layout.yourlayoutfilename for each of your fragments
 
         AppDatabase db = AppDatabase.getAppDatabase(getContext());
-        List<Description> allDescriptions = db.descriptionDao()
+        List<Description> allDescriptions = db.databasenDao()
                 .getAllDescriptions();
 
         for (Description item:allDescriptions) {

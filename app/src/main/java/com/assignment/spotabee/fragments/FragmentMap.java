@@ -102,7 +102,7 @@ public class FragmentMap extends Fragment
                 container, false);
 
         AppDatabase db = AppDatabase.getAppDatabase(getContext());
-        allDescriptions = db.descriptionDao()
+        allDescriptions = db.databasenDao()
                 .getAllDescriptions();
 
         locationManager = (LocationManager)

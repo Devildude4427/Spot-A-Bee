@@ -337,7 +337,7 @@ public class FragmentDescriptionForm extends Fragment
             public void run() {
 
                 try {
-                    db.descriptionDao()
+                    db.databasenDao()
                             .insertDescriptions(new Description(
                                     flowerDescription.getLatitude(),
                                     flowerDescription.getLongitude(),
@@ -348,7 +348,7 @@ public class FragmentDescriptionForm extends Fragment
                                     flowerDescription.getTime()));
 
 
-                    List<Description> allDescriptions = db.descriptionDao()
+                    List<Description> allDescriptions = db.databasenDao()
                             .getAllDescriptions();
 
                     for (Description description : allDescriptions) {
@@ -413,7 +413,7 @@ public class FragmentDescriptionForm extends Fragment
     }
 
     public boolean userScoreExists(String name){
-        if(db.descriptionDao().getUserScoreByName(name) == null){
+        if(db.databasenDao().getUserScoreByName(name) == null){
             return false;
         }
         else {
@@ -434,17 +434,17 @@ public class FragmentDescriptionForm extends Fragment
                     String currentUserAccountName = "Test User";
 
                     if(userScoreExists(currentUserAccountName)){
-                        UserScore userScore = db.descriptionDao().getUserScoreByName(currentUserAccountName);
+                        UserScore userScore = db.databasenDao().getUserScoreByName(currentUserAccountName);
                         userScore.setScore(userScore.getScore() + 1);
-                        db.descriptionDao().updateUserScore(userScore);
+                        db.databasenDao().updateUserScore(userScore);
                     } else {
                         UserScore newUserScore = new UserScore(currentUserAccountName,  1);
-                        db.descriptionDao().insertUserScore(newUserScore);
+                        db.databasenDao().insertUserScore(newUserScore);
                     }
 
 
 
-                    List<UserScore> allUserScores = db.descriptionDao()
+                    List<UserScore> allUserScores = db.databasenDao()
                             .getAllUserScores();
 
                     for (UserScore userScore : allUserScores) {
@@ -490,7 +490,6 @@ public class FragmentDescriptionForm extends Fragment
         } catch (NullPointerException e){
 
         }
-
 
         return haveLocation;
     }

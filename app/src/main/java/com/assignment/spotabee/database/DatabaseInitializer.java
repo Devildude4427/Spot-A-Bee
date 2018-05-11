@@ -50,7 +50,7 @@ public class DatabaseInitializer {
      */
     public static Description addDescription(final AppDatabase db,
                                              final Description description) {
-        db.descriptionDao().insertDescriptions(description);
+        db.databasenDao().insertDescriptions(description);
         return description;
     }
 
@@ -70,7 +70,7 @@ public class DatabaseInitializer {
                 dateTime.getCurrentTime());
         addDescription(db, description);
 
-        List<Description> descriptionList = db.descriptionDao()
+        List<Description> descriptionList = db.databasenDao()
                 .getAllDescriptions();
         Log.d(DatabaseInitializer.TAG, "Rows Count: " + descriptionList.size());
         for (Description d : descriptionList) {
@@ -120,7 +120,7 @@ public class DatabaseInitializer {
         UserScore userScore;
         for (int i = 0; i <testUsers.size(); i++){
             userScore = new UserScore(testUsers.get(i), i+i);
-            db.descriptionDao().insertUserScore(userScore);
+            db.databasenDao().insertUserScore(userScore);
         }
     }
 
