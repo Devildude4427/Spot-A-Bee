@@ -61,7 +61,7 @@ public class FragmentAfterSubmission extends Fragment {
     }
 
     public void checkForNotifications(){
-        int currentNumOfSubmissions = db.descriptionDao().getAllDescriptions().size();
+        int currentNumOfSubmissions = db.databasenDao().getAllDescriptions().size();
 
         // Since there's no backend data to pull from, I've mocked this using the number of
         // submissions held in the database

@@ -23,7 +23,7 @@ public abstract class AppDatabase extends RoomDatabase {
      *
      * @return the DescriptionDAO.
      */
-    public abstract DescriptionDao descriptionDao();
+    public abstract DatabaseDao databasenDao();
 
     /**
      * Creates a new instance of the database if one
