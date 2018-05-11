@@ -14,7 +14,7 @@ import okhttp3.OkHttpClient;
  * image recognition requests
  */
 
-public class ClarifaiClientGenerator {
+public abstract class ClarifaiClientGenerator {
     private static final Logger LOGGER = Logger.getLogger( ClarifaiClientGenerator.class.getName());
 
     /**

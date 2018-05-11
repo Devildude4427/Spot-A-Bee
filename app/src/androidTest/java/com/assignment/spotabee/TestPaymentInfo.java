@@ -1,6 +1,7 @@
 package com.assignment.spotabee;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.test.rule.ActivityTestRule;
 
@@ -34,50 +35,67 @@ import static org.mockito.Mockito.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import android.content.SharedPreferences;
 
 import com.assignment.spotabee.fragments.PaymentInfo;
 
-//public class TestPaymentInfo {
-//
-//    private final String AMOUNT_TO_DISPLAY = "123";
-//
-//    @Mock
-//    SharedPreferences mMockSharedPreferences;
-//
-//    @Mock
-//    SharedPreferences.Editor mMockEditor;
-//
-//
-//    @Rule
-//    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
-//
-//
-//    @Mock
-//    Context mMockContext;
-//
-//
-//    @Before
-//    public void initialise(){
+public class TestPaymentInfo {
+
+    private final String AMOUNT_TO_DISPLAY = "123";
+
+    @Mock
+    SharedPreferences mMockSharedPreferences;
+
+
+
+
+
+
+    @Rule
+    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+
+
+    @Mock
+    Context mMockContext;
+
+
+
+    @Before
+    public void initialise(){
 //        mMockContext = mock(MainActivity.class);
+        mActivityTestRule.launchActivity(new Intent());
+
+        this.mMockSharedPreferences = Mockito.mock(SharedPreferences.class);
+        this.mMockContext = Mockito.mock(Context.class);
+        Mockito.when(mMockContext.getSharedPreferences(anyString(), anyInt())).thenReturn(mMockSharedPreferences);
+
+
+//
 //        mMockSharedPreferences = mMockContext.getSharedPreferences("pref", Context.MODE_PRIVATE);
-//
-//        mActivityTestRule.getActivity()
-//                .getSupportFragmentManager()
-//                .beginTransaction()
-//                .replace(R.id.content_frame, new PaymentInfo())
-//                .commit();
-//
+//        mMockSharedPreferences.edit().putString("amount_payed", AMOUNT_TO_DISPLAY).apply();
+
+        mActivityTestRule.getActivity()
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content_frame, new PaymentInfo())
+                .commit();
+
+
+//        mMockSharedPreferences.edit().putString("amount_payed", AMOUNT_TO_DISPLAY);
 //        when(mMockSharedPreferences.getString("amount_payed", null))
 //                .thenReturn(AMOUNT_TO_DISPLAY);
-//
-//    }
-//
-//    @Test
-//    public void testUIsetUp(){
-//        onView(withId(R.id.txtAmount))
-//                .check(matches(isDisplayed()))
-//                .check(matches(withText(AMOUNT_TO_DISPLAY)));
-//    }
-//}
+
+    }
+
+    @Test
+    public void testUIsetUp(){
+        Mockito.when(mMockSharedPreferences.getString(anyString(), anyString())).thenReturn(AMOUNT_TO_DISPLAY);
+
+
+        onView(withId(R.id.txtAmount))
+                .check(matches(isDisplayed()))
+                .check(matches(withText(AMOUNT_TO_DISPLAY)));
+    }
+}
