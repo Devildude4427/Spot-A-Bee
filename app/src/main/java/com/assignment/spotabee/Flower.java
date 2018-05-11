@@ -1,6 +1,16 @@
 package com.assignment.spotabee;
 
+import android.content.Context;
+import android.os.AsyncTask;
+import android.os.Looper;
+import android.util.Log;
+import android.widget.Toast;
+
 import com.assignment.spotabee.customexceptions.ObsceneNumberException;
+import com.assignment.spotabee.database.AppDatabase;
+import com.assignment.spotabee.database.Description;
+
+import java.util.List;
 
 /**
  * Model containing all data about a flower submission.
@@ -17,12 +27,18 @@ public class Flower {
     private double longitude;
     private String description;
 
+    private AppDatabase db;
+
+    private static final String OBSCENE_NUMBER_MESSAGE = "That is an obscene number of bees to be spotted\n" +
+            "on one bunch of flowers! Please enter a number less than pr equal to 50.";
+    private static final String TAG = "Flower debug";
+
     public Flower(String species, String date,
                   String time, int numOfBees,
-                  double latitude, double longitude,String description) throws ObsceneNumberException{
+                  double latitude, double longitude,String description,
+                  Context context) throws ObsceneNumberException{
         if(numOfBees > 50){
-            throw new ObsceneNumberException("That is an obscene number of bees to be spotted" +
-                    "on one bunch of flowers! Please enter a number less than pr equal to 50.");
+            throw new ObsceneNumberException(OBSCENE_NUMBER_MESSAGE);
         }
         this.species = species;
         this.date = date;
@@ -31,6 +47,8 @@ public class Flower {
         this.latitude = latitude;
         this.longitude = longitude;
         this.description = description;
+
+        db = AppDatabase.getAppDatabase(context);
     }
 
     public String getSpecies() {
@@ -65,8 +83,7 @@ public class Flower {
         if (numOfBees <= 50){
             this.numOfBees = numOfBees;
         } else {
-            throw new ObsceneNumberException("That is an obscene number of bees to be spotted" +
-                    "on one bunch of flowers! Please enter a number less than pr equal to 50.");
+            throw new ObsceneNumberException(OBSCENE_NUMBER_MESSAGE);
         }
     }
 
@@ -92,5 +109,49 @@ public class Flower {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void commitDataToDB(final Context context) {
+        Log.d(TAG, "We are in commitFormToDB");
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    db.databasenDao()
+                            .insertDescriptions(new Description(
+                                    getLatitude(),
+                                    getLongitude(),
+                                    getSpecies(),
+                                    getDescription(),
+                                    getNumOfBees(),
+                                    getDate(),
+                                    getTime()));
+
+
+                    List<Description> allDescriptions = db.databasenDao()
+                            .getAllDescriptions();
+
+                    for (Description description : allDescriptions) {
+                        Log.d(TAG, description.getFlowerType().toString());
+                        Log.d(TAG, description.getLatitude().toString());
+                        Log.d(TAG, description.getLongitude().toString());
+                        Log.d(TAG, "Number Of BEES: " + description.getNumOfBees());
+                        Log.d(TAG, description.getFurtherDetails().toString());
+                        Log.d(TAG, description.getDate().toString());
+                        Log.d(TAG, description.getTime().toString());
+                    }
+
+
+                } catch (Exception e) {
+                    Looper.prepare();
+                    Toast.makeText(context,
+                            "Sorry. An error occurred. We can't save your information right now...",
+                            Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error: " + e.getMessage());
+                }
+
+            }
+        });
     }
 }
