@@ -34,10 +34,9 @@ public class FileClarifaiRequest extends ClarifaiRequest {
     @Override
     public String execute() {
         try {
-            ClarifaiResponse<List<ClarifaiOutput<Prediction>>> listClarifaiResponse;
-
             // Retrieve a list of ordered predictions
-            listClarifaiResponse = client.predict(modelId)
+            ClarifaiResponse<List<ClarifaiOutput<Prediction>>> listClarifaiResponse
+                    = client.predict(modelId)
                     .withInputs(
                             ClarifaiInput.forImage(imageFile)
                     )

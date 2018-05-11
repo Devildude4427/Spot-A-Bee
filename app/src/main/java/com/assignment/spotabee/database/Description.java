@@ -231,7 +231,7 @@ public class Description {
     /**
      * Gets the time field.
      *
-     * @return Time of database entry.
+     * @return DateTime of database entry.
      */
     public String getTime() {
         return time;
@@ -240,7 +240,7 @@ public class Description {
     /**
      * Sets the time field.
      *
-     * @param time Time the bee was seen.
+     * @param time DateTime the bee was seen.
      */
     public void setTime(final String time) {
         this.time = time;

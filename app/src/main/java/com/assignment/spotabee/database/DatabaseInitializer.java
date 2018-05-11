@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.assignment.spotabee.customutils.Time;
+import com.assignment.spotabee.customutils.DateTime;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -62,12 +62,12 @@ public class DatabaseInitializer {
      */
     private static void populateWithTestData(final AppDatabase db) {
 
-        Date testDate = new Date();
+        DateTime dateTime = new DateTime();
 
         Description description = new Description(53.3094,
                 -4.6330, "A daffodil or something",
-                "None", 2, Time.getTodaysDate(testDate),
-                Time.getCurrentTime(testDate));
+                "None", 2, dateTime.getTodaysDate(),
+                dateTime.getCurrentTime());
         addDescription(db, description);
 
         List<Description> descriptionList = db.descriptionDao()

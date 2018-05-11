@@ -1,17 +1,12 @@
 package com.assignment.spotabee.fragments;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,7 +14,6 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.util.Log;
@@ -29,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -37,11 +30,9 @@ import android.widget.Toast;
 
 import com.assignment.spotabee.Flower;
 import com.assignment.spotabee.KeyChain;
-import com.assignment.spotabee.LocationHelper;
 import com.assignment.spotabee.R;
 import com.assignment.spotabee.customexceptions.ObsceneNumberException;
-import com.assignment.spotabee.customutils.CheckNetworkConnection;
-import com.assignment.spotabee.customutils.Time;
+import com.assignment.spotabee.customutils.DateTime;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
 import com.assignment.spotabee.database.UserScore;
@@ -242,12 +233,12 @@ public class FragmentDescriptionForm extends Fragment
     }
 
     private void createFlower(){
-        Date todaysDate = new Date();
+        DateTime dateTime = new DateTime();
         try {
             Flower newFlower = new Flower(
                     flower.getText().toString(),
-                    Time.getTodaysDate(todaysDate),
-                    Time.getCurrentTime(todaysDate),
+                    dateTime.getTodaysDate(),
+                    dateTime.getCurrentTime(),
                     Integer.parseInt(numberOfBeesField.getText().toString()),
                     userLocation.latitude,
                     userLocation.longitude,
