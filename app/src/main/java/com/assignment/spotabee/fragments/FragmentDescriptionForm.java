@@ -242,16 +242,18 @@ public class FragmentDescriptionForm extends Fragment
                     Integer.parseInt(numberOfBeesField.getText().toString()),
                     userLocation.latitude,
                     userLocation.longitude,
-                    description.getText().toString()
+                    description.getText().toString(),
+                    getActivity());
 
-            );
+                    newFlower.commitDataToDB(getContext());
+                    updateUserScore();
 
-            commitFormDataToDB(newFlower);
-            updateUserScore();
-            getActivity().getSupportFragmentManager()
+                    getActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.content_frame, new FragmentAfterSubmission())
                     .commit();
+
+
 
         } catch (ObsceneNumberException e){
             Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
@@ -327,52 +329,8 @@ public class FragmentDescriptionForm extends Fragment
     }
 
 
-    /**
-     * Takes information from EditText fields and commits them to the database
-     */
-    private void commitFormDataToDB(final Flower flowerDescription) {
-        Log.d(TAG, "We are in commitFormToDB");
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-
-                try {
-                    db.databasenDao()
-                            .insertDescriptions(new Description(
-                                    flowerDescription.getLatitude(),
-                                    flowerDescription.getLongitude(),
-                                    flowerDescription.getSpecies(),
-                                    flowerDescription.getDescription(),
-                                    flowerDescription.getNumOfBees(),
-                                    flowerDescription.getDate(),
-                                    flowerDescription.getTime()));
 
 
-                    List<Description> allDescriptions = db.databasenDao()
-                            .getAllDescriptions();
-
-                    for (Description description : allDescriptions) {
-                        Log.d(TAG, description.getFlowerType().toString());
-                        Log.d(TAG, description.getLatitude().toString());
-                        Log.d(TAG, description.getLongitude().toString());
-                        Log.d(TAG, "Number Of BEES: " + description.getNumOfBees());
-                        Log.d(TAG, description.getFurtherDetails().toString());
-                        Log.d(TAG, description.getDate().toString());
-                        Log.d(TAG, description.getTime().toString());
-                    }
-
-
-                } catch (Exception e) {
-                    Looper.prepare();
-                    Toast.makeText(context,
-                            "Sorry. An error occurred. We can't save your information right now...",
-                            Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Error: " + e.getMessage());
-                }
-
-            }
-        });
-    }
 
     /**
      * @param parent AdapterView that the address object returned is selected from
