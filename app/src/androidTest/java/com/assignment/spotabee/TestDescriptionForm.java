@@ -254,8 +254,6 @@ public class TestDescriptionForm {
                 .perform(click());
 
 
-        onView(withId(R.id.search_location))
-                .perform(click());
 
         onView(withId(R.id.flowerField))
                 .perform(

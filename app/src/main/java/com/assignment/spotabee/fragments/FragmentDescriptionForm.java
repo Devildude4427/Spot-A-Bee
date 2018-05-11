@@ -480,21 +480,26 @@ public class FragmentDescriptionForm extends Fragment
     }
 
     public boolean haveRetrievedLocation(){
-        boolean haveLocation;
+        boolean haveLocation = false;
 
-        this.userLocation = new LatLng(
-                getArguments().getDouble("latitude"),
-                getArguments().getDouble("longitude"));
+        try {
+            this.userLocation = new LatLng(
+                    getArguments().getDouble("latitude"),
+                    getArguments().getDouble("longitude"));
 
-        if(userLocation.longitude != 0 && userLocation.latitude != 0 && this.userLocation != null){
-            Toast.makeText(getActivity(), "We found your location", Toast.LENGTH_LONG).show();
-            haveLocation = true;
-        } else {
-            Toast.makeText(getActivity(),
-                    "We couldn't find your location. Please edit your location permissions or use the search bar",
-                    Toast.LENGTH_LONG).show();
-            haveLocation = false;
+            if(userLocation.longitude != 0 && userLocation.latitude != 0 ){
+                Toast.makeText(getActivity(), "We found your location", Toast.LENGTH_LONG).show();
+                haveLocation = true;
+            } else {
+                Toast.makeText(getActivity(),
+                        "We couldn't find your location. Please edit your location permissions or use the search bar",
+                        Toast.LENGTH_LONG).show();
+                haveLocation = false;
+            }
+        } catch (NullPointerException e){
+
         }
+
 
         return haveLocation;
     }

@@ -34,8 +34,9 @@ import com.assignment.spotabee.LocationHelper;
 import com.assignment.spotabee.MainActivity;
 import com.assignment.spotabee.customutils.CheckNetworkConnection;
 import com.assignment.spotabee.customutils.FileOp;
+import com.assignment.spotabee.imagerecognition.ByteClarifaiRequest;
 import com.assignment.spotabee.imagerecognition.ClarifaiClientGenerator;
-import com.assignment.spotabee.imagerecognition.ClarifaiRequest;
+
 import com.assignment.spotabee.outdated.OutdatedClassMap;
 import com.assignment.spotabee.R;
 import com.assignment.spotabee.database.AppDatabase;
@@ -381,10 +382,10 @@ public class FragmentHome extends Fragment  {
                         @Override
                         public void run() {
                             Log.d(TAG, "We have started run thread");
-                            ClarifaiRequest clarifaiRequest
-                                    = new ClarifaiRequest(client,
+                            ByteClarifaiRequest clarifaiRequest
+                                    = new ByteClarifaiRequest(client,
                                     "flower_species", imageBytes);
-                            String flowerType = clarifaiRequest.executRequest();
+                            String flowerType = clarifaiRequest.execute();
                             Log.d(TAG, "Flower Type: " + flowerType);
 
 
@@ -489,10 +490,11 @@ public class FragmentHome extends Fragment  {
                         @Override
                         public void run() {
                             Log.d(TAG, "We have started run thread");
-                            ClarifaiRequest clarifaiRequest
-                                    = new ClarifaiRequest(client,
+                            ByteClarifaiRequest clarifaiRequest
+                                    = new ByteClarifaiRequest(client,
                                     "flower_species", imageBytes);
-                            String flowerType = clarifaiRequest.executRequest();
+                            String flowerType = clarifaiRequest.execute()
+                                    ;
                             Log.d(TAG, "Flower Type: " + flowerType);
 
                             goToDescriptionFormWithBundle(flowerType);
