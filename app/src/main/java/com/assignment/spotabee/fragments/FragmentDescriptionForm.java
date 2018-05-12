@@ -1,5 +1,7 @@
 package com.assignment.spotabee.fragments;
-
+/**
+ * Made by: C1769948
+ */
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -371,7 +373,7 @@ public class FragmentDescriptionForm extends Fragment
     }
 
     public boolean userScoreExists(String name){
-        if(db.databasenDao().getUserScoreByName(name) == null){
+        if(db.databaseDao().getUserScoreByName(name) == null){
             return false;
         }
         else {
@@ -392,17 +394,17 @@ public class FragmentDescriptionForm extends Fragment
                     String currentUserAccountName = "Test User";
 
                     if(userScoreExists(currentUserAccountName)){
-                        UserScore userScore = db.databasenDao().getUserScoreByName(currentUserAccountName);
+                        UserScore userScore = db.databaseDao().getUserScoreByName(currentUserAccountName);
                         userScore.setScore(userScore.getScore() + 1);
-                        db.databasenDao().updateUserScore(userScore);
+                        db.databaseDao().updateUserScore(userScore);
                     } else {
                         UserScore newUserScore = new UserScore(currentUserAccountName,  1);
-                        db.databasenDao().insertUserScore(newUserScore);
+                        db.databaseDao().insertUserScore(newUserScore);
                     }
 
 
 
-                    List<UserScore> allUserScores = db.databasenDao()
+                    List<UserScore> allUserScores = db.databaseDao()
                             .getAllUserScores();
 
                     for (UserScore userScore : allUserScores) {

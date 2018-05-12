@@ -1,5 +1,7 @@
 package com.assignment.spotabee.customutils;
-
+/**
+ * Made by: C1769948
+ */
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,7 +22,7 @@ import java.io.InputStream;
 
 
 
-public class FileOp {
+public abstract class FileOp {
 
     private static final String TAG = "FileOPDebug";
 

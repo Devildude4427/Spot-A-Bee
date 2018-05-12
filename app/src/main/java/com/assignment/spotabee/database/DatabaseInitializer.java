@@ -1,5 +1,7 @@
 package com.assignment.spotabee.database;
-
+/**
+ * Made by: C1717381
+ */
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -50,7 +52,7 @@ public class DatabaseInitializer {
      */
     public static Description addDescription(final AppDatabase db,
                                              final Description description) {
-        db.databasenDao().insertDescriptions(description);
+        db.databaseDao().insertDescriptions(description);
         return description;
     }
 
@@ -70,7 +72,7 @@ public class DatabaseInitializer {
                 dateTime.getCurrentTime());
         addDescription(db, description);
 
-        List<Description> descriptionList = db.databasenDao()
+        List<Description> descriptionList = db.databaseDao()
                 .getAllDescriptions();
         Log.d(DatabaseInitializer.TAG, "Rows Count: " + descriptionList.size());
         for (Description d : descriptionList) {
@@ -120,7 +122,7 @@ public class DatabaseInitializer {
         UserScore userScore;
         for (int i = 0; i <testUsers.size(); i++){
             userScore = new UserScore(testUsers.get(i), i+i);
-            db.databasenDao().insertUserScore(userScore);
+            db.databaseDao().insertUserScore(userScore);
         }
     }
 

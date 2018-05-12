@@ -1,5 +1,7 @@
 package com.assignment.spotabee.imagerecognition;
-
+/**
+ * Made by: C1769948
+ */
 
 import java.io.File;
 import java.util.List;

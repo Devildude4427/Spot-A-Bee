@@ -1,5 +1,8 @@
 package com.assignment.spotabee.fragments;
 
+/**
+ * Made by: C1769948 and
+ */
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,6 +17,7 @@ import com.assignment.spotabee.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
 
 /**
  * Payment Details fragment. Controls all content that goes

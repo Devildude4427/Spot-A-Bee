@@ -1,5 +1,7 @@
 package com.assignment.spotabee.database;
-
+/**
+ * Made by: C1769948
+ */
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;

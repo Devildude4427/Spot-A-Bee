@@ -1,4 +1,7 @@
 package com.assignment.spotabee;
+/**
+ * Made by: C1769948
+ */
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -14,8 +17,7 @@ import java.util.List;
 
 /**
  * Model containing all data about a flower submission.
- * Flower type, location, time, date, number of bees will be added
- * at appropriate points throughout the user's journey
+ *
  */
 
 public class Flower {
@@ -29,9 +31,10 @@ public class Flower {
 
     private AppDatabase db;
 
-    private static final String OBSCENE_NUMBER_MESSAGE = "That is an obscene number of bees to be spotted\n" +
+    private final String OBSCENE_NUMBER_MESSAGE = "That is an obscene number of bees to be spotted\n" +
             "on one bunch of flowers! Please enter a number less than pr equal to 50.";
-    private static final String TAG = "Flower debug";
+
+    private final String TAG = "Flower debug";
 
     public Flower(String species, String date,
                   String time, int numOfBees,
@@ -112,24 +115,25 @@ public class Flower {
     }
 
     public void commitDataToDB(final Context context) {
-        Log.d(TAG, "We are in commitFormToDB");
+        Log.d(TAG, "We are in commitToDB");
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
 
                 try {
-                    db.databasenDao()
+                    db.databaseDao()
                             .insertDescriptions(new Description(
-                                    getLatitude(),
-                                    getLongitude(),
-                                    getSpecies(),
-                                    getDescription(),
-                                    getNumOfBees(),
-                                    getDate(),
-                                    getTime()));
+                                    latitude,
+                                    longitude,
+                                    species,
+                                    description,
+                                    numOfBees,
+                                    date,
+                                    time
+                            ));
 
 
-                    List<Description> allDescriptions = db.databasenDao()
+                    List<Description> allDescriptions = db.databaseDao()
                             .getAllDescriptions();
 
                     for (Description description : allDescriptions) {

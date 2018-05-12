@@ -1,5 +1,7 @@
 package com.assignment.spotabee.fragments;
-
+/**
+ * Made by: C1717381, C1769948 and
+ */
 import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -177,7 +179,7 @@ public class FragmentHome extends Fragment  {
                                 .getLongitude();
                         Log.v(TAG, "Lat: " + lat + "Lng: " + lng);
 
-                        db.databasenDao()
+                        db.databaseDao()
                                 .insertDescriptions(new Description(
                                         lat,
                                         lng)

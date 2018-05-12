@@ -1,5 +1,7 @@
 package com.assignment.spotabee.customutils;
-
+/**
+ * Made by: C1769948
+ */
 // Adapted from: https://www.geeksforgeeks.org/quick-sort/
 // Changed to deal with our UserScore objects and order from largest score to smallest
 
