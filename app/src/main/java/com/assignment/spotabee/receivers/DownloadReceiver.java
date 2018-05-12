@@ -16,9 +16,11 @@ import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
+import com.assignment.spotabee.KeyChain;
 import com.assignment.spotabee.MainActivity;
 import com.assignment.spotabee.R;
 
@@ -26,13 +28,15 @@ import static android.content.Context.DOWNLOAD_SERVICE;
 import static java.security.AccessController.getContext;
 
 public class DownloadReceiver extends BroadcastReceiver {
-    public static final String CHANNEL_ID = "com.assignment.spotabee.type11";
+    private static final String TAG = "DownloadReciever debug";
+    public static final String CHANNEL_ID = "com.assignment.spotabee";
     public static final int NOTIFICATION_ID = 1;
     private Context context;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
+        Log.d(TAG, "We are in onReceive");
         Toast downloadSuccessful = Toast.makeText(context, "Download Complete", Toast.LENGTH_SHORT);
         downloadSuccessful.setGravity(Gravity.TOP, 25, 400);
         downloadSuccessful.show();
@@ -40,7 +44,7 @@ public class DownloadReceiver extends BroadcastReceiver {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void createAnExampleNotificationChannel(NotificationManager notificationManager, String description) {
+    private void createNotificationChannel(NotificationManager notificationManager, String description) {
 
         if (notificationManager.getNotificationChannel(CHANNEL_ID) == null) {
             CharSequence name = "Spot a Bee";
@@ -53,7 +57,7 @@ public class DownloadReceiver extends BroadcastReceiver {
     }
 
 
-    private Notification createExampleNotification() {
+    private Notification createNotification() {
 
         Intent fileIntent = new Intent(Intent.ACTION_VIEW);
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
@@ -99,11 +103,11 @@ public class DownloadReceiver extends BroadcastReceiver {
         else {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                createAnExampleNotificationChannel(nManager, context.getString(R.string.open_your_spot_a_bee_guide));
+                createNotificationChannel(nManager, context.getString(R.string.open_your_spot_a_bee_guide));
 
-            Notification exampleNotification = createExampleNotification();
+            Notification notification = createNotification();
 
-            nManager.notify(NOTIFICATION_ID, exampleNotification);
+            nManager.notify(NOTIFICATION_ID, notification);
         }
     }
 
