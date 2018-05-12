@@ -1,5 +1,7 @@
 package com.assignment.spotabee;
 
+import com.assignment.spotabee.receivers.DownloadReceiver;
+
 /**
  * Made by: C1769948
  */
@@ -30,6 +32,8 @@ public class KeyChain {
     }
 
     public static String getClarifaiApiKey() {return CLARIFAI_API_KEY;}
+
+
 }
 
 
