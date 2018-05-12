@@ -1,10 +1,12 @@
 package com.assignment.spotabee.database;
-
+/**
+ * Made by: C1717381
+ */
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.assignment.spotabee.customutils.Time;
+import com.assignment.spotabee.customutils.DateTime;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,7 +52,7 @@ public class DatabaseInitializer {
      */
     public static Description addDescription(final AppDatabase db,
                                              final Description description) {
-        db.descriptionDao().insertDescriptions(description);
+        db.databaseDao().insertDescriptions(description);
         return description;
     }
 
@@ -62,15 +64,15 @@ public class DatabaseInitializer {
      */
     private static void populateWithTestData(final AppDatabase db) {
 
-        Date testDate = new Date();
+        DateTime dateTime = new DateTime();
 
         Description description = new Description(53.3094,
-                -4.6330, "HolyHead", "A daffodil or something",
-                "None", 2, Time.getTodaysDate(testDate),
-                Time.getCurrentTime(testDate));
+                -4.6330, "A daffodil or something",
+                "None", 2, dateTime.getTodaysDate(),
+                dateTime.getCurrentTime());
         addDescription(db, description);
 
-        List<Description> descriptionList = db.descriptionDao()
+        List<Description> descriptionList = db.databaseDao()
                 .getAllDescriptions();
         Log.d(DatabaseInitializer.TAG, "Rows Count: " + descriptionList.size());
         for (Description d : descriptionList) {
@@ -120,7 +122,7 @@ public class DatabaseInitializer {
         UserScore userScore;
         for (int i = 0; i <testUsers.size(); i++){
             userScore = new UserScore(testUsers.get(i), i+i);
-            db.descriptionDao().insertUserScore(userScore);
+            db.databaseDao().insertUserScore(userScore);
         }
     }
 

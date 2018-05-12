@@ -1,5 +1,7 @@
 package com.assignment.spotabee.database;
-
+/**
+ * Made by: C1769948
+ */
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
@@ -29,11 +31,6 @@ public class Description {
     @ColumnInfo(name = "longitude")
     private Double longitude;
 
-    /**
-     * Creates a column for location.
-     */
-    @ColumnInfo(name = "location")
-    private String location;
 
     /**
      * Creates a column for flowerType.
@@ -71,7 +68,6 @@ public class Description {
      *
      * @param latitude Double latitude of location.
      * @param longitude Double longitude of location.
-     * @param location String location name.
      * @param flowerType String type of flower.
      * @param furtherDetails String of any additional comments.
      * @param numOfBees Int number of bees seen.
@@ -79,13 +75,11 @@ public class Description {
      * @param time String time bees were seen.
      */
     @Ignore
-    public Description(final Double latitude, final Double longitude,
-                       final String location, final String flowerType,
+    public Description(final Double latitude, final Double longitude, final String flowerType,
                        final String furtherDetails, final int numOfBees,
                        final String date, final String time) {
         this.latitude = latitude;
         this.longitude = longitude;
-        this.location = location;
         this.flowerType = flowerType;
         this.furtherDetails = furtherDetails;
         this.numOfBees = numOfBees;
@@ -159,23 +153,7 @@ public class Description {
         this.longitude = longitude;
     }
 
-    /**
-     * Gets the location field.
-     *
-     * @return Location of database entry.
-     */
-    public String getLocation() {
-        return location;
-    }
 
-    /**
-     * Sets the location field.
-     *
-     * @param location Named location of where the bee was.
-     */
-    public void setLocation(final String location) {
-        this.location = location;
-    }
 
     /**
      * Gets the flowerType field.
@@ -219,6 +197,7 @@ public class Description {
      * @return NumOfBees of database entry.
      */
     public int getNumOfBees() {
+
         return numOfBees;
     }
 
@@ -228,7 +207,9 @@ public class Description {
      * @param numOfBees How many bees were seen.
      */
     public void setNumOfBees(final int numOfBees) {
-        this.numOfBees = numOfBees;
+        if (numOfBees <= 50){
+            this.numOfBees = numOfBees;
+        }
     }
 
     /**
@@ -252,7 +233,7 @@ public class Description {
     /**
      * Gets the time field.
      *
-     * @return Time of database entry.
+     * @return DateTime of database entry.
      */
     public String getTime() {
         return time;
@@ -261,7 +242,7 @@ public class Description {
     /**
      * Sets the time field.
      *
-     * @param time Time the bee was seen.
+     * @param time DateTime the bee was seen.
      */
     public void setTime(final String time) {
         this.time = time;

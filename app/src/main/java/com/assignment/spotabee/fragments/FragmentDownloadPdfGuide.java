@@ -1,21 +1,16 @@
-package com.assignment.spotabee;
-
+package com.assignment.spotabee.fragments;
+/**
+ * Made by: C1769948
+ */
 import android.app.DownloadManager;
-import android.app.FragmentManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatTextView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,17 +18,21 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.assignment.spotabee.R;
+import com.assignment.spotabee.receivers.DownloadReceiver;
+import com.assignment.spotabee.services.DownloadService;
+
 import static android.content.Context.DOWNLOAD_SERVICE;
 
 
-//
+// (Download Manager tutorial) Reference: https://www.codeproject.com/Articles/1112730/Android-Download-Manager-Tutorial-How-to-Download
 public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickListener{
     private DownloadManager downloadManager;
     private ImageView downloadPdf;
     private AppCompatButton downloadBtn;
     private long downloadReference;
     private Context appContext;
-    private Receiver downloadReceiver;
+    private DownloadReceiver downloadReceiver;
     private View rootView;
     private Uri uri;
     private View v;
@@ -68,18 +67,20 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
 
         appContext = getActivity().getApplicationContext();
 
-        downloadReceiver = new Receiver();
+//        downloadReceiver = new DownloadReceiver();
 
         downloadBtn = rootView.findViewById(R.id.downloadGuideBtn);
         downloadBtn.setOnClickListener(this);
 
-        IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-        getActivity().registerReceiver(downloadReceiver, filter);
+//        IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+//        getActivity().registerReceiver(downloadReceiver, filter);
 
         getActivity().setTitle(getString(R.string.download_pdf_fragment_title));
 
         return rootView;
     }
+
+
 
     private long downloadData (Uri uri) {
         this.uri = uri;
@@ -107,7 +108,7 @@ public class FragmentDownloadPdfGuide extends Fragment implements View.OnClickLi
             case R.id.downloadGuideBtn:
 //                Uri uriForPdf = Uri.parse("https://friendsoftheearth.uk/sites/default/files/downloads/bees_booklet.pdf");
 //                downloadData(uriForPdf);
-                Intent mService = new Intent(getContext(), ScreenService.class);
+                Intent mService = new Intent(getContext(), DownloadService.class);
                 mService.putExtra("download_id", 1);
                 getContext().startService(mService);
 

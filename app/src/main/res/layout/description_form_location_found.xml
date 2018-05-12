@@ -12,80 +12,32 @@
 
     <RelativeLayout
         android:id="@+id/flower_search"
-        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="21dp">
 
         <ImageView
             android:id="@+id/flowerIdentify"
-            android:src="@drawable/ic_flowervector"
-            android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:minHeight="40dp"
-            android:layout_height="wrap_content" />
+            android:src="@drawable/ic_flowervector" />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/identifyFlowerMessage"
-            android:layout_marginLeft="10dp"
-            android:textSize="20sp"
-            android:layout_toRightOf="@id/flowerIdentify"
-            android:layout_marginTop="15dp"
             android:layout_width="270dp"
-            android:text="@string/flower_sighting"
-            android:maxLines="1"
-            android:layout_height="wrap_content"/>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/location_n_search"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/flower_search"
-        android:layout_marginTop="13dp"
-        android:background="@android:drawable/dialog_holo_light_frame">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:background="#fff">
-
-            <ImageView
-                android:id="@+id/search_location"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_search" />
-
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/locationField"
-                android:layout_width="270dp"
-                android:layout_height="20dp"
-                android:layout_marginBottom="15dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="20dp"
-                android:layout_toRightOf="@id/search_location"
-                android:background="@android:color/transparent"
-                android:hint="@string/location"
-                android:maxLines="2"
-                android:textSize="18sp" />
-        </RelativeLayout>
-
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_toRightOf="@id/flowerIdentify"
+            android:maxLines="1"
+            android:text="@string/flower_sighting"
+            android:textSize="20sp" />
 
     </RelativeLayout>
-
-    <Spinner
-        android:id="@+id/addressSpinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/location_n_search"
-        android:layout_marginTop="20dp">
-    </Spinner>
 
 
     <FrameLayout
@@ -93,22 +45,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/addressSpinner"
+        android:layout_below="@+id/flower_search"
+        android:layout_marginTop="29dp"
         android:background="@android:drawable/dialog_holo_light_frame">
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/flowerField"
             android:layout_width="@dimen/field_width"
+            android:layout_height="20dp"
             android:layout_alignStart="@+id/flower_container"
             android:layout_below="@+id/addressSpinner"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="20dp"
             android:background="@android:color/transparent"
             android:hint="@string/flower_type"
-            android:layout_marginBottom="15dp"
-            android:textSize="18sp"
-            android:layout_marginTop="20dp"
             android:maxLines="2"
             android:paddingStart="20dp"
-            android:layout_height="20dp"/>
+            android:textSize="18sp" />
     </FrameLayout>
 
 
@@ -116,9 +69,9 @@
         android:id="@+id/num_of_bee_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/location_n_search"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/flower_container"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="35dp"
         android:background="@android:drawable/dialog_holo_light_frame">
 
         <android.support.v7.widget.AppCompatEditText
@@ -138,39 +91,39 @@
         android:id="@+id/description_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/num_of_bee_container"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/num_of_bee_container"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="0dp"
+        android:layout_marginTop="28dp"
         android:background="@android:drawable/dialog_holo_light_frame">
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/descriptionField"
             android:layout_width="@dimen/field_width"
             android:layout_height="90dp"
-            android:textSize="18sp"
+            android:layout_above="@+id/button_container"
+            android:layout_centerHorizontal="true"
             android:background="@android:color/transparent"
             android:hint="@string/any_further_details"
             android:maxLines="20"
-            android:padding="15dp" />
+            android:padding="15dp"
+            android:textSize="18sp" />
     </FrameLayout>
 
     <FrameLayout
         android:id="@+id/button_container"
         android:layout_width="160dp"
         android:layout_height="70dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="15dp"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/description_container"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="22dp"
         android:background="@android:drawable/dialog_holo_light_frame">
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/submit"
             android:layout_width="150dp"
             android:layout_height="60dp"
-            android:layout_alignTop="@+id/button_container"
+            android:layout_below="@+id/description_container"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/button_background"

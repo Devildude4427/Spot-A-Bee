@@ -1,10 +1,13 @@
 package com.assignment.spotabee.customutils;
-
+/**
+ * Made by: C1769948
+ */
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,11 +20,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * Created by Lauren on 4/22/2018.
- */
 
-public class FileOp {
+
+public abstract class FileOp {
 
     private static final String TAG = "FileOPDebug";
 
@@ -52,4 +53,32 @@ public class FileOp {
             }
         }
     }
+
+    @Nullable
+    public static byte[] getByteArrayFromIntentStoreData(@NonNull Context context, @NonNull Intent data) {
+        InputStream inStream = null;
+        Bitmap bitmap = null;
+        try {
+            Bundle extras = data.getExtras();
+            bitmap = (Bitmap) extras.get("data");
+            final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+
+            return outStream.toByteArray();
+        } catch (Exception e) {
+            Log.v(TAG, "Exception " + e);
+            return null;
+        } finally {
+            if (inStream != null) {
+                try {
+                    inStream.close();
+                } catch (IOException ignored) {
+                }
+            }
+            if (bitmap != null) {
+                bitmap.recycle();
+            }
+        }
+    }
 }
+

@@ -1,12 +1,11 @@
-package com.assignment.spotabee;
-
+package com.assignment.spotabee.services;
+/**
+ * Made by: C1769948
+ */
 import android.app.DownloadManager;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -16,20 +15,18 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
 import android.view.Gravity;
 import android.widget.Toast;
 
-import static android.app.Service.START_STICKY;
-import static android.provider.Settings.Global.getString;
-import static java.security.AccessController.getContext;
+import com.assignment.spotabee.R;
+import com.assignment.spotabee.receivers.DownloadReceiver;
 
 
 // * Created by Lauren on 4/25/2018.
-// *
+// * (Download Manager tutorial) Reference: https://www.codeproject.com/Articles/1112730/Android-Download-Manager-Tutorial-How-to-Download
 // */
 
-public class ScreenService extends Service {
+public class DownloadService extends Service {
     //Constants used for foreground notification
     public static final String SERVICE_CHANNEL_ID = "com.assignment.spotabee.service";
     private static final int SERVICE_NOTIFICATION_ID = 900;
@@ -40,7 +37,7 @@ public class ScreenService extends Service {
     private DownloadManager downloadManager;
 
     //Empty constructor
-    public ScreenService() {
+    public DownloadService() {
     }
 
     @Override
@@ -120,7 +117,13 @@ public class ScreenService extends Service {
     private void registerScreenEvents(){
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_ON);
-        this.registerReceiver(new Receiver(), filter);
+        this.registerReceiver(new DownloadReceiver(), filter);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopSelf();
     }
 
 

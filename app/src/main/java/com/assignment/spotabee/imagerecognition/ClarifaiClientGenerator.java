@@ -1,5 +1,7 @@
 package com.assignment.spotabee.imagerecognition;
-
+/**
+ * Made by: C1769948
+ */
 
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -10,12 +12,11 @@ import okhttp3.OkHttpClient;
 
 
 /**
- * Created by Lauren on 4/22/2018.
  * Purpose to provide a ClarifaiClient that can be used to make
  * image recognition requests
  */
 
-public class ClarifaiClientGenerator {
+public abstract class ClarifaiClientGenerator {
     private static final Logger LOGGER = Logger.getLogger( ClarifaiClientGenerator.class.getName());
 
     /**

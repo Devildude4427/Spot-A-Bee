@@ -1,5 +1,7 @@
 package com.assignment.spotabee.fragments;
-
+/**
+ * Made by: C1769948
+ */
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -48,19 +50,18 @@ public class FragmentLeaderboard extends Fragment {
     public View onCreateView(final @NonNull LayoutInflater inflater,
                              final @Nullable ViewGroup container,
                              final @Nullable Bundle savedInstanceState) {
-        //returning our layout file
-        //change R.layout.yourlayoutfilename for each of your fragments
+
         rootView = inflater.inflate(R.layout.fragment_menu_leaderboard, container, false);
         db = AppDatabase.getAppDatabase(getContext());
 
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                List<UserScore> userScores = db.descriptionDao().getAllUserScores();
+                List<UserScore> userScores = db.databaseDao().getAllUserScores();
 
                 CustomQuickSort cqs = new CustomQuickSort();
                 cqs.sort(userScores, 0, userScores.size()-1);
-                doCustomAdapterExample(userScores);
+                populateListView(userScores);
             }
         });
         return rootView;
@@ -82,20 +83,18 @@ public class FragmentLeaderboard extends Fragment {
         getActivity().setTitle("Leaderboard");
     }
 
-    private void doCustomAdapterExample(final List<UserScore> userScores){
+    private void populateListView(final List<UserScore> userScores){
 
 
-//        ListViewCompat lv = rootView.findViewById(R.id.userScoreLv); //Make sure that your listview in your layout file has this id
-//        lv.setAdapter(myCustomAdapter);
 
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ArrayList<UserScore> arrlistOfBooks= new ArrayList<UserScore>(userScores);
+                ArrayList<UserScore> arrlistOfUserScores= new ArrayList<UserScore>(userScores);
                 LeaderBoardAdapter leaderBoardAdapter = new LeaderBoardAdapter(
                         getActivity(),
                         R.layout.gray_user_score_layout,
-                        arrlistOfBooks
+                        arrlistOfUserScores
                 );
                 ListView testListView = rootView.findViewById(R.id.testListView);
                 testListView.setAdapter(leaderBoardAdapter);

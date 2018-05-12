@@ -37,6 +37,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Made by: C1717381
+ */
+/**
  * Map fragment. Creates and controls all data
  * that goes into creating our map screen.
  */
@@ -102,7 +105,7 @@ public class FragmentMap extends Fragment
                 container, false);
 
         AppDatabase db = AppDatabase.getAppDatabase(getContext());
-        allDescriptions = db.descriptionDao()
+        allDescriptions = db.databaseDao()
                 .getAllDescriptions();
 
         locationManager = (LocationManager)
@@ -214,16 +217,11 @@ public class FragmentMap extends Fragment
             for (Description location:descriptions) {
                 LatLng newMarker = new LatLng(location.getLatitude(),
                         location.getLongitude());
-                if (location.getLocation() != null) {
-                    googleMap.addMarker(new MarkerOptions()
-                            .position(newMarker)
-                            .title(location.getLocation())
-                            .icon(icon));
-                } else {
+
                     googleMap.addMarker(new MarkerOptions()
                             .position(newMarker)
                             .icon(icon));
-                }
+
                 allMarkers.add(newMarker);
             }
             // Builder calculates the area of the fragment_map_outdated

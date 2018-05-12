@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <uses-library android:name="com.google.android.maps" />
-        <service android:name=".ScreenService" />
+        <service android:name=".services.DownloadService" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -47,7 +47,9 @@
         </provider>
 
 
-        <service android:name=".ScreenService" />
+        <service android:name=".services.DownloadService" />
+
+        <receiver android:name=".receivers.DownloadReceiver"/>
     </application>
 
 </manifest>
