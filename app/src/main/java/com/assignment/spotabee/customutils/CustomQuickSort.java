@@ -1,5 +1,7 @@
 package com.assignment.spotabee.customutils;
-
+/**
+ * Made by: C1769948
+ */
 // Adapted from: https://www.geeksforgeeks.org/quick-sort/
 // Changed to deal with our UserScore objects and order from largest score to smallest
 
@@ -73,17 +75,4 @@ public class CustomQuickSort
         System.out.println();
     }
 
-//    // Driver program
-//    public static void main(String args[])
-//    {
-//        int arr[] = {10, 7, 8, 9, 1, 5};
-//        int n = arr.length;
-//
-//        CustomQuickSort ob = new CustomQuickSort();
-//        ob.sort(arr, 0, n-1);
-//
-//        System.out.println("sorted array");
-//        printArray(arr);
-//    }
 }
-/*This code is contributed by Rajat Mishra */

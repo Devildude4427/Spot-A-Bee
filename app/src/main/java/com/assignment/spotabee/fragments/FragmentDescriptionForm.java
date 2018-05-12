@@ -1,7 +1,11 @@
 package com.assignment.spotabee.fragments;
-
+/**
+ * Made by: C1769948
+ */
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -9,24 +13,28 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.assignment.spotabee.Flower;
+import com.assignment.spotabee.KeyChain;
 import com.assignment.spotabee.R;
-import com.assignment.spotabee.customutils.Time;
+import com.assignment.spotabee.customexceptions.ObsceneNumberException;
+import com.assignment.spotabee.customutils.DateTime;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
 import com.assignment.spotabee.database.UserScore;
@@ -65,7 +73,10 @@ public class FragmentDescriptionForm extends Fragment
     private LatLng userLocation;
     private static final String TAG = "Description_form_debug";
     private final static String imageIdentifyUrl = "https://www.imageidentify.com/";
-    String flowerIdentification;
+    private String flowerIdentification;
+    private RelativeLayout searchHolder;
+
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,28 +88,49 @@ public class FragmentDescriptionForm extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View rootView;
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_description_form, container, false);
+        if(haveRetrievedLocation()){
+            rootView = inflater.inflate(R.layout.description_form_location_found, container, false);
+        } else {
+            rootView = inflater.inflate(R.layout.fragment_description_form, container, false);
+            addressSpinner = (Spinner) rootView.findViewById(R.id.addressSpinner);
+            addressSpinner.setVisibility(View.VISIBLE);
 
-        ImageView search = rootView.findViewById(R.id.search_location);
-        search.setOnClickListener(this);
+            ImageView search = rootView.findViewById(R.id.search_location);
+            search.setOnClickListener(this);
+
+            searchHolder = rootView.findViewById(R.id.location_n_search);
+
+            location = rootView.findViewById(R.id.locationField);
+
+            addressSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    location.setText(parent.getItemAtPosition(position).toString());
+                    setCoordinatesToStore(parent, position);
+
+                }
+
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+        }
 
 
-        addressSpinner = (Spinner) rootView.findViewById(R.id.addressSpinner);
-        addressSpinner.setVisibility(View.VISIBLE);
+
 
         flower = rootView.findViewById(R.id.flowerField);
         if(flowerIdentification != null){
             flower.setText(flowerIdentification);
         }
 
-        location = rootView.findViewById(R.id.locationField);
         description = rootView.findViewById(R.id.descriptionField);
         numberOfBeesField = rootView.findViewById(R.id.numOfBees);
 
         submit = rootView.findViewById(R.id.submit);
         flowerIdentify = rootView.findViewById(R.id.flowerIdentify);
         flowerSearch = rootView.findViewById(R.id.flower_search);
+
 
         flowerSearch.setOnClickListener(this);
         submit.setOnClickListener(this);
@@ -108,20 +140,14 @@ public class FragmentDescriptionForm extends Fragment
 
         context = getActivity();
 
-        userLocation = null;
         geocoder = new Geocoder(context.getApplicationContext());
 
 
-        addressSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                location.setText(parent.getItemAtPosition(position).toString());
-                setCoordinatesToStore(parent, position);
 
-            }
 
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+
+
+
         return rootView;
     }
 
@@ -163,19 +189,25 @@ public class FragmentDescriptionForm extends Fragment
 
             case R.id.submit:
                 if (userLocationIsNull()) return;
-
-                commitFormDataToDB();
-                updateUserScore();
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.content_frame, new FragmentAfterSubmission())
-                        .commit();
+                createFlower();
                 break;
 
                 // Search for a user's input location
             case R.id.search_location:
                 Log.d(TAG, "Search icon has been selected");
                 final ProgressDialog progress = new ProgressDialog(getContextOfApplication());
+                progress.setOnKeyListener(new Dialog.OnKeyListener() {
+
+                    @Override
+                    public boolean onKey(DialogInterface arg0, int keyCode,
+                                         KeyEvent event) {
+                        // TODO Auto-generated method stub
+                        if (keyCode == KeyEvent.KEYCODE_BACK) {
+                            progress.dismiss();
+                        }
+                        return true;
+                    }
+                });
                 progress.setTitle("Loading");
                 progress.setMessage("Searching for locations");
                 progress.setCancelable(false);
@@ -202,6 +234,34 @@ public class FragmentDescriptionForm extends Fragment
         }
     }
 
+    private void createFlower(){
+        DateTime dateTime = new DateTime();
+        try {
+            Flower newFlower = new Flower(
+                    flower.getText().toString(),
+                    dateTime.getTodaysDate(),
+                    dateTime.getCurrentTime(),
+                    Integer.parseInt(numberOfBeesField.getText().toString()),
+                    userLocation.latitude,
+                    userLocation.longitude,
+                    description.getText().toString(),
+                    getActivity());
+
+                    newFlower.commitDataToDB(getContext());
+                    updateUserScore();
+
+                    getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.content_frame, new FragmentAfterSubmission())
+                    .commit();
+
+
+
+        } catch (ObsceneNumberException e){
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+    }
     /**
      * Check if the user has searched for their location before
      * submitting the form
@@ -270,54 +330,9 @@ public class FragmentDescriptionForm extends Fragment
         return stringAddressAdapter;
     }
 
-    /**
-     * Takes information from EditText fields and commits them to the database
-     */
-    private void commitFormDataToDB() {
-        Log.d(TAG, "We are in commitFormToDB");
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-
-                try {
-                    Date todaysDate = new Date();
-                    db.descriptionDao()
-                            .insertDescriptions(new Description(
-                                    ( userLocation.latitude),
-                                    userLocation.longitude,
-                                    location.getText().toString(),
-                                    flower.getText().toString(),
-                                    description.getText().toString(),
-                                    Integer.parseInt(numberOfBeesField.getText().toString()),
-                                    Time.getTodaysDate(todaysDate),
-                                    Time.getCurrentTime(todaysDate)
-                            ));
-
-                    List<Description> allDescriptions = db.descriptionDao()
-                            .getAllDescriptions();
-
-                    for (Description description : allDescriptions) {
-                        Log.d(TAG, description.getFlowerType().toString());
-                        Log.d(TAG, description.getLatitude().toString());
-                        Log.d(TAG, description.getLongitude().toString());
-                        Log.d(TAG, description.getNumOfBees() + "");
-                        Log.d(TAG, description.getFurtherDetails().toString());
-                        Log.d(TAG, description.getDate().toString());
-                        Log.d(TAG, description.getTime().toString());
-                    }
 
 
-                } catch (Exception e) {
-                    Looper.prepare();
-                    Toast.makeText(context,
-                            "Sorry. An error occurred. We can't save your information right now...",
-                            Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Error: " + e.getMessage());
-                }
 
-            }
-        });
-    }
 
     /**
      * @param parent AdapterView that the address object returned is selected from
@@ -347,8 +362,18 @@ public class FragmentDescriptionForm extends Fragment
 
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+
+        getActivity().getSupportFragmentManager()
+                .putFragment(outState, KeyChain.getCurrentFragmentKey(), this);
+
+        super.onSaveInstanceState(outState);
+
+    }
+
     public boolean userScoreExists(String name){
-        if(db.descriptionDao().getUserScoreByName(name) == null){
+        if(db.databaseDao().getUserScoreByName(name) == null){
             return false;
         }
         else {
@@ -369,17 +394,17 @@ public class FragmentDescriptionForm extends Fragment
                     String currentUserAccountName = "Test User";
 
                     if(userScoreExists(currentUserAccountName)){
-                        UserScore userScore = db.descriptionDao().getUserScoreByName(currentUserAccountName);
+                        UserScore userScore = db.databaseDao().getUserScoreByName(currentUserAccountName);
                         userScore.setScore(userScore.getScore() + 1);
-                        db.descriptionDao().updateUserScore(userScore);
+                        db.databaseDao().updateUserScore(userScore);
                     } else {
                         UserScore newUserScore = new UserScore(currentUserAccountName,  1);
-                        db.descriptionDao().insertUserScore(newUserScore);
+                        db.databaseDao().insertUserScore(newUserScore);
                     }
 
 
 
-                    List<UserScore> allUserScores = db.descriptionDao()
+                    List<UserScore> allUserScores = db.databaseDao()
                             .getAllUserScores();
 
                     for (UserScore userScore : allUserScores) {
@@ -405,5 +430,28 @@ public class FragmentDescriptionForm extends Fragment
         });
     }
 
+    public boolean haveRetrievedLocation(){
+        boolean haveLocation = false;
+
+        try {
+            this.userLocation = new LatLng(
+                    getArguments().getDouble("latitude"),
+                    getArguments().getDouble("longitude"));
+
+            if(userLocation.longitude != 0 && userLocation.latitude != 0 ){
+                Toast.makeText(getActivity(), "We found your location", Toast.LENGTH_LONG).show();
+                haveLocation = true;
+            } else {
+                Toast.makeText(getActivity(),
+                        "We couldn't find your location. Please edit your location permissions or use the search bar",
+                        Toast.LENGTH_LONG).show();
+                haveLocation = false;
+            }
+        } catch (NullPointerException e){
+
+        }
+
+        return haveLocation;
+    }
 
 }

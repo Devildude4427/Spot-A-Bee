@@ -1,11 +1,17 @@
 package com.assignment.spotabee;
 
+/**
+ * Made by: C1717381 and C1769948
+ */
+import android.app.DownloadManager;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.support.v4.app.FragmentManager;
 import android.widget.Toast;
 
 
+import com.assignment.spotabee.fragments.FragmentDownloadPdfGuide;
+import com.assignment.spotabee.receivers.DownloadReceiver;
 import com.paypal.android.sdk.payments.PaymentActivity;
 import android.Manifest;
 import android.accounts.AccountManager;
@@ -42,15 +48,15 @@ import com.assignment.spotabee.fragments.FragmentHowTo;
 import com.assignment.spotabee.fragments.FragmentLeaderboard;
 import com.assignment.spotabee.fragments.FragmentMap;
 import com.assignment.spotabee.fragments.PaymentInfo;
-import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
 import com.ramotion.paperonboarding.PaperOnboardingFragment;
 import com.ramotion.paperonboarding.PaperOnboardingPage;
 import com.ramotion.paperonboarding.listeners.PaperOnboardingOnRightOutListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
+//import static com.assignment.spotabee.Config.Config.PAYPAL_REQUEST_CODE;
 
 
 /**
@@ -63,7 +69,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * The activity request code for choosing an account.
      */
-    public static final int CHOOSE_ACCOUNT = 1;
+//    public static final int CHOOSE_ACCOUNT = 1;
 
     /**
      * The activity request code for PayPal result.
@@ -94,6 +100,16 @@ public class MainActivity extends AppCompatActivity
 
     private SharedPreferences preferences;
 
+    private DownloadReceiver downloadReceiver;
+
+    private Fragment currentFragment;
+
+
+
+    /**
+     * Made by: C1717381
+     */
+
     /**
      * Handles the main creation of application wide resources.
      * Examples of this include requesting permissions,
@@ -107,101 +123,116 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-        preferences = getSharedPreferences("com.assignment.spotabee", MODE_PRIVATE);
-        preferences.edit().putBoolean("firstrun", true).apply();
-        preferences.edit().putString("user_account", "Test User").apply();
-        if (preferences.getBoolean("firstrun", true)) {
-
-            final PaperOnboardingFragment onBoardingFragment
-                    = PaperOnboardingFragment.newInstance(
-                    getDataForOnboarding());
-
-            FragmentTransaction ft
-                    = getSupportFragmentManager().beginTransaction();
-            ft.add(R.id.content_frame, onBoardingFragment);
-            ft.commit();
-            preferences.edit().putBoolean("firstrun", false).apply();
-
-            onBoardingFragment.setOnRightOutListener(new PaperOnboardingOnRightOutListener() {
-                @Override
-                public void onRightOut() {
-                    displaySelectedScreen(R.id.nav_home);
-                }
-            });
+        if(savedInstanceState != null) {
+            currentFragment = getSupportFragmentManager().getFragment(savedInstanceState, KeyChain.getCurrentFragmentKey());
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, currentFragment);
         } else {
-            displaySelectedScreen(R.id.nav_home);
+            preferences = getSharedPreferences("com.assignment.spotabee", MODE_PRIVATE);
+            preferences.edit().putBoolean("firstrun", true).apply();
+            preferences.edit().putString("user_account", "Test User").apply();
+            if (preferences.getBoolean("firstrun", true)) {
+
+                final PaperOnboardingFragment onBoardingFragment
+                        = PaperOnboardingFragment.newInstance(
+                        getDataForOnboarding());
+
+                FragmentTransaction ft
+                        = getSupportFragmentManager().beginTransaction();
+                ft.add(R.id.content_frame, onBoardingFragment);
+                ft.commit();
+                preferences.edit().putBoolean("firstrun", false).apply();
+
+                onBoardingFragment.setOnRightOutListener(new PaperOnboardingOnRightOutListener() {
+                    @Override
+                    public void onRightOut() {
+                        displaySelectedScreen(R.id.nav_home);
+                    }
+                });
+            } else {
+                displaySelectedScreen(R.id.nav_home);
+            }
+
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+
+            AccountManager accountManager = (AccountManager)
+                    getSystemService(Context.ACCOUNT_SERVICE);
+
+            contextOfApplication = this;
+
+            // Reference for our permissions system: https://github.com/anthonycr/Grant
+            // gradle dependency = implementation 'com.anthonycr.grant:permissions:1.0'
+            PermissionsManager.getInstance()
+                    .requestAllManifestPermissionsIfNecessary(this,
+                            new PermissionsResultAction() {
+                                @Override
+                                public void onGranted() {
+                                    Log.v(TAG, "All permissions accepted");
+                                }
+
+                                @Override
+                                public void onDenied(final String permission) {
+                                    Log.v(TAG, "Not all permissions accepted");
+                                    Log.v(TAG, "Turned down permission: "
+                                            + permission);
+                                }
+                            });
+
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.GET_ACCOUNTS)
+                    != PackageManager.PERMISSION_GRANTED
+                    ) {
+                Intent intent =
+                        accountManager.newChooseAccountIntent(null,
+                                null, new String[]{"com.google"},
+                                null, null,
+                                null, null);
+                startActivityForResult(intent, KeyChain.getChooseAccount());
+            }
+
+
+            AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
+
+            //This clears out the database, and is called every time!
+            // Remove if you need persistence!
+            db.databaseDao().nukeTable();
+            db.databaseDao().nukeUserScores();
+            //This clears out the database, and is called every time!
+            // Remove if you need persistence!
+
+            DatabaseInitializer.populateAsync(db);
+
+            Description description = new Description(
+                    51.4816, -3.1791, "Rose", "None",
+                    1, "17-05-2018", "15:39");
+
+            db.databaseDao().insertDescriptions(description);
+
+
+            DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, mDrawerLayout, toolbar,
+                    R.string.navigation_drawer_open,
+                    R.string.navigation_drawer_close);
+            mDrawerLayout.setDrawerListener(toggle);
+            toggle.syncState();
+
+            NavigationView navigationView = findViewById(R.id.nav_view);
+            navigationView.setNavigationItemSelectedListener(this);
+
+            IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+            registerReceiver(downloadReceiver, filter);
         }
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        AccountManager accountManager = (AccountManager)
-                getSystemService(Context.ACCOUNT_SERVICE);
-
-        contextOfApplication = this;
-
-        PermissionsManager.getInstance()
-                .requestAllManifestPermissionsIfNecessary(this,
-                        new PermissionsResultAction() {
-                            @Override
-                            public void onGranted() {
-                                Log.v(TAG, "All permissions accepted");
-                            }
-
-                            @Override
-                            public void onDenied(final String permission) {
-                                Log.v(TAG, "Not all permissions accepted");
-                                Log.v(TAG, "Turned down permission: "
-                                        + permission);
-                            }
-                        });
-
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.GET_ACCOUNTS)
-                != PackageManager.PERMISSION_GRANTED
-                ) {
-            Intent intent =
-                    accountManager.newChooseAccountIntent(null,
-                            null, new String[]{"com.google"},
-                            null, null,
-                            null, null);
-            startActivityForResult(intent, CHOOSE_ACCOUNT);
-        }
 
 
-        AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
 
-        //This clears out the database, and is called every time!
-        // Remove if you need persistence!
-        db.descriptionDao().nukeTable();
-        db.descriptionDao().nukeUserScores();
-        //This clears out the database, and is called every time!
-        // Remove if you need persistence!
-
-        DatabaseInitializer.populateAsync(db);
-
-        Description description = new Description(
-                51.4816, -3.1791,
-                "Cardiff", "Rose", "None",
-                1, "17-05-2018", "15:39");
-
-        db.descriptionDao().insertDescriptions(description);
-
-
-        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, toolbar,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close);
-        mDrawerLayout.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
     }
 
+    /**
+     * Made by: C1717381
+     */
     private ArrayList<PaperOnboardingPage> getDataForOnboarding() {
         // prepare data
         PaperOnboardingPage scr1 = new PaperOnboardingPage(getString(R.string.onboarding_heading_one),
@@ -218,8 +249,28 @@ public class MainActivity extends AppCompatActivity
         elements.add(scr1);
         elements.add(scr2);
         elements.add(scr3);
+
         return elements;
     }
+
+    /**
+     * Made by: C1769948
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        if(currentFragment != null){
+            getSupportFragmentManager()
+                    .putFragment(outState, KeyChain.getCurrentFragmentKey(), currentFragment);
+        } else {
+            super.onSaveInstanceState(outState);
+        }
+
+    }
+
+    /**
+     * Made by: C1717381
+     */
 
     /**
      * Allows fragments or java classes
@@ -237,10 +288,17 @@ public class MainActivity extends AppCompatActivity
      *
      * @return The context for the current activity
      */
+
+    /**
+     * Made by: C1717381
+     */
     public static Context getContextOfApplication() {
         return contextOfApplication;
     }
 
+    /**
+     * Made by: C1717381
+     */
     /**
      * Handles navigation when device back button is pressed.
      * As of now, it navigates to the previous screen, though
@@ -257,6 +315,32 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
+    /**
+     * Made by: C1769948
+     */
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(downloadReceiver != null){
+            unregisterReceiver(downloadReceiver);
+        }
+    }
+
+    /**
+     * Made by: C1769948
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(downloadReceiver != null){
+            unregisterReceiver(downloadReceiver);
+        }
+    }
+
+    /**
+     * Made by: C1717381
+     */
     /**
      * Creates the option menu.
      *
@@ -271,6 +355,9 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * Made by: C1717381
+     */
     /**
      * Handles what happens when an item is selected in the
      * options menu. This is blank for now.
@@ -294,6 +381,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
+     * Made by: C1717381
+     */
+    /**
      * Method that handles all screen changes through the nav drawer.
      *
      * @param itemId A page, identified by "R.id.page_name",
@@ -301,30 +391,31 @@ public class MainActivity extends AppCompatActivity
      */
     private void displaySelectedScreen(final int itemId) {
         //creating fragment object
-        Fragment fragment = null;
+//        Fragment fragment = null;
 
         //initializing the fragment object which is selected
         switch (itemId) {
+
             case R.id.nav_home:
-                fragment = new FragmentHome();
+                currentFragment = new FragmentHome();
                 break;
             case R.id.nav_howto:
-                fragment = new FragmentHowTo();
+                currentFragment = new FragmentHowTo();
                 break;
             case R.id.nav_results:
-                fragment = new FragmentMap();
+                currentFragment = new FragmentMap();
                 break;
             case R.id.nav_aboutus:
-                fragment = new FragmentAboutUs();
+                currentFragment = new FragmentAboutUs();
                 break;
             case R.id.nav_leaderboard:
-                fragment = new FragmentLeaderboard();
+                currentFragment = new FragmentLeaderboard();
                 break;
             case R.id.nav_donate:
-                fragment = new DonationLogin();
+                currentFragment = new DonationLogin();
                 break;
             case R.id.nav_resources:
-                fragment = new FragmentDownloadPdfGuide();
+                currentFragment = new FragmentDownloadPdfGuide();
                 break;
             default:
                 Log.v(TAG, itemId + " is being requested"
@@ -334,17 +425,22 @@ public class MainActivity extends AppCompatActivity
         }
 
         //replacing the fragment
-        if (fragment != null) {
+        if (currentFragment != null) {
             FragmentTransaction ft
                     = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_frame, fragment);
+            ft.replace(R.id.content_frame, currentFragment);
             ft.commit();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
+        currentFragment = null;
     }
 
+    /**
+     * Made by: C1717381
+     */
     /**
      * Starts the process of changing fragments
      * when an item is selected from the Nav menu.
@@ -359,6 +455,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
+     * Made by: C1769948 and C1717381
+     */
+    /**
      * Creates gets details and confirms operation from account picker.
      *
      * @param requestCode An integer that relates to the permission. So
@@ -371,19 +470,19 @@ public class MainActivity extends AppCompatActivity
                                  final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == CHOOSE_ACCOUNT && resultCode == RESULT_OK) {
+        if (requestCode == KeyChain.getChooseAccount() && resultCode == RESULT_OK) {
             String accountName
                     = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
             Log.v(TAG, accountName);
 
-        } else if (requestCode == CHOOSE_ACCOUNT) {
+        } else if (requestCode == KeyChain.getChooseAccount()) {
             Log.v(TAG, "There was an error in the account picker");
         } else if (requestCode == Activity.RESULT_CANCELED) {
             FragmentTransaction fragmentTransaction
                     = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.content_frame, new FragmentHome());
             fragmentTransaction.commit();
-        } else if (requestCode == PAYPAL_REQUEST_CODE) {
+        } else if (requestCode == KeyChain.getPaypalRequestCode()) {
             mReturningWithResult = true;
             payPalData = data;
             payPalResultCode = resultCode;
@@ -394,6 +493,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
+     * Made by: C1717381
+     */
+    /**
      * Handles the destruction of the
      * MainActivity when the app is closed.
      */
@@ -403,6 +505,11 @@ public class MainActivity extends AppCompatActivity
         super.onDestroy();
     }
 
+
+
+    /**
+     * Made by: C1769948
+     */
     /**
      * Handles the results of the PayPal transaction.
      *
@@ -441,6 +548,9 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    /**
+     * Made by: C1769948
+     */
     /**
      * Handles the resuming of the app
      * from the PayPal feature. Causes issues

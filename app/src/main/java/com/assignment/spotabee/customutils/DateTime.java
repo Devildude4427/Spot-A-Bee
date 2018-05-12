@@ -1,5 +1,7 @@
 package com.assignment.spotabee.customutils;
-
+/**
+ * Made by: C1769948
+ */
 import android.annotation.SuppressLint;
 
 import java.text.SimpleDateFormat;
@@ -7,34 +9,28 @@ import java.util.Date;
 import java.util.logging.Logger;
 
 /**
- * Created by Lauren on 4/23/2018.
  * Class to generate the current date and time
  * in String format
  */
 
-public class Time {
+public class DateTime {
     private Date dateNow;
     @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat ("yyyy.MM.dd");
     private static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-    private static final Logger LOGGER = Logger.getLogger( Time.class.getName());
+    private static final Logger LOGGER = Logger.getLogger( DateTime.class.getName());
 
-    public Time(){
+    public DateTime(){
         dateNow = new Date();
 
     }
 
-    public static void main(String[] args){
-        Date testDate = new Date();
-        System.out.println(getTodaysDate(testDate));
-        System.out.println(getCurrentTime(testDate));
-    }
-    public static String getTodaysDate(Date dateNow){
+    public String getTodaysDate(){
 
         return dateFormat.format(dateNow);
     }
 
-    public static String getCurrentTime(Date dateNow){
+    public String getCurrentTime(){
         return timeFormat.format(dateNow);
     }
 }

@@ -1,5 +1,7 @@
 package com.assignment.spotabee.database;
-
+/**
+ * Made by: C1769948
+ */
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
@@ -13,7 +15,24 @@ import java.util.List;
  * from the database.
  */
 @Dao
-public interface DescriptionDao {
+public interface DatabaseDao {
+
+    // UserScore
+    @Insert
+    void insertUserScore(UserScore... UserScore);
+
+    @Query("SELECT * FROM UserScore")
+    List<UserScore> getAllUserScores();
+
+    @Query("DELETE FROM UserScore")
+    void nukeUserScores();
+
+    @Transaction
+    @Query("SELECT * FROM UserScore WHERE account_name = :name")
+    UserScore getUserScoreByName(String name);
+
+    @Update
+    void updateUserScore(UserScore userScore);
 
     /**
      * Inserts a new row, or rows, into the database.
@@ -40,21 +59,5 @@ public interface DescriptionDao {
     @Query("DELETE FROM Description")
     void nukeTable();
 
-    // UserScore
-    @Insert
-    void insertUserScore(UserScore... UserScore);
-
-    @Query("SELECT * FROM UserScore")
-    List<UserScore> getAllUserScores();
-
-    @Query("DELETE FROM UserScore")
-    void nukeUserScores();
-
-    @Transaction
-    @Query("SELECT * FROM UserScore WHERE account_name = :name")
-    UserScore getUserScoreByName(String name);
-
-    @Update
-    void updateUserScore(UserScore userScore);
 
 }

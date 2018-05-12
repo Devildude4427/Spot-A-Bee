@@ -1,5 +1,7 @@
-package com.assignment.spotabee;
-
+package com.assignment.spotabee.receivers;
+/**
+ * Made by: C1769948
+ */
 
 import android.app.DownloadManager;
 import android.app.Notification;
@@ -17,10 +19,13 @@ import android.support.v4.app.NotificationCompat;
 import android.view.Gravity;
 import android.widget.Toast;
 
+import com.assignment.spotabee.MainActivity;
+import com.assignment.spotabee.R;
+
 import static android.content.Context.DOWNLOAD_SERVICE;
 import static java.security.AccessController.getContext;
 
-public class Receiver extends BroadcastReceiver {
+public class DownloadReceiver extends BroadcastReceiver {
     public static final String CHANNEL_ID = "com.assignment.spotabee.type11";
     public static final int NOTIFICATION_ID = 1;
     private Context context;

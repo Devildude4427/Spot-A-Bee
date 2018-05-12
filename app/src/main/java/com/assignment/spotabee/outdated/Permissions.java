@@ -1,5 +1,7 @@
 package com.assignment.spotabee.outdated;
-
+/**
+ * Made by: C1717381
+ */
 import android.Manifest;
 import android.accounts.AccountManager;
 import android.app.Activity;

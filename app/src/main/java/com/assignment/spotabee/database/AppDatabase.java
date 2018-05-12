@@ -1,5 +1,7 @@
 package com.assignment.spotabee.database;
-
+/**
+ * Initially made by C1769948. Completely refactored to be more efficient by C1717381
+ */
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
@@ -9,7 +11,7 @@ import android.content.Context;
 /**
  * Starts or retrieves the database.
  */
-@Database(entities = {Description.class, UserScore.class}, version = 5, exportSchema = false)
+@Database(entities = {Description.class, UserScore.class}, version = 6, exportSchema = false)
 
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -19,11 +21,14 @@ public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase instance;
 
     /**
+     * Only method left from initial file created by C1768848 in this file
+     */
+    /**
      * Description of the flower data.
      *
      * @return the DescriptionDAO.
      */
-    public abstract DescriptionDao descriptionDao();
+    public abstract DatabaseDao databaseDao();
 
     /**
      * Creates a new instance of the database if one

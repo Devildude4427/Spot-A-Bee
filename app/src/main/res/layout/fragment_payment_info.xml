@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--Made by: C1769948 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -38,22 +39,29 @@
 
     </RelativeLayout>
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/txtHeading"
-        android:layout_width="match_parent"
-        android:layout_height="106dp"
+    <RelativeLayout
+        android:background="@android:drawable/dialog_holo_light_frame"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="32dp"
-        android:background="@drawable/grey_text_input_background"
-        android:elevation="@dimen/default_elevation"
         android:gravity="center"
         android:padding="10dp"
-        android:text="@string/thanks_for_your_donation_the_bees_thank_you"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        android:translationZ="@dimen/default_translation_z" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/txtHeading"
+            android:layout_width="match_parent"
+            android:layout_height="106dp"
+            android:background="@drawable/grey_text_input_background"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/thanks_for_your_donation_the_bees_thank_you"
+            android:textAlignment="center"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/txtStatus"
@@ -65,53 +73,63 @@
         android:textSize="18sp"
         android:textStyle="bold" />
 
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/txtAmount"
+    <RelativeLayout
+        android:background="@android:drawable/dialog_holo_light_frame"
         android:layout_marginTop="40dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:gravity="center"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp"
-        android:height="100dp"
-        android:background="@drawable/grey_text_input_background"
-        android:elevation="@dimen/default_elevation"
-        android:gravity="center"
         android:padding="10dp"
         android:layout_marginStart="60dp"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textSize="18sp"
-        android:translationZ="@dimen/default_translation_z" />
-
-    <RelativeLayout
-        android:id="@+id/goHome"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:background="@drawable/white_border"
-        android:elevation="@dimen/default_elevation"
-        android:translationZ="@dimen/default_translation_z">
-
-        <ImageView
-            android:id="@+id/go_home"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="23dp"
-            android:src="@drawable/ic_home" />
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/txtAmount"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:height="100dp"
+            android:background="@drawable/grey_text_input_background"
+            android:textAllCaps="false"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:background="@android:drawable/dialog_holo_light_frame"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/goHome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/go_home"
-            android:layout_centerHorizontal="true"
-            android:text="Go Home"
-            android:textSize="20sp" />
+            android:background="@drawable/white_border">
 
+            <ImageView
+                android:id="@+id/go_home"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="23dp"
+                android:src="@drawable/ic_home" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/go_home"
+                android:layout_centerHorizontal="true"
+                android:text="Go Home"
+                android:textSize="20sp" />
+
+        </RelativeLayout>
     </RelativeLayout>
+
 
 
 </RelativeLayout>

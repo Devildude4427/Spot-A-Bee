@@ -1,5 +1,7 @@
 package com.assignment.spotabee.customutils;
-
+/**
+ * Made by: C1769948
+ */
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;

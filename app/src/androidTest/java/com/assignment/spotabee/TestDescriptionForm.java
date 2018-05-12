@@ -1,22 +1,37 @@
 package com.assignment.spotabee;
 
 /**
- * Created by Lauren on 4/24/2018.
  * Tests UI  and  user journey for description form
  */
 
+import android.app.Activity;
+import android.bluetooth.BluetoothClass;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
+import android.support.test.espresso.ViewFinder;
+import android.support.test.espresso.core.internal.deps.guava.collect.Iterables;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
+import android.support.test.runner.lifecycle.Stage;
+import android.support.test.uiautomator.UiDevice;
+import android.support.test.uiautomator.UiObject;
+import android.support.test.uiautomator.UiObjectNotFoundException;
+import android.support.test.uiautomator.UiSelector;
 import android.test.suitebuilder.annotation.LargeTest;
+import android.util.Log;
+import android.widget.Spinner;
 
 import com.assignment.spotabee.MainActivity;
 import com.assignment.spotabee.R;
+import com.assignment.spotabee.customexceptions.ObsceneNumberException;
 import com.assignment.spotabee.database.AppDatabase;
+import com.assignment.spotabee.fragments.FragmentAfterSubmission;
 import com.assignment.spotabee.fragments.FragmentDescriptionForm;
 
 import org.hamcrest.Matchers;
@@ -27,6 +42,9 @@ import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 
+import android.test.InstrumentationTestCase;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -54,31 +72,58 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.StringEndsWith.endsWith;
 
 
+
+@LargeTest
+@RunWith(AndroidJUnit4.class)
 public class TestDescriptionForm {
+    private final String TAG = "Test DF: ";
+    Context appContext;
     AppDatabase database;
+
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Before
     public void init(){
+        appContext = InstrumentationRegistry.getTargetContext();
+        mActivityTestRule.launchActivity(new Intent());
+
+//        allowPermissionsIfNeeded();
+
         mActivityTestRule.getActivity()
                 .getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, new FragmentDescriptionForm())
                 .commit();
 
-        // Grab database and clear it for consistency
+
         database = AppDatabase.getAppDatabase(mActivityTestRule.getActivity());
         database.descriptionDao().nukeTable();
+
+        InstrumentationRegistry.getTargetContext().deleteDatabase("AppDatabase");
     }
+
+    private void allowPermissionsIfNeeded()  {
+        if (Build.VERSION.SDK_INT >= 23) {
+            UiObject allowPermissions = UiDevice.getInstance().findObject(new UiSelector().text("Allow"));
+            if (allowPermissions.exists()) {
+                try {
+                    allowPermissions.click();
+                } catch (UiObjectNotFoundException e) {
+                    Log.e(TAG, "There is no permissions dialog to interact with ");
+                }
+            }
+        }
+    }
+
 
     @Test
     public void doUiComponentsExist() {
 
-      
+
 
         onView(withId(R.id.identifyFlowerMessage))
                 .check(matches(isDisplayed()))
-                .check(matches(withText(R.string.identify_a_flower)));
+                .check(matches(withText(R.string.flower_sighting)));
 
         // Edit Texts
         onView(withId(R.id.numOfBees))
@@ -105,6 +150,8 @@ public class TestDescriptionForm {
         onView(withId(R.id.flowerIdentify))
                 .check(matches(isDisplayed()));
 
+        InstrumentationRegistry.getTargetContext().deleteDatabase("AppDatabase");
+
 
     }
 
@@ -114,10 +161,21 @@ public class TestDescriptionForm {
                 .perform(click());
 
         onView(withClassName(Matchers.endsWith("AfterSubmission")));
+
+        InstrumentationRegistry.getTargetContext().deleteDatabase("AppDatabase");
+    }
+
+    @Before
+    public void clearDatabase(){
+        database = AppDatabase.getAppDatabase(mActivityTestRule.getActivity());
+        database.descriptionDao().nukeTable();
+
+        InstrumentationRegistry.getTargetContext().deleteDatabase("AppDatabase");
     }
 
     @Test
     public void doesSubmissionSave(){
+
         String testFlowerType = "Alliums";
         String testNumberOfBees = "2";
         String testDescriptiveDetails = "None";
@@ -129,14 +187,8 @@ public class TestDescriptionForm {
                         closeSoftKeyboard()
                 );
 
-
-
-//        onData(anything()) // Attempt to simulate selecting a location provided by the geocoder
-//                .inAdapterView(
-//                        withId(R.id.addressSpinner)
-//                ).atPosition(0)
-//                .perform(click());
-
+        onView(withId(R.id.search_location))
+                .perform(click());
 
 
         onView(withId(R.id.search_location))
@@ -161,12 +213,81 @@ public class TestDescriptionForm {
                         closeSoftKeyboard()
                 );
 
+
         onView(withId(R.id.submit))
                 .perform(click());
 
 
-        assertTrue(database.descriptionDao()
-        .getAllDescriptions().size() == 1);
+
+        assertEquals(1, database.descriptionDao()
+                .getAllDescriptions().size());
+
+        InstrumentationRegistry.getTargetContext().deleteDatabase("AppDatabase");
+
+    }
+
+    @Before
+    public void clearDatabaseAgain(){
+        database = AppDatabase.getAppDatabase(mActivityTestRule.getActivity());
+        database.descriptionDao().nukeTable();
+
+        InstrumentationRegistry.getTargetContext().deleteDatabase("AppDatabase");
+    }
+
+    @Test
+    public void testObsceneNumberExceptionIsThrown(){
+        clearDatabase();
+        database.descriptionDao().nukeTable();
+
+        String testFlowerType = "Alliums";
+        String testNumberOfBees = "70";
+        String testDescriptiveDetails = "None";
+        String testAddress = "Cardiff Queens Street";
+
+        onView(withId(R.id.locationField))
+                .perform(
+                        typeText(testAddress),
+                        closeSoftKeyboard()
+                );
+
+        onView(withId(R.id.search_location))
+                .perform(click());
+
+
+
+        onView(withId(R.id.flowerField))
+                .perform(
+                        typeText(testFlowerType),
+                        closeSoftKeyboard()
+                );
+
+
+        onView(withId(R.id.numOfBees))
+                .perform(
+                        typeText(testNumberOfBees),
+                        closeSoftKeyboard()
+                );
+
+        onView(withId(R.id.descriptionField))
+                .perform(
+                        typeText(testDescriptiveDetails),
+                        closeSoftKeyboard()
+                );
+
+
+        onView(withId(R.id.submit))
+                .perform(click());
+
+
+
+        // Asserts that the submission does not save since the ObsceneNumberException
+        // would have been caught
+//        assertTrue(database.descriptionDao()
+//                .getAllDescriptions().size() == 0);
+
+        assertEquals(0, database.descriptionDao()
+                .getAllDescriptions().size());
+
     }
 
 }
