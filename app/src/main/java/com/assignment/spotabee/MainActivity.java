@@ -7,6 +7,7 @@ import android.app.DownloadManager;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 
@@ -221,11 +222,10 @@ public class MainActivity extends AppCompatActivity
             NavigationView navigationView = findViewById(R.id.nav_view);
             navigationView.setNavigationItemSelectedListener(this);
 
+            downloadReceiver = new DownloadReceiver();
             IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
             registerReceiver(downloadReceiver, filter);
         }
-
-
 
 
     }
@@ -323,7 +323,11 @@ public class MainActivity extends AppCompatActivity
     protected void onStop() {
         super.onStop();
         if(downloadReceiver != null){
-            unregisterReceiver(downloadReceiver);
+            try {
+                unregisterReceiver(downloadReceiver);
+            } catch (IllegalArgumentException e){
+
+            }
         }
     }
 
@@ -334,7 +338,11 @@ public class MainActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
         if(downloadReceiver != null){
-            unregisterReceiver(downloadReceiver);
+            try {
+                unregisterReceiver(downloadReceiver);
+            } catch (IllegalArgumentException e){
+
+            }
         }
     }
 
@@ -502,6 +510,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         AppDatabase.destroyInstance();
+        if(downloadReceiver != null){
+            try {
+                unregisterReceiver(downloadReceiver);
+            } catch (IllegalArgumentException e){
+
+            }
+        }
         super.onDestroy();
     }
 
@@ -565,4 +580,6 @@ public class MainActivity extends AppCompatActivity
         // Reset the boolean flag back to false for next time.
         mReturningWithResult = false;
     }
+
+
 }

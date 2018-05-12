@@ -18,6 +18,7 @@ import android.support.annotation.RequiresApi;
 import android.view.Gravity;
 import android.widget.Toast;
 
+import com.assignment.spotabee.KeyChain;
 import com.assignment.spotabee.R;
 import com.assignment.spotabee.receivers.DownloadReceiver;
 
@@ -29,12 +30,9 @@ import com.assignment.spotabee.receivers.DownloadReceiver;
 public class DownloadService extends Service {
     //Constants used for foreground notification
     public static final String SERVICE_CHANNEL_ID = "com.assignment.spotabee.service";
-    private static final int SERVICE_NOTIFICATION_ID = 900;
-    public static final String CHANNEL_ID = "com.assignment.spotabee.type11";
-    public static final int NOTIFICATION_ID = 1;
-    private IBinder mBinder;
     private long downloadReference;
     private DownloadManager downloadManager;
+    private DownloadReceiver downloadReceiver;
 
     //Empty constructor
     public DownloadService() {
@@ -43,6 +41,8 @@ public class DownloadService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        downloadReceiver = new DownloadReceiver();
 
         downloadManager = (DownloadManager) getBaseContext().getSystemService(DOWNLOAD_SERVICE);
         NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -63,18 +63,8 @@ public class DownloadService extends Service {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void createAnExampleNotificationChannel(NotificationManager notificationManager, String description) {
 
-        if (notificationManager.getNotificationChannel(CHANNEL_ID) == null) {
-            CharSequence name = "Spot a Bee";
 
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription(description);
-
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
 
     private long downloadData (Uri uri) {
 
@@ -117,19 +107,22 @@ public class DownloadService extends Service {
     private void registerScreenEvents(){
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_ON);
-        this.registerReceiver(new DownloadReceiver(), filter);
+        this.registerReceiver(downloadReceiver, filter);
+        
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopSelf();
+        unregisterReceiver(downloadReceiver);
     }
+
+
 
 
     @Override
     public IBinder onBind(Intent intent) {
-//        downloadReference = intent.getLongExtra("download_id", 1);
+        downloadReference = intent.getLongExtra("download_id", 1);
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
