@@ -1,5 +1,8 @@
 package com.assignment.spotabee;
 
+/**
+ * Made by: C1717381 and C1769948
+ */
 import android.app.DownloadManager;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -104,6 +107,10 @@ public class MainActivity extends AppCompatActivity
 
 
     /**
+     * Made by: C1717381
+     */
+
+    /**
      * Handles the main creation of application wide resources.
      * Examples of this include requesting permissions,
      * saving a context, initializing the database, and
@@ -189,8 +196,8 @@ public class MainActivity extends AppCompatActivity
 
             //This clears out the database, and is called every time!
             // Remove if you need persistence!
-            db.databasenDao().nukeTable();
-            db.databasenDao().nukeUserScores();
+            db.databaseDao().nukeTable();
+            db.databaseDao().nukeUserScores();
             //This clears out the database, and is called every time!
             // Remove if you need persistence!
 
@@ -200,7 +207,7 @@ public class MainActivity extends AppCompatActivity
                     51.4816, -3.1791, "Rose", "None",
                     1, "17-05-2018", "15:39");
 
-            db.databasenDao().insertDescriptions(description);
+            db.databaseDao().insertDescriptions(description);
 
 
             DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -223,6 +230,9 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    /**
+     * Made by: C1717381
+     */
     private ArrayList<PaperOnboardingPage> getDataForOnboarding() {
         // prepare data
         PaperOnboardingPage scr1 = new PaperOnboardingPage(getString(R.string.onboarding_heading_one),
@@ -243,6 +253,9 @@ public class MainActivity extends AppCompatActivity
         return elements;
     }
 
+    /**
+     * Made by: C1769948
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
 
@@ -255,11 +268,9 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-    }
+    /**
+     * Made by: C1717381
+     */
 
     /**
      * Allows fragments or java classes
@@ -277,10 +288,17 @@ public class MainActivity extends AppCompatActivity
      *
      * @return The context for the current activity
      */
+
+    /**
+     * Made by: C1717381
+     */
     public static Context getContextOfApplication() {
         return contextOfApplication;
     }
 
+    /**
+     * Made by: C1717381
+     */
     /**
      * Handles navigation when device back button is pressed.
      * As of now, it navigates to the previous screen, though
@@ -298,6 +316,9 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    /**
+     * Made by: C1769948
+     */
     @Override
     protected void onStop() {
         super.onStop();
@@ -306,6 +327,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Made by: C1769948
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -314,6 +338,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Made by: C1717381
+     */
     /**
      * Creates the option menu.
      *
@@ -328,6 +355,9 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * Made by: C1717381
+     */
     /**
      * Handles what happens when an item is selected in the
      * options menu. This is blank for now.
@@ -350,6 +380,9 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Made by: C1717381
+     */
     /**
      * Method that handles all screen changes through the nav drawer.
      *
@@ -406,6 +439,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
+     * Made by: C1717381
+     */
+    /**
      * Starts the process of changing fragments
      * when an item is selected from the Nav menu.
      *
@@ -418,6 +454,9 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * Made by: C1769948 and C1717381
+     */
     /**
      * Creates gets details and confirms operation from account picker.
      *
@@ -454,6 +493,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
+     * Made by: C1717381
+     */
+    /**
      * Handles the destruction of the
      * MainActivity when the app is closed.
      */
@@ -465,6 +507,9 @@ public class MainActivity extends AppCompatActivity
 
 
 
+    /**
+     * Made by: C1769948
+     */
     /**
      * Handles the results of the PayPal transaction.
      *
@@ -503,6 +548,9 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    /**
+     * Made by: C1769948
+     */
     /**
      * Handles the resuming of the app
      * from the PayPal feature. Causes issues

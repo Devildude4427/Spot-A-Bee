@@ -1,5 +1,7 @@
 package com.assignment.spotabee.fragments;
-
+/**
+ * Made by: C1769948
+ */
 
 import android.content.Context;
 import android.os.Bundle;
@@ -61,7 +63,7 @@ public class FragmentAfterSubmission extends Fragment {
     }
 
     public void checkForNotifications(){
-        int currentNumOfSubmissions = db.databasenDao().getAllDescriptions().size();
+        int currentNumOfSubmissions = db.databaseDao().getAllDescriptions().size();
 
         // Since there's no backend data to pull from, I've mocked this using the number of
         // submissions held in the database

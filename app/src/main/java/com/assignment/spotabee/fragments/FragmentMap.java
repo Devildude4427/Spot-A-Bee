@@ -37,6 +37,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Made by: C1717381
+ */
+/**
  * Map fragment. Creates and controls all data
  * that goes into creating our map screen.
  */
@@ -102,7 +105,7 @@ public class FragmentMap extends Fragment
                 container, false);
 
         AppDatabase db = AppDatabase.getAppDatabase(getContext());
-        allDescriptions = db.databasenDao()
+        allDescriptions = db.databaseDao()
                 .getAllDescriptions();
 
         locationManager = (LocationManager)

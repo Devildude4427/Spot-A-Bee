@@ -1,9 +1,8 @@
 package com.assignment.spotabee;
 
-import android.app.Fragment;
-
-
-
+/**
+ * Made by: C1769948
+ */
 public class KeyChain {
     private static final String CURRENT_FRAGMENT_KEY = "current_fragment";
 
@@ -32,3 +31,5 @@ public class KeyChain {
 
     public static String getClarifaiApiKey() {return CLARIFAI_API_KEY;}
 }
+
+

@@ -1,5 +1,7 @@
 package com.assignment.spotabee;
-
+/**
+ * Made by: C1769948
+ */
 import android.Manifest;
 import android.app.Dialog;
 import android.app.Fragment;

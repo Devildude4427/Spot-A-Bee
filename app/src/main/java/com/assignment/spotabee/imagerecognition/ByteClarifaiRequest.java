@@ -1,6 +1,8 @@
 package com.assignment.spotabee.imagerecognition;
 
-
+/**
+ * Made by: C1769948
+ */
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;

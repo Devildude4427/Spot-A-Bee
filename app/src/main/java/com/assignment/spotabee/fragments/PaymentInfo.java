@@ -1,5 +1,7 @@
 package com.assignment.spotabee.fragments;
-
+/**
+ * Made by: C1769948 and
+ */
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;

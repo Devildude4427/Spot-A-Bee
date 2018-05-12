@@ -3,6 +3,9 @@ package com.assignment.spotabee.fragments;
 // Tutorial for PayPal Button: https://developer
 // .paypal.com/docs/classic/mobile/ht_mpl-itemPayment-Android/
 
+/**
+ * Made by: C1769948 and
+ */
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
