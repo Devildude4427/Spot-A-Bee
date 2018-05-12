@@ -13,14 +13,18 @@ import android.util.Log;
  * Not modified from above source, copied and pasted.
  */
 
-public class CheckNetworkConnection {
+public class NetworkConnection {
 
 
-    private static final String TAG = CheckNetworkConnection.class.getSimpleName();
+    private static final String TAG = NetworkConnection.class.getSimpleName();
+    private Context context;
+
+    public NetworkConnection(Context context){
+        this.context = context;
+    }
 
 
-
-    public static boolean isInternetAvailable(Context context)
+    public boolean internetIsAvailable()
     {
         NetworkInfo info = (NetworkInfo) ((ConnectivityManager)
                 context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();

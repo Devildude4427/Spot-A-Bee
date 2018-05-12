@@ -3,43 +3,21 @@ package com.assignment.spotabee;
  * Made by: C1769948
  */
 import android.Manifest;
-import android.app.Dialog;
-import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
-import com.assignment.spotabee.customutils.CheckNetworkConnection;
-import com.assignment.spotabee.customutils.CustomQuickSort;
-import com.assignment.spotabee.database.AppDatabase;
-import com.assignment.spotabee.database.UserScore;
+import com.assignment.spotabee.customutils.NetworkConnection;
 import com.assignment.spotabee.fragments.FragmentDescriptionForm;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.maps.model.LatLng;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
-import java.util.List;
-
-import static com.assignment.spotabee.MainActivity.getContextOfApplication;
 
 
 public class LocationHelper extends android.support.v4.app.Fragment{
@@ -50,6 +28,7 @@ public class LocationHelper extends android.support.v4.app.Fragment{
     private static final String TAG = "Location Helper";
     private boolean haveSelectedForm;
     private String flowerType;
+    private NetworkConnection networkConnection;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,10 +41,12 @@ public class LocationHelper extends android.support.v4.app.Fragment{
 
         getCurrentCoOrdinates();
 
+
     }
 
 
     public void makeLocationRequest(){
+        networkConnection = new NetworkConnection(getActivity());
         Log.d(TAG, "We are in makeLocationRequest()");
 
         if (ContextCompat.checkSelfPermission(context
@@ -77,7 +58,7 @@ public class LocationHelper extends android.support.v4.app.Fragment{
             if (locationCallback == null)
                 locationCallback = new UserLocationCallback();
             Log.d(TAG, "Have created location callback");
-            if(CheckNetworkConnection.isInternetAvailable(getActivity())){
+            if(networkConnection.internetIsAvailable()){
                 this.mFusedLocationClient.requestLocationUpdates(
                         createSingleLocationRequest(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY),
                         locationCallback,

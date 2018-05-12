@@ -34,7 +34,7 @@ import com.assignment.spotabee.BuildConfig;
 import com.assignment.spotabee.KeyChain;
 import com.assignment.spotabee.LocationHelper;
 import com.assignment.spotabee.MainActivity;
-import com.assignment.spotabee.customutils.CheckNetworkConnection;
+import com.assignment.spotabee.customutils.NetworkConnection;
 import com.assignment.spotabee.customutils.FileOp;
 import com.assignment.spotabee.imagerecognition.ByteClarifaiRequest;
 import com.assignment.spotabee.imagerecognition.ClarifaiClientGenerator;
@@ -124,6 +124,8 @@ public class FragmentHome extends Fragment  {
      *                           changes.
      * @return The finished view for the fragment.
      */
+
+    private NetworkConnection networkConnection;
     @Nullable
     @Override
     public View onCreateView(final @NonNull LayoutInflater inflater,
@@ -144,6 +146,8 @@ public class FragmentHome extends Fragment  {
 //        locationListener = new FragmentMap().new MyLocationListener();
 
         db = AppDatabase.getAppDatabase(getContext());
+
+        networkConnection = new NetworkConnection(getActivity());
 
 
         /**
@@ -381,8 +385,7 @@ public class FragmentHome extends Fragment  {
                 progress.setCancelable(false);
                 progress.show();
 
-                if (!CheckNetworkConnection.isInternetAvailable(
-                        getContextOfApplication())) {
+                if (!networkConnection.internetIsAvailable()){
                     Log.e(TAG, "No internet connection");
                     progress.dismiss();
                     Toast.makeText(getContextOfApplication(),
@@ -487,8 +490,7 @@ public class FragmentHome extends Fragment  {
                 progress.show();
 
                 // Verifying internet is available before making a Clarifai request
-                if (!CheckNetworkConnection.isInternetAvailable(
-                        getContextOfApplication())) {
+                if (!networkConnection.internetIsAvailable()){
                     progress.dismiss();
                     Toast.makeText(getContextOfApplication(),
                             "Internet connection unavailable.",
