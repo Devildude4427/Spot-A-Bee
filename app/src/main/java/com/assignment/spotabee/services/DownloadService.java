@@ -108,7 +108,7 @@ public class DownloadService extends Service {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_ON);
         this.registerReceiver(downloadReceiver, filter);
-        
+
     }
 
     @Override

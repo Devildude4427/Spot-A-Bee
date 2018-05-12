@@ -1,7 +1,7 @@
 package com.assignment.spotabee.fragments;
 
 /**
- * Made by: C1769948 and
+ * Made by: C1769948 and C1452589
  */
 import android.content.Intent;
 import android.os.Bundle;

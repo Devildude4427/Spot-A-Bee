@@ -1,5 +1,8 @@
 package com.assignment.spotabee.Config;
 
+/**
+ * Made by: C1452589
+ */
 
 //This is a Config java class within Config package
 //This java method hold the information for the PAYPAL CLIENT ID
