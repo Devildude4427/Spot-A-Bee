@@ -23,7 +23,7 @@ import com.assignment.spotabee.R;
 import com.assignment.spotabee.receivers.DownloadReceiver;
 
 
-// * Created by Lauren on 4/25/2018.
+// *
 // * (Download Manager tutorial) Reference: https://www.codeproject.com/Articles/1112730/Android-Download-Manager-Tutorial-How-to-Download
 // */
 
@@ -132,94 +132,8 @@ public class DownloadService extends Service {
 
         pdfDownloadQuery.setFilterById(downloadReference);
 
-        Cursor cursor = downloadManager.query(pdfDownloadQuery);
-        if(cursor.moveToFirst()){
-            downloadStatus(cursor, downloadReference);
-        }
+
     }
 
-    private void downloadStatus(Cursor cursor, long downloadId){
-
-        int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
-        int status = cursor.getInt(columnIndex);
-        //column for reason code if the download failed or paused
-        int columnReason = cursor.getColumnIndex(DownloadManager.COLUMN_REASON);
-        int reason = cursor.getInt(columnReason);
-
-        String statusText = "";
-        String reasonText = "";
-
-        switch(status){
-            case DownloadManager.STATUS_FAILED:
-                statusText = getString(R.string.status_failed);
-                switch(reason){
-                    case DownloadManager.ERROR_CANNOT_RESUME:
-                        reasonText = getString(R.string.error_cannot_resume);
-                        break;
-                    case DownloadManager.ERROR_DEVICE_NOT_FOUND:
-                        reasonText = getString(R.string.error_device_not_found);
-                        break;
-                    case DownloadManager.ERROR_FILE_ALREADY_EXISTS:
-                        reasonText = getString(R.string.error_file_already_exists);
-                        break;
-                    case DownloadManager.ERROR_FILE_ERROR:
-                        reasonText = getString(R.string.error_file_error);
-                        break;
-                    case DownloadManager.ERROR_HTTP_DATA_ERROR:
-                        reasonText = getString(R.string.error_http_error);
-                        break;
-                    case DownloadManager.ERROR_INSUFFICIENT_SPACE:
-                        reasonText = getString(R.string.error_insufficient_space);
-                        break;
-                    case DownloadManager.ERROR_TOO_MANY_REDIRECTS:
-                        reasonText = getString(R.string.error_too_many_redirects);
-                        break;
-                    case DownloadManager.ERROR_UNHANDLED_HTTP_CODE:
-                        reasonText = getString(R.string.error_unhandled_exception);
-                        break;
-                    case DownloadManager.ERROR_UNKNOWN:
-                        reasonText = getString(R.string.error_unknown);
-                        break;
-                }
-                break;
-            case DownloadManager.STATUS_PAUSED:
-                statusText = getString(R.string.status_paused);
-                switch(reason){
-                    case DownloadManager.PAUSED_QUEUED_FOR_WIFI:
-                        reasonText = getString(R.string.paused_queue_for_wifi);
-                        break;
-                    case DownloadManager.PAUSED_UNKNOWN:
-                        reasonText = getString(R.string.paused_unknown);
-                        break;
-                    case DownloadManager.PAUSED_WAITING_FOR_NETWORK:
-                        reasonText = getString(R.string.paused_waiting_for_network);
-                        break;
-                    case DownloadManager.PAUSED_WAITING_TO_RETRY:
-                        reasonText = getString(R.string.paused_waiting_to_retry);
-                        break;
-                }
-                break;
-            case DownloadManager.STATUS_PENDING:
-                statusText = getString(R.string.status_pending);
-                break;
-            case DownloadManager.STATUS_RUNNING:
-                statusText = getString(R.string.status_running);
-                break;
-            case DownloadManager.STATUS_SUCCESSFUL:
-                statusText = getString(R.string.status_successful);
-                reasonText = getString(R.string.successfully_downloaded);
-
-                break;
-        }
-
-        if(downloadId == downloadReference) {
-
-            Toast toast = Toast.makeText(getBaseContext(),
-                    getString(R.string.pdf_download) + "\n" + statusText + reasonText,
-                    Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP, 25, 400);
-            toast.show();
-        }
-    }
 }
 
