@@ -21,7 +21,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <uses-library android:name="com.google.android.maps" />
-        <service android:name=".services.DownloadService" />
+
+        <service android:name=".services.DownloadService"
+            android:exported="false">
+        </service>
+
+        <receiver android:name=".receivers.DownloadReceiver"
+            android:exported="false">
+        </receiver>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -48,9 +55,6 @@
         </provider>
 
 
-        <service android:name=".services.DownloadService" />
-
-        <receiver android:name=".receivers.DownloadReceiver"/>
     </application>
 
 </manifest>
