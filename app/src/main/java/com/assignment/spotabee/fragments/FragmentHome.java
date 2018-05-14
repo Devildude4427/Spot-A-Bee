@@ -1,6 +1,6 @@
 package com.assignment.spotabee.fragments;
 /**
- * Made by: C1717381, C1769948 and
+ * Made by: C1452589, C1717381 and C1769948
  */
 import android.Manifest;
 import android.app.Dialog;
@@ -34,7 +34,7 @@ import com.assignment.spotabee.BuildConfig;
 import com.assignment.spotabee.KeyChain;
 import com.assignment.spotabee.LocationHelper;
 import com.assignment.spotabee.MainActivity;
-import com.assignment.spotabee.customutils.CheckNetworkConnection;
+import com.assignment.spotabee.customutils.NetworkConnection;
 import com.assignment.spotabee.customutils.FileOp;
 import com.assignment.spotabee.imagerecognition.ByteClarifaiRequest;
 import com.assignment.spotabee.imagerecognition.ClarifaiClientGenerator;
@@ -124,6 +124,8 @@ public class FragmentHome extends Fragment  {
      *                           changes.
      * @return The finished view for the fragment.
      */
+
+    private NetworkConnection networkConnection;
     @Nullable
     @Override
     public View onCreateView(final @NonNull LayoutInflater inflater,
@@ -145,7 +147,12 @@ public class FragmentHome extends Fragment  {
 
         db = AppDatabase.getAppDatabase(getContext());
 
+        networkConnection = new NetworkConnection(getActivity());
 
+
+        /**
+         * Created by C1452589
+         */
         ImageView buttonCamera = view.findViewById(R.id.button_camera);
         buttonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,6 +170,9 @@ public class FragmentHome extends Fragment  {
                 }
 
 
+                /**
+                 * Created by C1717381
+                 */
                 try {
                     if (ContextCompat.checkSelfPermission(
                             getActivity().getApplicationContext(),
@@ -191,6 +201,9 @@ public class FragmentHome extends Fragment  {
             }
         });
 
+        /**
+         * Created by C1452589
+         */
         ImageView buttonDescriptionForm = view.findViewById(
                 R.id.button_no_image_upload);
         buttonDescriptionForm.setOnClickListener(new View.OnClickListener() {
@@ -224,6 +237,7 @@ public class FragmentHome extends Fragment  {
     }
 
     /**
+     * Created by C1717381
      * Once the view is created, it sets the title
      * and will handle any other fragment methods.
      *
@@ -241,6 +255,7 @@ public class FragmentHome extends Fragment  {
     }
 
     /**
+     * Created by C1452589 and C1717381
      * Controls what a picture's name will be
      * and where it will be saved on the phone.
      *
@@ -281,6 +296,7 @@ public class FragmentHome extends Fragment  {
 
 
     /**
+     * Created by C1717381 and C1452589
      * Starts the process of taking a picture and saving it.
      */
     private void dispatchTakePictureIntent() {
@@ -315,6 +331,7 @@ public class FragmentHome extends Fragment  {
     }
 
     /**
+     * Contributed by C1452589 and C1717381
      * Method for saving the image.
      */
     private void galleryAddPic() {
@@ -332,6 +349,7 @@ public class FragmentHome extends Fragment  {
 
 
     /**
+     * Contributed by C1452589 and C1717381
      * Allows user to upload picture from phone's storage.
      */
     public void onImageGallery() {
@@ -340,6 +358,10 @@ public class FragmentHome extends Fragment  {
                 .setType("image/*"), IMAGE_GALLERY);
     }
 
+    /**
+     * Created by C1769948
+     * @param data
+     */
     private void handleImageIdentification(final Intent data) {
         Log.d(TAG, "Have started handleImageIdentification()");
             final ProgressDialog progress
@@ -363,8 +385,7 @@ public class FragmentHome extends Fragment  {
                 progress.setCancelable(false);
                 progress.show();
 
-                if (!CheckNetworkConnection.isInternetAvailable(
-                        getContextOfApplication())) {
+                if (!networkConnection.internetIsAvailable()){
                     Log.e(TAG, "No internet connection");
                     progress.dismiss();
                     Toast.makeText(getContextOfApplication(),
@@ -437,6 +458,9 @@ public class FragmentHome extends Fragment  {
                                  final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        /**
+         * Contributed by C1769948
+         */
         // Creating a progress dialogue to show the user whilst
         // the Clarifai request is executing that can be dismissed on back press
         final ProgressDialog progress
@@ -466,8 +490,7 @@ public class FragmentHome extends Fragment  {
                 progress.show();
 
                 // Verifying internet is available before making a Clarifai request
-                if (!CheckNetworkConnection.isInternetAvailable(
-                        getContextOfApplication())) {
+                if (!networkConnection.internetIsAvailable()){
                     progress.dismiss();
                     Toast.makeText(getContextOfApplication(),
                             "Internet connection unavailable.",
@@ -504,6 +527,9 @@ public class FragmentHome extends Fragment  {
                         }
                     });
                 }
+                /**
+                 * Contributed by C1717381
+                 */
             } else if (requestCode == IMAGE_CAPTURE) {
                 Log.v(TAG, "Entering Image captured");
                 galleryAddPic();
@@ -521,6 +547,10 @@ public class FragmentHome extends Fragment  {
         }
     }
 
+    /**
+     * Created by C1769948
+     * @param flowerName
+     */
     private void goToDescriptionFormWithBundle(String flowerName){
         Bundle locationFormBundle = new Bundle();
         locationFormBundle.putString("flowerName",

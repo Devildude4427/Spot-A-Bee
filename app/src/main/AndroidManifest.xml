@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-feature android:name="android.hardware.camera"
@@ -21,7 +23,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <uses-library android:name="com.google.android.maps" />
-        <service android:name=".services.DownloadService" />
+
+        <service android:name=".services.DownloadService"
+            android:exported="false">
+        </service>
+
+        <receiver android:name=".receivers.DownloadReceiver"
+            android:exported="false">
+        </receiver>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -41,6 +50,7 @@
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.assignment.spotabee.provider"
             android:exported="false"
+            android:protectionLevel="signature"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
@@ -48,9 +58,6 @@
         </provider>
 
 
-        <service android:name=".services.DownloadService" />
-
-        <receiver android:name=".receivers.DownloadReceiver"/>
     </application>
 
 </manifest>
