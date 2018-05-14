@@ -1,47 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--Created by C1452589-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/homespotabee"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-
-    <!--<android.support.v7.widget.AppCompatButton-->
-    <!--android:id="@+id/button_camera"-->
-    <!--android:layout_width="109dp"-->
-    <!--android:layout_height="101dp"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:layout_centerHorizontal="true"-->
-    <!--android:layout_marginBottom="133dp"-->
-    <!--android:background="@drawable/round_button"-->
-    <!--android:text="@string/home_button_label_camera"-->
-    <!--android:textColor="#000000"-->
-    <!--app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--app:layout_constraintHorizontal_bias="0.501"-->
-    <!--app:layout_constraintLeft_toLeftOf="parent"-->
-    <!--app:layout_constraintRight_toRightOf="parent"-->
-    <!--app:layout_constraintTop_toTopOf="parent"-->
-    <!--app:layout_constraintVertical_bias="0.682" />-->
-
-    <!--<android.support.v7.widget.AppCompatButton-->
-    <!--android:id="@+id/button_description_form"-->
-    <!--android:layout_width="140dp"-->
-    <!--android:layout_height="60dp"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:layout_alignParentStart="true"-->
-    <!--android:layout_marginBottom="12dp"-->
-    <!--android:layout_marginStart="28dp"-->
-    <!--android:background="@color/colorTranparentOrange"-->
-    <!--android:text="@string/home_button_label_form"-->
-    <!--android:textSize="16sp"-->
-    <!--app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--app:layout_constraintHorizontal_bias="0.0"-->
-    <!--app:layout_constraintLeft_toLeftOf="parent"-->
-    <!--app:layout_constraintRight_toRightOf="parent"-->
-    <!--app:layout_constraintTop_toTopOf="parent"-->
-    <!--app:layout_constraintVertical_bias="1.0" />-->
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -49,23 +12,23 @@
     </RelativeLayout>
     <ImageView
         android:id="@+id/bee_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/textView3"
-        android:layout_width="150dp"
-        android:layout_height="140dp"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_vertical"
-        android:layout_marginTop="50dp"
-        android:src="@drawable/transparent" />
+        android:layout_marginTop="12dp"
+        android:src="@drawable/bee_1" />
 
     <ImageView
         android:id="@+id/button_camera"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
+        android:layout_width="350dp"
+        android:layout_height="175dp"
         android:layout_above="@+id/button_image_upload"
         android:layout_below="@+id/bee_logo"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
-        android:src="@drawable/cameraeye"
+        android:layout_marginBottom="34dp"
+        android:src="@drawable/ic_camera_svg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -96,7 +59,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="15dp"
         android:fontFamily="casual"
         android:text="@string/spot_a_bee"
         android:textColor="#000000"

@@ -88,7 +88,6 @@ public class TestDescriptionForm {
         appContext = InstrumentationRegistry.getTargetContext();
         mActivityTestRule.launchActivity(new Intent());
 
-//        allowPermissionsIfNeeded();
 
         mActivityTestRule.getActivity()
                 .getSupportFragmentManager().beginTransaction()
@@ -97,23 +96,11 @@ public class TestDescriptionForm {
 
 
         database = AppDatabase.getAppDatabase(mActivityTestRule.getActivity());
-        database.descriptionDao().nukeTable();
+        database.databaseDao().nukeTable();
 
         InstrumentationRegistry.getTargetContext().deleteDatabase("AppDatabase");
     }
 
-    private void allowPermissionsIfNeeded()  {
-        if (Build.VERSION.SDK_INT >= 23) {
-            UiObject allowPermissions = UiDevice.getInstance().findObject(new UiSelector().text("Allow"));
-            if (allowPermissions.exists()) {
-                try {
-                    allowPermissions.click();
-                } catch (UiObjectNotFoundException e) {
-                    Log.e(TAG, "There is no permissions dialog to interact with ");
-                }
-            }
-        }
-    }
 
 
     @Test
@@ -168,7 +155,7 @@ public class TestDescriptionForm {
     @Before
     public void clearDatabase(){
         database = AppDatabase.getAppDatabase(mActivityTestRule.getActivity());
-        database.descriptionDao().nukeTable();
+        database.databaseDao().nukeTable();
 
         InstrumentationRegistry.getTargetContext().deleteDatabase("AppDatabase");
     }
@@ -219,7 +206,7 @@ public class TestDescriptionForm {
 
 
 
-        assertEquals(1, database.descriptionDao()
+        assertEquals(1, database.databaseDao()
                 .getAllDescriptions().size());
 
         InstrumentationRegistry.getTargetContext().deleteDatabase("AppDatabase");
@@ -229,7 +216,7 @@ public class TestDescriptionForm {
     @Before
     public void clearDatabaseAgain(){
         database = AppDatabase.getAppDatabase(mActivityTestRule.getActivity());
-        database.descriptionDao().nukeTable();
+        database.databaseDao().nukeTable();
 
         InstrumentationRegistry.getTargetContext().deleteDatabase("AppDatabase");
     }
@@ -237,7 +224,7 @@ public class TestDescriptionForm {
     @Test
     public void testObsceneNumberExceptionIsThrown(){
         clearDatabase();
-        database.descriptionDao().nukeTable();
+        database.databaseDao().nukeTable();
 
         String testFlowerType = "Alliums";
         String testNumberOfBees = "70";
@@ -282,10 +269,8 @@ public class TestDescriptionForm {
 
         // Asserts that the submission does not save since the ObsceneNumberException
         // would have been caught
-//        assertTrue(database.descriptionDao()
-//                .getAllDescriptions().size() == 0);
 
-        assertEquals(0, database.descriptionDao()
+        assertEquals(0, database.databaseDao()
                 .getAllDescriptions().size());
 
     }

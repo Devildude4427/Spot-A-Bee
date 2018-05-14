@@ -74,7 +74,7 @@ public class HomeTest {
 
 
         database = AppDatabase.getAppDatabase(mActivityTestRule.getActivity());
-        database.descriptionDao().nukeTable();
+        database.databaseDao().nukeTable();
 
         InstrumentationRegistry.getTargetContext().deleteDatabase("AppDatabase");
     }
