@@ -4,7 +4,7 @@ package com.assignment.spotabee.fragments;
 // .paypal.com/docs/classic/mobile/ht_mpl-itemPayment-Android/
 
 /**
- * Made by: C1769948 and
+ * Made by: C1769948 and C1452589
  */
 import android.content.Context;
 import android.os.Bundle;

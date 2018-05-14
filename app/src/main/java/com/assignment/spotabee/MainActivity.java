@@ -7,6 +7,7 @@ import android.app.DownloadManager;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
@@ -105,6 +106,8 @@ public class MainActivity extends AppCompatActivity
 
     private Fragment currentFragment;
 
+    private static final boolean STRICT_TESTING = true;
+
 
 
     /**
@@ -123,6 +126,20 @@ public class MainActivity extends AppCompatActivity
     @RequiresApi(api = Build.VERSION_CODES.M)
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (STRICT_TESTING) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                    .detectDiskReads()
+                    .detectDiskWrites()
+                    .detectNetwork()
+                    .penaltyLog()
+                    .build());
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                    .detectLeakedSqlLiteObjects()
+                    .detectLeakedClosableObjects()
+                    .penaltyLog()
+                    .penaltyDeath()
+                    .build());
+        }
         setContentView(R.layout.activity_main);
         if(savedInstanceState != null) {
             currentFragment = getSupportFragmentManager().getFragment(savedInstanceState, KeyChain.getCurrentFragmentKey());
