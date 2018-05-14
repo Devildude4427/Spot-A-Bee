@@ -7,7 +7,7 @@ import android.support.test.InstrumentationRegistry;
 
 import com.assignment.spotabee.imagerecognition.ByteClarifaiRequest;
 import com.assignment.spotabee.imagerecognition.ClarifaiClientGenerator;
-import com.assignment.spotabee.imagerecognition.FlowerIdentificationModel;
+
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,9 +31,8 @@ import static junit.framework.Assert.assertEquals;
  */
 
 public class TestClarifai {
-    private final Logger LOGGER = Logger.getLogger(com.assignment.spotabee.imagerecognition.TestClarifai.class.getName());
+    private final Logger LOGGER = Logger.getLogger(com.assignment.spotabee.TestClarifai.class.getName());
     private final ClarifaiClient client = ClarifaiClientGenerator.generate("d984d2d494394104bb4bee0b8149523d");
-    private FlowerIdentificationModel flowerIdentificationModel;
     private ByteClarifaiRequest byteClarifaiRequest;
     private Context context;
 

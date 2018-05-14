@@ -1,6 +1,7 @@
 package com.assignment.spotabee;
 
 
+import android.os.Bundle;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -9,9 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import com.assignment.spotabee.fragments.FragmentDescriptionForm;
+import com.assignment.spotabee.fragments.PaymentDetails;
+import com.assignment.spotabee.fragments.PaymentInfo;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,12 +28,10 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.action.ViewActions.scrollTo;
-import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
-import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
@@ -35,13 +39,13 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class PayPalJourneyTest {
+public class GoToPayPalTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void payPalJourneyTest() {
+    public void goToPayPalTest() {
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
                         childAtPosition(
@@ -63,12 +67,16 @@ public class PayPalJourneyTest {
                         isDisplayed()));
         navigationMenuItemView.perform(click());
 
+        ViewInteraction appCompatEditText = onView(
+                allOf(withId(R.id.editAmount),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.RelativeLayout")),
+                                        2),
+                                0),
+                        isDisplayed()));
+        appCompatEditText.perform(replaceText("17"), closeSoftKeyboard());
 
-        onView(withId(R.id.editAmount))
-                .perform(
-                        typeText("17"),
-                        closeSoftKeyboard()
-                );
 
         ViewInteraction linearLayout = onView(
                 allOf(childAtPosition(
@@ -79,57 +87,29 @@ public class PayPalJourneyTest {
                         isDisplayed()));
         linearLayout.perform(click());
 
+    }
 
-//        ViewInteraction editText = onView(
-//                allOf(withContentDescription("Email")));
-
-        ViewInteraction editText = onView(withHint("Email"));
-//                        childAtPosition(
-//                                childAtPosition(
-//                                        withClassName(is("android.widget.LinearLayout")),
-//                                        0),
-//                                1)));
-        editText.perform(
-                typeText("zoilagarman3@gmail.com"),
-                closeSoftKeyboard()
-        );
+    @Test
+    public void testPaymentInfo(){
+        Bundle mockPaymentDetails = new Bundle();
+        mockPaymentDetails.putString("amount_payed", "17");
+        PaymentInfo paymentDetails = new PaymentInfo();
+        paymentDetails.setArguments(mockPaymentDetails);
 
 
-        ViewInteraction editText2 = onView(
-                allOf(withContentDescription("Password"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.LinearLayout")),
-                                        0),
-                                2)));
-        editText2.perform(scrollTo(), replaceText("12345abcde"), closeSoftKeyboard());
+        mActivityTestRule.getActivity()
+                .getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, paymentDetails)
+                .commit();
 
-        ViewInteraction linearLayout3 = onView(
-                childAtPosition(
-                        childAtPosition(
-                                withClassName(is("android.widget.LinearLayout")),
-                                0),
-                        3));
-        linearLayout3.perform(scrollTo(), click());
+        String textAmountFormatter = mActivityTestRule.getActivity().getString(R.string.test_donation);
+        String formatted = String.format(textAmountFormatter, "17");
 
-        ViewInteraction linearLayout4 = onView(
-                childAtPosition(
-                        childAtPosition(
-                                withClassName(is("android.widget.LinearLayout")),
-                                0),
-                        8));
-        linearLayout4.perform(scrollTo(), click());
-
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.txtAmount), withText("You have donated $17\n to Spot A Bee"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.content_frame),
-                                        0),
-                                4),
-                        isDisplayed()));
-        textView.check(matches(withText("You have donated $17  to Spot A Bee")));
-
+//        onView(withId(R.id.txtAmount))
+//                .check(matches(withText(formatted)));
+        onView(withId(R.id.txtAmount))
+                .check(matches(isDisplayed()))
+                .check(matches(withText(formatted)));
     }
 
     private static Matcher<View> childAtPosition(
@@ -151,3 +131,6 @@ public class PayPalJourneyTest {
         };
     }
 }
+
+
+
