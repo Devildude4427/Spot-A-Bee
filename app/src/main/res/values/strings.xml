@@ -130,5 +130,8 @@
     <string name="donation_amount">Donation amount</string>
     <string name="help_spot_a_bee_by_making_a_donation_to_support_our_research">Help Spot a Bee by making a donation to support our research</string>
     <string name="test_donation">You have donated $17 to Spot A Bee</string>
+    <string name="tips_for_taking_photos">Tips for taking photos</string>
+    <string name="image_a">Image A</string>
+    <string name="image_b">Image B</string>
 
 </resources>

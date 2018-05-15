@@ -8,10 +8,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.assignment.spotabee.R;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.database.Description;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -20,6 +22,10 @@ import java.util.List;
  * on the 'How To' page.
  */
 public class FragmentHowTo extends Fragment {
+    private ImageView goodFlower;
+    private ImageView badFlower;
+
+    private View rootView;
 
     /**
      * TAG used in Log statements that can narrow down where the message
@@ -45,12 +51,26 @@ public class FragmentHowTo extends Fragment {
     public View onCreateView(final @NonNull LayoutInflater inflater,
                              final @Nullable ViewGroup container,
                              final @Nullable Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_menu_howto, container, false);
         //returning our layout file
         //change R.layout.yourlayoutfilename for each of your fragments
+
+        goodFlower = rootView.findViewById(R.id.good_flower);
+        badFlower = rootView.findViewById(R.id.bad_flower);
 
         AppDatabase db = AppDatabase.getAppDatabase(getContext());
         List<Description> allDescriptions = db.databaseDao()
                 .getAllDescriptions();
+
+
+
+        Picasso.with(getActivity()).load(R.drawable.buddleja_high_res)
+                .resize(576, 346)
+                .into(goodFlower);
+
+        Picasso.with(getActivity()).load(R.drawable.bad_buddleja)
+                .resize(570, 380)
+                .into(badFlower);
 
         for (Description item:allDescriptions) {
             if (item.getFlowerType() != null) {
@@ -59,7 +79,8 @@ public class FragmentHowTo extends Fragment {
                 Log.v(TAG, "This entry does not have a flower type");
             }
         }
-        return inflater.inflate(R.layout.fragment_menu_howto, container, false);
+
+        return rootView;
     }
 
     /**
