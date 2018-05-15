@@ -32,16 +32,16 @@
             android:layout_marginBottom="10dp"
             app:srcCompat="@drawable/buddleja_high_res" />
 
-        <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="70dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginStart="5dp"
-            android:layout_alignParentTop="true"
-            android:layout_above="@id/good_flower"
-            android:layout_marginBottom="5dp"
-            android:text="@string/image_a"
-            android:textSize="@dimen/default_small_text_size" />
+        <!--<android.support.v7.widget.AppCompatTextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="70dp"-->
+            <!--android:layout_marginTop="40dp"-->
+            <!--android:layout_marginStart="5dp"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_above="@id/good_flower"-->
+            <!--android:layout_marginBottom="5dp"-->
+            <!--android:text="@string/image_a"-->
+            <!--android:textSize="@dimen/default_small_text_size" />-->
 
     </RelativeLayout>
 
@@ -62,16 +62,17 @@
             android:maxHeight="570dp"
             android:maxWidth="380dp" />
 
-        <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="70dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="5dp"
-            android:layout_above="@id/bad_flower"
-            android:layout_marginBottom="5dp"
-            android:text="@string/image_b"
-            android:textAlignment="textEnd"
-            android:textSize="@dimen/default_small_text_size" />
+        <!--<android.support.v7.widget.AppCompatTextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="70dp"-->
+            <!--android:layout_marginTop="40dp"-->
+            <!--android:layout_marginEnd="5dp"-->
+            <!--android:layout_above="@id/bad_flower"-->
+            <!--android:layout_marginBottom="5dp"-->
+            <!--android:text="@string/image_b"-->
+            <!--android:layout_alignStart="@+id/bad_flower"-->
+            <!--android:textAlignment="textEnd"-->
+            <!--android:textSize="@dimen/default_small_text_size" />-->
 
 
     </RelativeLayout>
