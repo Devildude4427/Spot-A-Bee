@@ -49,6 +49,7 @@ import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
@@ -145,7 +146,7 @@ public class TestDescriptionForm {
     @Test
     public void doesSubmitWork(){
         onView(withId(R.id.submit))
-                .perform(click());
+                .perform(scrollTo(), click());
 
         onView(withClassName(Matchers.endsWith("AfterSubmission")));
 
@@ -183,6 +184,7 @@ public class TestDescriptionForm {
 
         onView(withId(R.id.flowerField))
                 .perform(
+                        scrollTo(),
                         typeText(testFlowerType),
                         closeSoftKeyboard()
                 );
@@ -190,19 +192,21 @@ public class TestDescriptionForm {
 
         onView(withId(R.id.numOfBees))
                 .perform(
+                        scrollTo(),
                         typeText(testNumberOfBees),
                         closeSoftKeyboard()
                 );
 
         onView(withId(R.id.descriptionField))
                 .perform(
+                        scrollTo(),
                         typeText(testDescriptiveDetails),
                         closeSoftKeyboard()
                 );
 
 
         onView(withId(R.id.submit))
-                .perform(click());
+                .perform(scrollTo(), click());
 
 
 
@@ -233,17 +237,19 @@ public class TestDescriptionForm {
 
         onView(withId(R.id.locationField))
                 .perform(
+                        scrollTo(),
                         typeText(testAddress),
                         closeSoftKeyboard()
                 );
 
         onView(withId(R.id.search_location))
-                .perform(click());
+                .perform(scrollTo(), click());
 
 
 
         onView(withId(R.id.flowerField))
                 .perform(
+                        scrollTo(),
                         typeText(testFlowerType),
                         closeSoftKeyboard()
                 );
@@ -251,19 +257,21 @@ public class TestDescriptionForm {
 
         onView(withId(R.id.numOfBees))
                 .perform(
+                        scrollTo(),
                         typeText(testNumberOfBees),
                         closeSoftKeyboard()
                 );
 
         onView(withId(R.id.descriptionField))
                 .perform(
+                        scrollTo(),
                         typeText(testDescriptiveDetails),
                         closeSoftKeyboard()
                 );
 
 
         onView(withId(R.id.submit))
-                .perform(click());
+                .perform(scrollTo(), click());
 
 
 
