@@ -191,7 +191,7 @@ public class FragmentMap extends Fragment
      *
      * @return The new image.
      */
-    public BitmapDescriptor resizeMapIcons() {
+    private BitmapDescriptor resizeMapIcons() {
         Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),
                 getResources().getIdentifier("bee",
                         "drawable", getActivity().getPackageName()));
@@ -206,7 +206,7 @@ public class FragmentMap extends Fragment
      *
      * @param descriptions List of all rows from the database.
      */
-    public void setMarkers(final List<Description> descriptions) {
+    private void setMarkers(final List<Description> descriptions) {
         if (descriptions.isEmpty()) {
                 Log.d(TAG, "Description ArrayList is empty");
                 return;
