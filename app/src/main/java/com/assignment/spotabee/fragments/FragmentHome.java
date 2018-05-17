@@ -255,7 +255,7 @@ public class FragmentHome extends Fragment  {
     }
 
     /**
-     * Created by C1452589 and C1717381
+     * Created by C1717381
      * Controls what a picture's name will be
      * and where it will be saved on the phone.
      *
@@ -296,7 +296,7 @@ public class FragmentHome extends Fragment  {
 
 
     /**
-     * Created by C1717381 and C1452589
+     * Created by C1717381
      * Starts the process of taking a picture and saving it.
      */
     private void dispatchTakePictureIntent() {
@@ -331,7 +331,7 @@ public class FragmentHome extends Fragment  {
     }
 
     /**
-     * Contributed by C1452589 and C1717381
+     * Contributed by C1717381
      * Method for saving the image.
      */
     private void galleryAddPic() {
@@ -349,7 +349,7 @@ public class FragmentHome extends Fragment  {
 
 
     /**
-     * Contributed by C1452589 and C1717381
+     * Contributed by C1717381
      * Allows user to upload picture from phone's storage.
      */
     public void onImageGallery() {

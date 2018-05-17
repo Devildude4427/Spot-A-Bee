@@ -75,15 +75,6 @@ public class DatabaseInitializer {
         List<Description> descriptionList = db.databaseDao()
                 .getAllDescriptions();
         Log.d(DatabaseInitializer.TAG, "Rows Count: " + descriptionList.size());
-        for (Description d : descriptionList) {
-            Log.d(TAG, d.getFlowerType().toString());
-            Log.d(TAG, d.getLatitude().toString());
-            Log.d(TAG, d.getLongitude().toString());
-            Log.d(TAG, d.getNumOfBees() + "");
-            Log.d(TAG, d.getFurtherDetails().toString());
-            Log.d(TAG, d.getDate().toString());
-            Log.d(TAG, d.getTime().toString());
-        }
     }
 
 
@@ -91,33 +82,6 @@ public class DatabaseInitializer {
         ArrayList<String> testUsers = new ArrayList<>();
         testUsers.add("Harry");
         testUsers.add("Hermione");
-        testUsers.add("Ron");
-        testUsers.add("Rachel");
-        testUsers.add("Ross");
-        testUsers.add("Monica");
-        testUsers.add("Chandler");
-        testUsers.add("Joey");
-        testUsers.add("Phoebe");
-        testUsers.add("Frasier");
-        testUsers.add("Nial");
-        testUsers.add("Daphney");
-        testUsers.add("Eddie");
-        testUsers.add("Marty");
-        testUsers.add("Basil Faulty");
-        testUsers.add("Sybil Faulty");
-        testUsers.add("Carrie");
-        testUsers.add("Charlotte");
-        testUsers.add("Sam");
-        testUsers.add("Miranda");
-        testUsers.add("Chuck");
-        testUsers.add("Blaire");
-        testUsers.add("Serena");
-        testUsers.add("Dan");
-        testUsers.add("Jenny");
-        testUsers.add("Nate");
-        testUsers.add("Vanessa");
-        testUsers.add("Charlie");
-        testUsers.add("Cece");
 
         UserScore userScore;
         for (int i = 0; i <testUsers.size(); i++){
