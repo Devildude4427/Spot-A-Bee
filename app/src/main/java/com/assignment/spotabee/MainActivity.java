@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 
+import com.assignment.spotabee.fragments.FragmentDescriptionForm;
 import com.assignment.spotabee.fragments.FragmentDownloadPdfGuide;
 import com.assignment.spotabee.receivers.DownloadReceiver;
 import com.paypal.android.sdk.payments.PaymentActivity;
@@ -244,6 +245,10 @@ public class MainActivity extends AppCompatActivity
             registerReceiver(downloadReceiver, filter);
         }
 
+//        getSupportFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.content_frame, new FragmentDescriptionForm())
+//                .commit();
 
     }
 
