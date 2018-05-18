@@ -4,90 +4,81 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="@string/tips_for_taking_photos"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
 
-    <RelativeLayout
-        android:id="@+id/good_wrapper"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView5">
-        <ImageView
-            android:id="@+id/good_flower"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="34dp"
-            android:layout_marginTop="20dp"
-            android:maxHeight="576dp"
-            android:maxWidth="346dp"
-            android:layout_marginBottom="10dp"
-            app:srcCompat="@drawable/buddleja_high_res" />
-
-        <!--<android.support.v7.widget.AppCompatTextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="70dp"-->
-            <!--android:layout_marginTop="40dp"-->
-            <!--android:layout_marginStart="5dp"-->
-            <!--android:layout_alignParentTop="true"-->
-            <!--android:layout_above="@id/good_flower"-->
-            <!--android:layout_marginBottom="5dp"-->
-            <!--android:text="@string/image_a"-->
-            <!--android:textSize="@dimen/default_small_text_size" />-->
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/bad_wrapper"
-        android:layout_marginBottom="34dp"
-        android:layout_below="@id/good_wrapper"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/bad_flower"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="34dp"
-            android:maxHeight="570dp"
-            android:maxWidth="380dp" />
-
-        <!--<android.support.v7.widget.AppCompatTextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="70dp"-->
-            <!--android:layout_marginTop="40dp"-->
-            <!--android:layout_marginEnd="5dp"-->
-            <!--android:layout_above="@id/bad_flower"-->
-            <!--android:layout_marginBottom="5dp"-->
-            <!--android:text="@string/image_b"-->
-            <!--android:layout_alignStart="@+id/bad_flower"-->
-            <!--android:textAlignment="textEnd"-->
-            <!--android:textSize="@dimen/default_small_text_size" />-->
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:text="@string/tips_for_taking_photos"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
 
 
-    </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/good_wrapper"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="100dp"
+                android:layout_below="@+id/textView5">
+                <ImageView
+                    android:id="@+id/good_flower"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="34dp"
+                    android:layout_marginTop="20dp"
+                    android:maxHeight="576dp"
+                    android:maxWidth="346dp"
+                    android:layout_marginBottom="10dp"
+                    app:srcCompat="@drawable/buddleja_high_res" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/bad_wrapper"
+                android:layout_marginBottom="34dp"
+                android:layout_below="@id/good_wrapper"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/bad_flower"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="34dp"
+                    android:maxHeight="570dp"
+                    android:maxWidth="380dp" />
 
 
 
+            </RelativeLayout>
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/textView"
-        android:layout_marginTop="17dp"
-        android:padding="10dp"
-        android:text="@string/good_image_of_a_plant_text" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/textView"
+                android:layout_marginTop="17dp"
+                android:padding="10dp"
+                android:text="@string/good_image_of_a_plant_text" />
+
+        </RelativeLayout>
+    </ScrollView>
+
 
 </RelativeLayout>

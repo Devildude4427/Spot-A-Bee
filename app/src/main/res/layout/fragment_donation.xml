@@ -10,57 +10,73 @@
     android:background="@color/white"
     tools:context="com.assignment.spotabee.fragments.DonationLogin">
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/CurrencyTxt"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_marginTop="30dp"
-        android:padding="@dimen/default_text_padding"
-        android:text="@string/help_spot_a_bee_by_making_a_donation_to_support_our_research"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textSize="@dimen/default_heading_size" />
-
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignTop="@+id/CurrencyTxt"
-        android:layout_marginTop="96dp"
-        android:minHeight="100dp"
-        android:minWidth="336dp"
-        android:src="@drawable/ic_bee_flying" />
-
-    <RelativeLayout
-        android:layout_below="@id/imageView"
-        android:layout_marginLeft="@dimen/default_text_view_margin"
-        android:layout_marginRight="@dimen/default_text_view_margin"
-        android:background="@android:drawable/dialog_holo_light_frame"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="61dp"
+    <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/editAmount"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/grey_text_input_background"
-            android:hint="@string/donation_amount"
-            android:textAlignment="center" />
-    </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/CurrencyTxt"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginTop="30dp"
+                android:padding="@dimen/default_text_padding"
+                android:text="@string/help_spot_a_bee_by_making_a_donation_to_support_our_research"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textSize="@dimen/default_heading_size" />
 
 
-    <RelativeLayout
-        android:id="@+id/payPalButtonContainer"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="25dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignTop="@+id/CurrencyTxt"
+                android:layout_marginTop="96dp"
+                android:minHeight="100dp"
+                android:minWidth="336dp"
+                android:src="@drawable/ic_bee_flying" />
 
-    </RelativeLayout>
+            <RelativeLayout
+                android:layout_below="@id/imageView"
+                android:id="@+id/amountWrapper"
+                android:layout_marginLeft="@dimen/default_text_view_margin"
+                android:layout_marginRight="@dimen/default_text_view_margin"
+                android:background="@android:drawable/dialog_holo_light_frame"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="61dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/editAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/grey_text_input_background"
+                    android:hint="@string/donation_amount"
+                    android:textAlignment="center" />
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/payPalButtonContainer"
+                android:gravity="bottom"
+                android:layout_marginTop="100dp"
+                android:layout_below="@id/amountWrapper"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="25dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+
 
 </RelativeLayout>
 
