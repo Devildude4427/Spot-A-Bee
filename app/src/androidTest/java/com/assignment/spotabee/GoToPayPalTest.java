@@ -22,7 +22,6 @@ import android.widget.EditText;
 
 import com.assignment.spotabee.fragments.DonationLogin;
 import com.assignment.spotabee.fragments.PaymentInfo;
-import com.paypal.android.MEP.PayPal;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -56,9 +55,7 @@ public class GoToPayPalTest {
     private final String donationAmount = "17";
     private final String payPalAccountEmail = "zoilagarman3@gmail.com";
     private final String payPalAccountPasswrd = "12345abcde";
-    final UiDevice mDevice =
-            UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-    final int timeOut = 1000 * 60;
+
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
@@ -66,6 +63,9 @@ public class GoToPayPalTest {
     @Test
     public void entirePayPalJourneyTest() {
 
+        final UiDevice mDevice =
+                UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        final int timeOut = 1000 * 60;
 
         // Navigate to Donation fragment
         ViewInteraction appCompatImageButton = onView(
@@ -173,8 +173,50 @@ public class GoToPayPalTest {
         }
 
     }
-
-
+//
+//    @Test
+//    public void goesToPayPal(){
+//        mActivityTestRule.getActivity()
+//                .getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.content_frame, new DonationLogin())
+//                .commit();
+//
+//
+//        // Go to PayPal
+//        ViewInteraction linearLayout = onView(
+//                allOf(childAtPosition(
+//                        childAtPosition(
+//                                withId(R.id.payPalButtonContainer),
+//                                0),
+//                        1),
+//                        isDisplayed()));
+//        linearLayout.perform(click());
+//
+//
+//        // Make sure we are in PayPal's web view
+//        mDevice.wait(Until.findObject(By.clazz(WebView.class)), timeOut);
+//    }
+//
+//    @Test
+//    public void testPaymentInfoSetUp(){
+//        Bundle mockPaymentDetails = new Bundle();
+//        mockPaymentDetails.putString("amount_payed", donationAmount);
+//        PaymentInfo paymentDetails = new PaymentInfo();
+//        paymentDetails.setArguments(mockPaymentDetails);
+//
+//
+//        mActivityTestRule.getActivity()
+//                .getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.content_frame, paymentDetails)
+//                .commit();
+//
+//        String textAmountFormatter = mActivityTestRule.getActivity().getString(R.string.test_donation);
+//        String formatted = String.format(textAmountFormatter, donationAmount);
+//
+//        onView(withId(R.id.txtAmount))
+//                .check(matches(isDisplayed()))
+//                .check(matches(withText(formatted)));
+//    }
 
     private static Matcher<View> childAtPosition(
             final Matcher<View> parentMatcher, final int position) {
