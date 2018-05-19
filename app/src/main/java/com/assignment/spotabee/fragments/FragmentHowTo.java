@@ -68,9 +68,15 @@ public class FragmentHowTo extends Fragment {
                 .resize(576, 346)
                 .into(goodFlower);
 
+
+        goodFlower.setContentDescription(R.drawable.buddleja_high_res + "");
+
         Picasso.with(getActivity()).load(R.drawable.bad_buddleja)
                 .resize(570, 380)
                 .into(badFlower);
+
+        badFlower.setContentDescription(R.drawable.bad_buddleja + "");
+
 
         for (Description item:allDescriptions) {
             if (item.getFlowerType() != null) {
