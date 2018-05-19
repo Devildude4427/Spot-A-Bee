@@ -200,6 +200,86 @@ public class GoToPayPalTest {
 
     }
 
+
+    @LargeTest
+    @Test
+    public void handleBackPress() {
+
+        final UiDevice mDevice =
+                UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        final int timeOut = 1000 * 60;
+
+
+        // Go to PayPal
+        ViewInteraction linearLayout = onView(
+                allOf(childAtPosition(
+                        childAtPosition(
+                                withId(R.id.payPalButtonContainer),
+                                0),
+                        1),
+                        isDisplayed()));
+        linearLayout.perform(click());
+
+
+        // Make sure we are in PayPal's web view
+        mDevice.wait(findObject(By.clazz(WebView.class)), timeOut);
+
+
+        try {
+            // Choose Pay with PayPal rather than card
+            UiObject payWithPayPal = mDevice.findObject(new UiSelector()
+                    .instance(0)
+                    .className(Button.class));
+
+            // Go to PayPal login
+            payWithPayPal.clickAndWaitForNewWindow();
+
+
+            // Login email
+            UiObject email = mDevice.findObject(new UiSelector()
+                    .instance(0)
+                    .className(EditText.class));
+
+
+            email.setText(payPalAccountEmail);
+
+            // Login password
+            UiObject password = mDevice.findObject(new UiSelector()
+                    .instance(1)
+                    .className(EditText.class));
+
+            password.setText(payPalAccountPasswrd);
+
+            // Click to login
+            UiObject buttonLogin = mDevice.findObject(new UiSelector()
+                    .instance(0)
+                    .className(Button.class));
+
+
+            buttonLogin.clickAndWaitForNewWindow();
+
+
+            pressBack();
+            pressBack();
+
+
+            Thread.sleep(15000);
+
+
+            // Test that payment details have been extracted from PayPal intent data and displayed
+            // on PaymentDetails
+            String textAmountFormatter = mActivityTestRule.getActivity().getString(R.string.test_donation);
+
+            onView(withId(R.id.editAmount))
+                    .check(matches(isDisplayed()))
+                    .check(matches(withText(donationAmount)));
+
+        } catch (Exception e){
+            Log.e(TAG, e.getMessage());
+        }
+
+    }
+
     @Test
     public void goesToPayPal(){
         final UiDevice mDevice =
