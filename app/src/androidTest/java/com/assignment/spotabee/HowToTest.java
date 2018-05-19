@@ -38,7 +38,6 @@ public class HowToTest {
     @Test
     public void testImageContent(){
 
-
         onView(withId(R.id.good_flower))
                 .check(matches(withContentDescription(R.drawable.buddleja_high_res + "")));
 
