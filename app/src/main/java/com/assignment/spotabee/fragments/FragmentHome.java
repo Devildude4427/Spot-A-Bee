@@ -18,6 +18,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -92,6 +93,8 @@ public class FragmentHome extends Fragment  {
      */
     private AppDatabase db;
 
+    @VisibleForTesting
+    public static final String KEY_IMAGE_DATA = "data";
 
     /**
      * Instance of a ClarifaiClient. Necessary in order to compare images
@@ -109,6 +112,8 @@ public class FragmentHome extends Fragment  {
      * to save a final version of it.
      */
     private String currentPhotoPath;
+
+    private static File image;
 
 
     /**
@@ -265,7 +270,7 @@ public class FragmentHome extends Fragment  {
      *                  to rights or invalid directory.
      */
     private File createImageFile() throws IOException {
-        File image = null;
+        image = null;
         try {
             // Create an image file name
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
@@ -345,6 +350,16 @@ public class FragmentHome extends Fragment  {
         } catch (Exception e) {
             Log.e(TAG, "Exception in galleryAddPic(): " + e.getMessage());
         }
+
+
+    }
+
+    public static boolean hasImageSaved(){
+        if(image.exists()){
+            image = null;
+            return true;
+        }
+        return false;
     }
 
 

@@ -32,11 +32,13 @@ public class DownloadReceiver extends BroadcastReceiver {
     public static final String CHANNEL_ID = "com.assignment.spotabee";
     public static final int NOTIFICATION_ID = 1;
     private Context context;
+    private boolean haveReceived = false;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
         Log.d(TAG, "We are in onReceive");
+
         Toast downloadSuccessful = Toast.makeText(context, "Download Complete", Toast.LENGTH_SHORT);
         downloadSuccessful.setGravity(Gravity.TOP, 25, 400);
         downloadSuccessful.show();
@@ -109,6 +111,10 @@ public class DownloadReceiver extends BroadcastReceiver {
 
             nManager.notify(NOTIFICATION_ID, notification);
         }
+    }
+
+    public boolean getHasReceived(){
+        return haveReceived;
     }
 
 }
