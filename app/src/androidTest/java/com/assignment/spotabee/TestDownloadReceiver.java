@@ -32,12 +32,6 @@ public class TestDownloadReceiver {
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
-    @Before
-    public void setUp() throws Exception {
-
-        mReceiver = new DownloadReceiver();
-        mContext = mActivityTestRule.getActivity();
-    }
 //
 //    @Test
 //    public void testStartActivity() {
@@ -62,6 +56,8 @@ public class TestDownloadReceiver {
     @Before
     public void init() {
         mContext = new RenamingDelegatingContext(InstrumentationRegistry.getInstrumentation().getTargetContext(), "test_");
+        mReceiver = new DownloadReceiver();
+        mContext = mActivityTestRule.getActivity();
     }
 
     @Test
@@ -69,19 +65,39 @@ public class TestDownloadReceiver {
 
         DownloadReceiver receiver = new DownloadReceiver();
 
-        //remeber to change Intent.ACTION_PACKAGE_REPLACED
-//with your action name from your mainfest file
+
         getInstance(mContext).registerReceiver(receiver, new IntentFilter(Intent.ACTION_SCREEN_ON));
-        String pn = mContext.getPackageName();
+
 
         Intent i = new Intent(Intent.ACTION_SCREEN_ON);
-        i.setData(Uri.parse("package:" + mContext.getPackageName()));
+
         getInstance(mContext).sendBroadcast(i);
         Thread.sleep(2000);
         assertTrue(receiver.getHasReceived());
 
         getInstance(mContext).unregisterReceiver(receiver);
-        assertTrue(true);
+
+
+    }
+
+    @Test
+    public void receiverTest() throws InterruptedException {
+
+        DownloadReceiver receiver = new DownloadReceiver();
+
+        mActivityTestRule
+                .getActivity()
+                .registerReceiver(receiver, new IntentFilter(Intent.ACTION_SCREEN_ON));
+
+        Intent serviceIntent =
+                new Intent(mActivityTestRule.getActivity(),
+                        DownloadService.class);
+
+        mActivityTestRule.getActivity().sendBroadcast(serviceIntent);
+        Thread.sleep(2000);
+        assertTrue(receiver.getHasReceived());
+
+        mActivityTestRule.getActivity().unregisterReceiver(receiver);
 
 
     }
