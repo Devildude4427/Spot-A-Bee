@@ -23,6 +23,8 @@ import com.assignment.spotabee.KeyChain;
 import com.assignment.spotabee.R;
 import com.assignment.spotabee.receivers.DownloadReceiver;
 
+import java.io.File;
+
 
 // *
 // * (Download Manager tutorial) Reference: https://www.codeproject.com/Articles/1112730/Android-Download-Manager-Tutorial-How-to-Download
@@ -77,19 +79,28 @@ public class DownloadService extends Service {
         request.setTitle("Help the Bees");
         request.setDescription("Guide on helping to preserve the bee population");
 
-        request.setDestinationInExternalFilesDir(getBaseContext(),
-                Environment.DIRECTORY_DOWNLOADS,"Bee_Guide.pdf");
+        String fileName = Environment.DIRECTORY_DOWNLOADS + "Bee_Guide.pdf";
+        String filePath = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/Bee_Guide.pdf";
+        File downloadFile = new File(filePath);
+        if(!downloadFile.exists()){
+            request.setDestinationInExternalFilesDir(getBaseContext(),
+                    Environment.DIRECTORY_DOWNLOADS,"Bee_Guide.pdf");
 
-        downloadReference = downloadManager.enqueue(request);
-        getBaseContext()
-                .getSharedPreferences("com.assignment.spotabee", MODE_PRIVATE)
-                .edit()
-                .putLong("download_reference", downloadReference)
-                .apply();
+            downloadReference = downloadManager.enqueue(request);
+            getBaseContext()
+                    .getSharedPreferences("com.assignment.spotabee", MODE_PRIVATE)
+                    .edit()
+                    .putLong("download_reference", downloadReference)
+                    .apply();
 
 
 //        isDownloadSuccessful(downloadReference);
-        this.downloadReference = downloadReference;
+            this.downloadReference = downloadReference;
+        } else {
+            Toast.makeText(getBaseContext(), "You've already downloaded this file", Toast.LENGTH_SHORT).show();
+            stopSelf();
+        }
+
         return downloadReference;
     }
 
