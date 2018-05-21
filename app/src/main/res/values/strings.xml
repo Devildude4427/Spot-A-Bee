@@ -132,5 +132,7 @@
     <string name="tips_for_taking_photos">Tips for taking photos</string>
     <string name="image_a">Image A</string>
     <string name="image_b">Image B</string>
+    <string name="go_home">Go Home</string>
+    <string name="internet_unavailable">Internet connection unavailable.</string>
 
 </resources>

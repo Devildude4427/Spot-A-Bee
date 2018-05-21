@@ -28,15 +28,17 @@ import static android.content.Context.DOWNLOAD_SERVICE;
 import static java.security.AccessController.getContext;
 
 public class DownloadReceiver extends BroadcastReceiver {
-    private static final String TAG = "DownloadReciever debug";
+    private static final String TAG = "DownloadReceiver debug";
     public static final String CHANNEL_ID = "com.assignment.spotabee";
     public static final int NOTIFICATION_ID = 1;
     private Context context;
+    private boolean haveReceived = false;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
         Log.d(TAG, "We are in onReceive");
+        haveReceived = true;
         Toast downloadSuccessful = Toast.makeText(context, "Download Complete", Toast.LENGTH_SHORT);
         downloadSuccessful.setGravity(Gravity.TOP, 25, 400);
         downloadSuccessful.show();
@@ -109,6 +111,10 @@ public class DownloadReceiver extends BroadcastReceiver {
 
             nManager.notify(NOTIFICATION_ID, notification);
         }
+    }
+
+    public boolean getHasReceived(){
+        return haveReceived;
     }
 
 }

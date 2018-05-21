@@ -30,6 +30,7 @@ import android.widget.Spinner;
 import com.assignment.spotabee.MainActivity;
 import com.assignment.spotabee.R;
 import com.assignment.spotabee.customexceptions.ObsceneNumberException;
+import com.assignment.spotabee.customutils.DateTime;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.fragments.FragmentAfterSubmission;
 import com.assignment.spotabee.fragments.FragmentDescriptionForm;
@@ -102,8 +103,6 @@ public class TestDescriptionForm {
         InstrumentationRegistry.getTargetContext().deleteDatabase("AppDatabase");
     }
 
-
-
     @Test
     public void doUiComponentsExist() {
 
@@ -153,13 +152,7 @@ public class TestDescriptionForm {
         InstrumentationRegistry.getTargetContext().deleteDatabase("AppDatabase");
     }
 
-    @Before
-    public void clearDatabase(){
-        database = AppDatabase.getAppDatabase(mActivityTestRule.getActivity());
-        database.databaseDao().nukeTable();
 
-        InstrumentationRegistry.getTargetContext().deleteDatabase("AppDatabase");
-    }
 
     @Test
     public void doesSubmissionSave(){
@@ -217,17 +210,10 @@ public class TestDescriptionForm {
 
     }
 
-    @Before
-    public void clearDatabaseAgain(){
-        database = AppDatabase.getAppDatabase(mActivityTestRule.getActivity());
-        database.databaseDao().nukeTable();
 
-        InstrumentationRegistry.getTargetContext().deleteDatabase("AppDatabase");
-    }
 
     @Test
-    public void testObsceneNumberExceptionIsThrown(){
-        clearDatabase();
+    public void testObsceneNumberExceptionIsCaught(){
         database.databaseDao().nukeTable();
 
         String testFlowerType = "Alliums";

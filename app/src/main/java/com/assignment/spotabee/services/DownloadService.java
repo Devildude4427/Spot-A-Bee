@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Environment;
 import android.os.IBinder;
@@ -20,7 +21,12 @@ import android.widget.Toast;
 
 import com.assignment.spotabee.KeyChain;
 import com.assignment.spotabee.R;
+import com.assignment.spotabee.customutils.NetworkConnection;
 import com.assignment.spotabee.receivers.DownloadReceiver;
+
+import java.io.File;
+
+import static com.assignment.spotabee.MainActivity.getContextOfApplication;
 
 
 // *
@@ -33,6 +39,8 @@ public class DownloadService extends Service {
     private long downloadReference;
     private DownloadManager downloadManager;
     private DownloadReceiver downloadReceiver;
+    private boolean downloadSuccessful;
+    private final IBinder mBinder = new LocalBinder();
 
     //Empty constructor
     public DownloadService() {
@@ -68,32 +76,51 @@ public class DownloadService extends Service {
 
     private long downloadData (Uri uri) {
 
-        downloadManager = (DownloadManager) getBaseContext().getSystemService(DOWNLOAD_SERVICE);
-        DownloadManager.Request request = new DownloadManager.Request(uri);
+        NetworkConnection nc = new NetworkConnection(getBaseContext());
 
-        request.setTitle("Help the Bees");
-        request.setDescription("Guide on helping to preserve the bee population");
+        if(!nc.internetIsAvailable()){
+            Toast.makeText(getContextOfApplication(),
+                    R.string.internet_unavailable,
+                    Toast.LENGTH_SHORT).show();
+          stopSelf();
+        } else {
+            downloadManager = (DownloadManager) getBaseContext().getSystemService(DOWNLOAD_SERVICE);
+            DownloadManager.Request request = new DownloadManager.Request(uri);
 
-        request.setDestinationInExternalFilesDir(getBaseContext(),
-                Environment.DIRECTORY_DOWNLOADS,"Bee_Guide.pdf");
+            request.setTitle("Help the Bees");
+            request.setDescription("Guide on helping to preserve the bee population");
 
-        downloadReference = downloadManager.enqueue(request);
-        getBaseContext()
-                .getSharedPreferences("com.assignment.spotabee", MODE_PRIVATE)
-                .edit()
-                .putLong("download_reference", downloadReference)
-                .apply();
+            String fileName = Environment.DIRECTORY_DOWNLOADS + "Bee_Guide.pdf";
+            String filePath = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/Bee_Guide.pdf";
+            File downloadFile = new File(filePath);
+            if(!downloadFile.exists()){
+                request.setDestinationInExternalFilesDir(getBaseContext(),
+                        Environment.DIRECTORY_DOWNLOADS,"Bee_Guide.pdf");
+
+                downloadReference = downloadManager.enqueue(request);
+                getBaseContext()
+                        .getSharedPreferences("com.assignment.spotabee", MODE_PRIVATE)
+                        .edit()
+                        .putLong("download_reference", downloadReference)
+                        .apply();
 
 
-        check_download_Status(downloadReference);
-        this.downloadReference = downloadReference;
+                this.downloadReference = downloadReference;
+            } else {
+                Toast.makeText(getBaseContext(), "You've already downloaded this file", Toast.LENGTH_SHORT).show();
+                stopSelf();
+            }
+        }
+
         return downloadReference;
     }
 
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "Service is starting", Toast.LENGTH_SHORT).show();
+
+        downloadSuccessful = false;
+
 
         Uri uriForPdf = Uri.parse("https://friendsoftheearth.uk/sites/default/files/downloads/bees_booklet.pdf");
         downloadData(uriForPdf);
@@ -117,22 +144,36 @@ public class DownloadService extends Service {
         unregisterReceiver(downloadReceiver);
     }
 
+    public class LocalBinder extends Binder {
+
+        public DownloadService getService() {
+            // Return this instance of LocalService so clients can call public methods.
+            return DownloadService.this;
+        }
+    }
 
 
 
     @Override
     public IBinder onBind(Intent intent) {
         downloadReference = intent.getLongExtra("download_id", 1);
-        throw new UnsupportedOperationException("Not yet implemented");
+        return mBinder;
     }
 
-    private void check_download_Status(long downloadReference) {
+    public boolean isDownloadSuccessful(long downloadReference, Context context) {
+        boolean success = false;
 
-        DownloadManager.Query pdfDownloadQuery = new DownloadManager.Query();
+        DownloadManager.Query query = new DownloadManager.Query();
+        query.setFilterById(downloadReference);
+        DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        Cursor cursor = manager.query(query);
+        int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
+        int status = cursor.getInt(columnIndex);
 
-        pdfDownloadQuery.setFilterById(downloadReference);
-
-
+        if(status == DownloadManager.STATUS_SUCCESSFUL){
+            success = true;
+        }
+        return success;
     }
 
 }

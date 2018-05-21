@@ -1,12 +1,18 @@
 package com.assignment.spotabee;
+import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.os.Bundle;
 import android.os.RemoteException;
+import android.provider.MediaStore;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.ViewFinder;
 import android.support.test.espresso.intent.Intents;
+import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
@@ -19,6 +25,7 @@ import com.assignment.spotabee.customexceptions.ObsceneNumberException;
 import com.assignment.spotabee.database.AppDatabase;
 import com.assignment.spotabee.fragments.FragmentDescriptionForm;
 import com.assignment.spotabee.fragments.FragmentHome;
+import com.paypal.android.sdk.payments.PaymentActivity;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -30,12 +37,15 @@ import java.util.ArrayList;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.BundleMatchers.hasEntry;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.isClickable;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -61,6 +71,10 @@ public class HomeTest {
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
+    @Rule
+    public IntentsTestRule<MainActivity> mIntentsRule = new IntentsTestRule<>(
+            MainActivity.class);
+
     @Before
     public void init(){
 
@@ -83,9 +97,10 @@ public class HomeTest {
 
     @Test
     public void doesButtonGoToForm() {
+        mActivityTestRule.launchActivity(new Intent());
+
         mActivityTestRule.getActivity()
-                .getSupportFragmentManager()
-                .beginTransaction()
+                .getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, new FragmentHome())
                 .commit();
 
@@ -94,36 +109,49 @@ public class HomeTest {
 
         onView(withClassName(Matchers.endsWith("FragmentDescriptionForm")));
 
+
     }
 
-//    @Test
-//    public void doesButtonGoToCamera() {
-//        mActivityTestRule.getActivity()
-//                .getSupportFragmentManager()
-//                .beginTransaction()
-//                .replace(R.id.content_frame, new FragmentHome())
-//                .commit();
-//
-//        onView(withId(R.id.button_camera))
-//                .perform(click());
-//
-//        onView(withClassName(Matchers.endsWith("FragmentDescriptionForm")));
-//
-//    }
-//
-//    @Test
-//    public void doesButtonGoToGallery() {
-//        mActivityTestRule.getActivity()
-//                .getSupportFragmentManager()
-//                .beginTransaction()
-//                .replace(R.id.content_frame, new FragmentHome())
-//                .commit();
-//
-//        onView(withId(R.id.button_image_upload))
-//                .perform(click());
-//
-//        onView(withClassName(Matchers.endsWith("FragmentDescriptionForm")));
-//
-//    }
+    @Test
+    public void doesButtonGoToCamera() {
+
+        mActivityTestRule.getActivity()
+                .getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, new FragmentHome())
+                .commit();
+
+        Intents.init();
+
+        onView(withId(R.id.button_camera))
+                .perform(click());
+
+        intended(hasAction(MediaStore.ACTION_IMAGE_CAPTURE));
+        Intents.release();
+
+        pressBack();
+        pressBack();
+
+    }
+
+    @Test
+    public void doesButtonGoToGallery() {
+        mActivityTestRule.launchActivity(new Intent());
+
+        mActivityTestRule.getActivity()
+                .getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, new FragmentHome())
+                .commit();
+
+        Intents.init();
+
+        onView(withId(R.id.button_image_upload))
+                .perform(click());
+
+        intended(hasAction(Intent.ACTION_PICK));
+        Intents.release();
+        pressBack();
+    }
+
+
 
 }
