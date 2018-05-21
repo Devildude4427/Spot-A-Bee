@@ -32,26 +32,6 @@ public class TestDownloadReceiver {
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
-//
-//    @Test
-//    public void testStartActivity() {
-//        try {
-//            Intent mService = new Intent(mContext, DownloadService.class);
-//            mService.putExtra("download_id", 1);
-//            mContext.startService(mService);
-//
-//            Thread.sleep(15000);
-//
-////        mReceiver.onReceive(mContext, mService);
-//            mReceiver.getResultExtras(false).get
-//            assertEquals(true, mReceiver.getHasReceived());
-//        } catch (Exception e){
-//            Log.e(TAG, e.getMessage());
-//        }
-//
-//
-//
-//    }
 
     @Before
     public void init() {
