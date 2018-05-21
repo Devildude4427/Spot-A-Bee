@@ -150,8 +150,11 @@ public class TestDescriptionForm {
 
         onView(withClassName(Matchers.endsWith("AfterSubmission")));
 
+
+
         InstrumentationRegistry.getTargetContext().deleteDatabase("AppDatabase");
     }
+
 
     @Before
     public void clearDatabase(){
