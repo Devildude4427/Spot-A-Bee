@@ -7,128 +7,125 @@
     android:layout_height="match_parent"
     tools:context="com.assignment.spotabee.fragments.PaymentInfo">
 
-    <!--<Button-->
-        <!--android:id="@+id/btnHome"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/linearLayout2"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_marginTop="44dp"-->
-        <!--android:onClick="onClickListener"-->
-        <!--android:text="@string/btnhome"-->
-        <!--android:textSize="18sp"-->
-        <!--android:textStyle="bold"-->
-        <!--tools:ignore="OnClick" />-->
-
-    <RelativeLayout
-        android:orientation="vertical"
-        android:layout_centerInParent="true"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:id="@+id/linearLayout2">
-
-        <!--<TextView-->
-            <!--android:id="@+id/txtId"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/id"-->
-            <!--android:gravity="center"-->
-            <!--android:textSize="18sp"-->
-            <!--android:textStyle="bold" />-->
-
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:background="@android:drawable/dialog_holo_light_frame"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="32dp"
-        android:gravity="center"
-        android:padding="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/txtHeading"
-            android:layout_width="match_parent"
-            android:layout_height="106dp"
-            android:background="@drawable/grey_text_input_background"
-            android:gravity="center"
-            android:padding="10dp"
-            android:text="@string/thanks_for_your_donation_the_bees_thank_you"
-            android:textAlignment="center"
-            android:textSize="18sp" />
-    </RelativeLayout>
-
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/txtStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/linearLayout2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="49dp"
-        android:textSize="18sp"
-        android:textStyle="bold" />
-
-    <RelativeLayout
-        android:background="@android:drawable/dialog_holo_light_frame"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="50dp"
-        android:gravity="center"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:padding="10dp"
-        android:layout_marginStart="60dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/txtAmount"
-            android:textAlignment="center"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:height="100dp"
-            android:background="@drawable/grey_text_input_background"
-            android:textAllCaps="false"
-            android:textSize="18sp" />
-    </RelativeLayout>
-
-
-    <RelativeLayout
-        android:background="@android:drawable/dialog_holo_light_frame"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <RelativeLayout
-            android:id="@+id/goHome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/white_border">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/go_home"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="23dp"
-                android:src="@drawable/ic_home" />
+            <RelativeLayout
+                android:orientation="vertical"
+                android:layout_centerInParent="true"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/linearLayout2">
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:background="@android:drawable/dialog_holo_light_frame"
+                android:layout_marginLeft="30dp"
+                android:id="@+id/headingWrapper"
+                android:layout_marginRight="30dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="40dp"
+                android:gravity="center"
+                android:padding="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/txtHeading"
+                    android:layout_width="match_parent"
+                    android:layout_height="106dp"
+                    android:background="@drawable/grey_text_input_background"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="@string/thanks_for_your_donation_the_bees_thank_you"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+            </RelativeLayout>
+
 
             <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/txtStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/go_home"
+                android:layout_above="@+id/linearLayout2"
                 android:layout_centerHorizontal="true"
-                android:text="Go Home"
-                android:textSize="20sp" />
+                android:layout_marginBottom="49dp"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:background="@android:drawable/dialog_holo_light_frame"
+                android:layout_marginTop="0dp"
+                android:layout_below="@id/homeWrapper"
+                android:layout_marginBottom="40dp"
+                android:gravity="center"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:padding="10dp"
+                android:layout_marginStart="60dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/txtAmount"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:height="100dp"
+                    android:background="@drawable/grey_text_input_background"
+                    android:textAllCaps="false"
+                    android:textSize="18sp" />
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:background="@android:drawable/dialog_holo_light_frame"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/homeWrapper"
+                android:layout_below="@id/headingWrapper"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:id="@+id/goHome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/white_border">
+
+                    <ImageView
+                        android:id="@+id/go_home"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_centerHorizontal="true"
+                        android:src="@drawable/ic_home" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/go_home"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/go_home"
+                        android:textSize="20sp" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+
 
         </RelativeLayout>
-    </RelativeLayout>
+
+    </ScrollView>
 
 
 

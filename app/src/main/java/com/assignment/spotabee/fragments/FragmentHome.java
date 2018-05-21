@@ -18,6 +18,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -92,6 +93,8 @@ public class FragmentHome extends Fragment  {
      */
     private AppDatabase db;
 
+    @VisibleForTesting
+    public static final String KEY_IMAGE_DATA = "data";
 
     /**
      * Instance of a ClarifaiClient. Necessary in order to compare images
@@ -109,6 +112,8 @@ public class FragmentHome extends Fragment  {
      * to save a final version of it.
      */
     private String currentPhotoPath;
+
+    private static File image;
 
 
     /**
@@ -211,11 +216,16 @@ public class FragmentHome extends Fragment  {
             public void onClick(final View v) {
                 //creating fragment object
                 Fragment fragment = null;
+                NetworkConnection networkConnection = new NetworkConnection(getActivity());
+                if(networkConnection.internetIsAvailable()){
+                    Bundle locationArgs = new Bundle();
+                    locationArgs.putBoolean("formSelected", true);
+                    fragment = new LocationHelper();
+                    fragment.setArguments(locationArgs);
+                } else {
+                    fragment = new FragmentDescriptionForm();
+                }
 
-                Bundle locationArgs = new Bundle();
-                locationArgs.putBoolean("formSelected", true);
-                fragment = new LocationHelper();
-                fragment.setArguments(locationArgs);
 
                 //replacing the fragment
                 FragmentTransaction ft = getActivity()
@@ -265,7 +275,7 @@ public class FragmentHome extends Fragment  {
      *                  to rights or invalid directory.
      */
     private File createImageFile() throws IOException {
-        File image = null;
+        image = null;
         try {
             // Create an image file name
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
@@ -345,6 +355,16 @@ public class FragmentHome extends Fragment  {
         } catch (Exception e) {
             Log.e(TAG, "Exception in galleryAddPic(): " + e.getMessage());
         }
+
+
+    }
+
+    public static boolean hasImageSaved(){
+        if(image.exists()){
+            image = null;
+            return true;
+        }
+        return false;
     }
 
 
@@ -389,7 +409,7 @@ public class FragmentHome extends Fragment  {
                     Log.e(TAG, "No internet connection");
                     progress.dismiss();
                     Toast.makeText(getContextOfApplication(),
-                            "Internet connection unavailable.",
+                            R.string.internet_unavailable,
                             Toast.LENGTH_SHORT).show();
                     return;
                 }

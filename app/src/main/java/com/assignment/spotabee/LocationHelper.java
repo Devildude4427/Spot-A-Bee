@@ -37,7 +37,7 @@ public class LocationHelper extends android.support.v4.app.Fragment{
         this.context = getActivity();
         this.mFusedLocationClient = new FusedLocationProviderClient(context);
 
-        haveSelectedForm = getArguments().getBoolean("formSelected");
+        haveSelectedForm = getArguments().getBoolean("formSelected", false);
         flowerType = getArguments().getString("flowerName", null);
 
         getCurrentCoOrdinates();
@@ -128,6 +128,8 @@ public class LocationHelper extends android.support.v4.app.Fragment{
                         .beginTransaction()
                         .replace(R.id.content_frame, descriptionForm)
                         .commit();
+            } else {
+
             }
         }
     }
