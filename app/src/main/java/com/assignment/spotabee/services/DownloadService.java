@@ -21,9 +21,12 @@ import android.widget.Toast;
 
 import com.assignment.spotabee.KeyChain;
 import com.assignment.spotabee.R;
+import com.assignment.spotabee.customutils.NetworkConnection;
 import com.assignment.spotabee.receivers.DownloadReceiver;
 
 import java.io.File;
+
+import static com.assignment.spotabee.MainActivity.getContextOfApplication;
 
 
 // *
@@ -73,32 +76,40 @@ public class DownloadService extends Service {
 
     private long downloadData (Uri uri) {
 
-        downloadManager = (DownloadManager) getBaseContext().getSystemService(DOWNLOAD_SERVICE);
-        DownloadManager.Request request = new DownloadManager.Request(uri);
+        NetworkConnection nc = new NetworkConnection(getBaseContext());
 
-        request.setTitle("Help the Bees");
-        request.setDescription("Guide on helping to preserve the bee population");
-
-        String fileName = Environment.DIRECTORY_DOWNLOADS + "Bee_Guide.pdf";
-        String filePath = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/Bee_Guide.pdf";
-        File downloadFile = new File(filePath);
-        if(!downloadFile.exists()){
-            request.setDestinationInExternalFilesDir(getBaseContext(),
-                    Environment.DIRECTORY_DOWNLOADS,"Bee_Guide.pdf");
-
-            downloadReference = downloadManager.enqueue(request);
-            getBaseContext()
-                    .getSharedPreferences("com.assignment.spotabee", MODE_PRIVATE)
-                    .edit()
-                    .putLong("download_reference", downloadReference)
-                    .apply();
-
-
-//        isDownloadSuccessful(downloadReference);
-            this.downloadReference = downloadReference;
+        if(!nc.internetIsAvailable()){
+            Toast.makeText(getContextOfApplication(),
+                    R.string.internet_unavailable,
+                    Toast.LENGTH_SHORT).show();
+          stopSelf();
         } else {
-            Toast.makeText(getBaseContext(), "You've already downloaded this file", Toast.LENGTH_SHORT).show();
-            stopSelf();
+            downloadManager = (DownloadManager) getBaseContext().getSystemService(DOWNLOAD_SERVICE);
+            DownloadManager.Request request = new DownloadManager.Request(uri);
+
+            request.setTitle("Help the Bees");
+            request.setDescription("Guide on helping to preserve the bee population");
+
+            String fileName = Environment.DIRECTORY_DOWNLOADS + "Bee_Guide.pdf";
+            String filePath = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/Bee_Guide.pdf";
+            File downloadFile = new File(filePath);
+            if(!downloadFile.exists()){
+                request.setDestinationInExternalFilesDir(getBaseContext(),
+                        Environment.DIRECTORY_DOWNLOADS,"Bee_Guide.pdf");
+
+                downloadReference = downloadManager.enqueue(request);
+                getBaseContext()
+                        .getSharedPreferences("com.assignment.spotabee", MODE_PRIVATE)
+                        .edit()
+                        .putLong("download_reference", downloadReference)
+                        .apply();
+
+
+                this.downloadReference = downloadReference;
+            } else {
+                Toast.makeText(getBaseContext(), "You've already downloaded this file", Toast.LENGTH_SHORT).show();
+                stopSelf();
+            }
         }
 
         return downloadReference;
@@ -107,8 +118,9 @@ public class DownloadService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
         downloadSuccessful = false;
-        Toast.makeText(this, "Service is starting", Toast.LENGTH_SHORT).show();
+
 
         Uri uriForPdf = Uri.parse("https://friendsoftheearth.uk/sites/default/files/downloads/bees_booklet.pdf");
         downloadData(uriForPdf);

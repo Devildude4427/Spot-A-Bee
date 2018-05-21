@@ -109,8 +109,11 @@ public class TestClarifaiIntegration {
         // Click on the button that will trigger the stubbed intent.
         onView(withId(R.id.button_image_upload)).perform(click());
 
+        //Assert that we are still displaying FragmentHome and have not launched
+        // Clarifai request
         onView(withClassName(Matchers.endsWith("FragmentHome")));
 
+        // Assert that an explanatory toast message is displayed to a user
         isToastMessageDisplayed(R.string.internet_unavailable);
     }
 

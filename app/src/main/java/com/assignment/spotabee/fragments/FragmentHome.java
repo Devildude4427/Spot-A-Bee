@@ -216,11 +216,16 @@ public class FragmentHome extends Fragment  {
             public void onClick(final View v) {
                 //creating fragment object
                 Fragment fragment = null;
+                NetworkConnection networkConnection = new NetworkConnection(getActivity());
+                if(networkConnection.internetIsAvailable()){
+                    Bundle locationArgs = new Bundle();
+                    locationArgs.putBoolean("formSelected", true);
+                    fragment = new LocationHelper();
+                    fragment.setArguments(locationArgs);
+                } else {
+                    fragment = new FragmentDescriptionForm();
+                }
 
-                Bundle locationArgs = new Bundle();
-                locationArgs.putBoolean("formSelected", true);
-                fragment = new LocationHelper();
-                fragment.setArguments(locationArgs);
 
                 //replacing the fragment
                 FragmentTransaction ft = getActivity()

@@ -1,6 +1,6 @@
 package com.assignment.spotabee;
 
-// Reference: https://stackoverflow.com/questions/28390574/checking-toast-message-in-android-espresso?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa 
+// Reference: https://stackoverflow.com/questions/28390574/checking-toast-message-in-android-espresso?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
 import android.os.IBinder;
 import android.support.test.espresso.Root;
 import android.view.WindowManager;
@@ -28,5 +28,4 @@ public class ToastMatcher extends TypeSafeMatcher<Root> {
         }
         return false;
     }
-
 }
