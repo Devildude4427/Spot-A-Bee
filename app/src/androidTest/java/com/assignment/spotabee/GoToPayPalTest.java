@@ -1,13 +1,18 @@
 package com.assignment.spotabee;
 
 
+import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.intent.Intents;
+import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.filters.SmallTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -26,12 +31,14 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.assignment.spotabee.fragments.DonationLogin;
+import com.assignment.spotabee.fragments.FragmentHome;
 import com.assignment.spotabee.fragments.PaymentInfo;
 import com.paypal.android.MEP.PayPal;
 import com.paypal.android.sdk.payments.PaymentActivity;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Before;
@@ -51,6 +58,8 @@ import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 
 import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.Intents.intending;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
@@ -72,8 +81,7 @@ import static org.mockito.Mockito.mock;
 public class GoToPayPalTest {
     private final String TAG = "PayPalTest";
     private final String donationAmount = "17";
-    private final String payPalAccountEmail = "zoilagarman3@gmail.com";
-    private final String payPalAccountPasswrd = "12345abcde";
+    private final String invalidData = "invalid data";
 
     private SharedPreferences sp;
 
@@ -84,27 +92,14 @@ public class GoToPayPalTest {
     @Before
     public void gotoDonationLogin(){
 
-        // Navigate to Donation fragment
-        ViewInteraction appCompatImageButton = onView(
-                allOf(withContentDescription("Open navigation drawer"),
-                        childAtPosition(
-                                allOf(withId(R.id.toolbar),
-                                        childAtPosition(
-                                                withClassName(is("android.support.design.widget.AppBarLayout")),
-                                                0)),
-                                1),
-                        isDisplayed()));
-        appCompatImageButton.perform(click());
+        mActivityTestRule.launchActivity(new Intent());
 
-        ViewInteraction navigationMenuItemView = onView(
-                allOf(childAtPosition(
-                        allOf(withId(R.id.design_navigation_view),
-                                childAtPosition(
-                                        withId(R.id.nav_view),
-                                        0)),
-                        7),
-                        isDisplayed()));
-        navigationMenuItemView.perform(click());
+        // Navigate to Donation fragment
+        mActivityTestRule.getActivity()
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content_frame, new DonationLogin())
+                .commit();
 
         // Enter donation amount
         ViewInteraction appCompatEditText = onView(
@@ -117,169 +112,9 @@ public class GoToPayPalTest {
                         isDisplayed()));
         appCompatEditText.perform(replaceText(donationAmount), closeSoftKeyboard());
 
-    }
-
-    @Test
-    public void entirePayPalJourneyTest() {
-
-        final UiDevice mDevice =
-                UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        final int timeOut = 1000 * 60;
-
-
-        // Go to PayPal
-        ViewInteraction linearLayout = onView(
-                allOf(childAtPosition(
-                        childAtPosition(
-                                withId(R.id.payPalButtonContainer),
-                                0),
-                        1),
-                        isDisplayed()));
-        linearLayout.perform(click());
-
-
-        // Make sure we are in PayPal's web view
-        mDevice.wait(findObject(By.clazz(WebView.class)), timeOut);
-
-
-        try {
-            // Choose Pay with PayPal rather than card
-            UiObject payWithPayPal = mDevice.findObject(new UiSelector()
-                    .instance(0)
-                    .className(Button.class));
-
-            // Go to PayPal login
-            payWithPayPal.clickAndWaitForNewWindow();
-
-
-            // Login email
-            UiObject email = mDevice.findObject(new UiSelector()
-                    .instance(0)
-                    .className(EditText.class));
-
-
-            email.setText(payPalAccountEmail);
-
-            // Login password
-            UiObject password = mDevice.findObject(new UiSelector()
-                    .instance(1)
-                    .className(EditText.class));
-
-            password.setText(payPalAccountPasswrd);
-
-            // Click to login
-            UiObject buttonLogin = mDevice.findObject(new UiSelector()
-                    .instance(0)
-                    .className(Button.class));
-
-
-            buttonLogin.clickAndWaitForNewWindow();
-
-            // Conform payment
-            UiObject buttonPay = mDevice.findObject(new UiSelector()
-                    .instance(0)
-                    .className(Button.class));
-
-            buttonPay.click();
-
-
-            Thread.sleep(15000);
-
-
-            // Test that payment details have been extracted from PayPal intent data and displayed
-            // on PaymentDetails
-            String textAmountFormatter = mActivityTestRule.getActivity().getString(R.string.test_donation);
-            String formatted = String.format(textAmountFormatter, donationAmount);
-
-            onView(withId(R.id.txtAmount))
-                    .check(matches(isDisplayed()))
-                    .check(matches(withText(formatted)));
-
-        } catch (Exception e){
-            Log.e(TAG, e.getMessage());
-        }
 
     }
 
-
-    @LargeTest
-    @Test
-    public void handleBackPress() {
-
-        final UiDevice mDevice =
-                UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        final int timeOut = 1000 * 60;
-
-
-        // Go to PayPal
-        ViewInteraction linearLayout = onView(
-                allOf(childAtPosition(
-                        childAtPosition(
-                                withId(R.id.payPalButtonContainer),
-                                0),
-                        1),
-                        isDisplayed()));
-        linearLayout.perform(click());
-
-
-        // Make sure we are in PayPal's web view
-        mDevice.wait(findObject(By.clazz(WebView.class)), timeOut);
-
-
-        try {
-            // Choose Pay with PayPal rather than card
-            UiObject payWithPayPal = mDevice.findObject(new UiSelector()
-                    .instance(0)
-                    .className(Button.class));
-
-            // Go to PayPal login
-            payWithPayPal.clickAndWaitForNewWindow();
-
-
-            // Login email
-            UiObject email = mDevice.findObject(new UiSelector()
-                    .instance(0)
-                    .className(EditText.class));
-
-
-            email.setText(payPalAccountEmail);
-
-            // Login password
-            UiObject password = mDevice.findObject(new UiSelector()
-                    .instance(1)
-                    .className(EditText.class));
-
-            password.setText(payPalAccountPasswrd);
-
-            // Click to login
-            UiObject buttonLogin = mDevice.findObject(new UiSelector()
-                    .instance(0)
-                    .className(Button.class));
-
-
-            buttonLogin.clickAndWaitForNewWindow();
-
-
-            pressBack();
-            pressBack();
-
-
-            Thread.sleep(15000);
-
-
-            // Test that payment details have been extracted from PayPal intent data and displayed
-            // on PaymentDetails
-            String textAmountFormatter = mActivityTestRule.getActivity().getString(R.string.test_donation);
-
-            onView(withId(R.id.editAmount))
-                    .check(matches(isDisplayed()))
-                    .check(matches(withText(donationAmount)));
-
-        } catch (Exception e){
-            Log.e(TAG, e.getMessage());
-        }
-
-    }
 
     @Test
     public void goesToPayPal(){
@@ -309,21 +144,49 @@ public class GoToPayPalTest {
 
     }
 
-    @SmallTest
     @Test
-    public void testPaymentInfoSetUp(){
+    public void refusalOfInvalidDonationAmount(){
 
-        sp = mActivityTestRule.getActivity().getSharedPreferences("com.assignment.spotabee", Context.MODE_PRIVATE);
-        sp.edit().putString("amount_payed", donationAmount).apply();
+        try {
+            Intents.init();
+
+            // Enter donation amount
+            ViewInteraction appCompatEditText = onView(
+                    allOf(withId(R.id.editAmount),
+                            childAtPosition(
+                                    childAtPosition(
+                                            withClassName(is("android.widget.RelativeLayout")),
+                                            2),
+                                    0),
+                            isDisplayed()));
+            appCompatEditText.perform(replaceText(invalidData), closeSoftKeyboard());
 
 
-        String textAmountFormatter = mActivityTestRule.getActivity().getString(R.string.test_donation);
-        String formatted = String.format(textAmountFormatter, donationAmount);
+            // Attempt PayPal launch
+            ViewInteraction linearLayout = onView(
+                    allOf(childAtPosition(
+                            childAtPosition(
+                                    withId(R.id.payPalButtonContainer),
+                                    0),
+                            1),
+                            isDisplayed()));
+            linearLayout.perform(click());
 
-        onView(withId(R.id.txtAmount))
-                .check(matches(isDisplayed()))
-                .check(matches(withText(formatted)));
+
+            // Make sure we are still in description form after allowing time
+            // for intent to potentially launch
+            Thread.sleep(10000);
+            onView(withClassName(Matchers.endsWith("DonationLogin")));
+            Intents.release();
+        } catch (Exception e){
+
+        }
+
+
     }
+
+
+
 
 }
 
