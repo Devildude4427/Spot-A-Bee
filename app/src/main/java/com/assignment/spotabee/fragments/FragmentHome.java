@@ -404,7 +404,7 @@ public class FragmentHome extends Fragment  {
                     Log.e(TAG, "No internet connection");
                     progress.dismiss();
                     Toast.makeText(getContextOfApplication(),
-                            "Internet connection unavailable.",
+                            R.string.internet_unavailable,
                             Toast.LENGTH_SHORT).show();
                     return;
                 }

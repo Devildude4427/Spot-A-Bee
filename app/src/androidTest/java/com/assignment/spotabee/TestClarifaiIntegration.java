@@ -11,6 +11,7 @@ import android.support.test.espresso.intent.rule.IntentsTestRule;
 
 import com.assignment.spotabee.fragments.FragmentHome;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withContentDesc
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.assignment.spotabee.TestHelpers.childAtPosition;
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 
@@ -65,10 +67,12 @@ public class TestClarifaiIntegration {
 
         // Stub the Intent.
         intending(hasAction(Intent.ACTION_PICK)).respondWith(result);
+
     }
 
     @Test
     public void testImageSelectionToClarifai() {
+
         try {
             // Click on the button that will trigger the stubbed intent.
             onView(withId(R.id.button_image_upload)).perform(click());
@@ -97,5 +101,22 @@ public class TestClarifaiIntegration {
         return new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
     }
 
+    /**
+     * A device's internet access must be manually disabled before running this test
+     */
+    @Test
+    public void testNoInternetAccess(){
+        // Click on the button that will trigger the stubbed intent.
+        onView(withId(R.id.button_image_upload)).perform(click());
+
+        onView(withClassName(Matchers.endsWith("FragmentHome")));
+
+        isToastMessageDisplayed(R.string.internet_unavailable);
+    }
+
+    // Reference: https://stackoverflow.com/questions/28390574/checking-toast-message-in-android-espresso?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+    public void isToastMessageDisplayed(int textId) {
+        onView(withText(textId)).inRoot(new ToastMatcher()).check(matches(isDisplayed()));
+    }
 
 }
