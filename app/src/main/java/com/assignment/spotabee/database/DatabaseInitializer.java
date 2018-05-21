@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Initializes the database in a singleton format.
+ * Populates the data with test information.
  */
 public class DatabaseInitializer {
 
