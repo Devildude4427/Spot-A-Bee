@@ -141,17 +141,17 @@ public class MainActivity extends AppCompatActivity
                     .penaltyDeath()
                     .build());
         }
+        
+        preferences = getSharedPreferences("com.assignment.spotabee", MODE_PRIVATE);
+        preferences.edit().putBoolean("firstrun", true).apply();
+        
         setContentView(R.layout.activity_main);
         if(savedInstanceState != null) {
             currentFragment = getSupportFragmentManager().getFragment(savedInstanceState, KeyChain.getCurrentFragmentKey());
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, currentFragment);
         } else {
-            preferences = getSharedPreferences("com.assignment.spotabee", MODE_PRIVATE);
-            preferences.edit().putBoolean("firstrun", true).apply();
-            preferences.edit().putString("user_account", "Test User").apply();
             if (preferences.getBoolean("firstrun", true)) {
-
                 final PaperOnboardingFragment onBoardingFragment
                         = PaperOnboardingFragment.newInstance(
                         getDataForOnboarding());

@@ -21,6 +21,7 @@ import android.util.Log;
 
 
 public class LocationHelper extends android.support.v4.app.Fragment{
+    
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback locationCallback;
     private Context context;
