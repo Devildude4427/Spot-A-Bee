@@ -143,7 +143,9 @@ public class MainActivity extends AppCompatActivity
         }
         
         preferences = getSharedPreferences("com.assignment.spotabee", MODE_PRIVATE);
-        preferences.edit().putBoolean("firstrun", true).apply();
+        if (!preferences.contains("firstrun")) {
+            preferences.edit().putBoolean("firstrun", true).apply();
+        }
         
         setContentView(R.layout.activity_main);
         if(savedInstanceState != null) {
