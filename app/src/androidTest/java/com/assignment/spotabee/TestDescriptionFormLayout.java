@@ -110,11 +110,11 @@ public class TestDescriptionFormLayout {
         wifiManager.setWifiEnabled(false);
     }
 
+    /**
+     * A device's internet access must be manually disabled before running this test
+     */
     @Test
     public void testNoInternetLayout(){
-        WifiManager wifiManager = (WifiManager)mActivityTestRule.getActivity()
-                .getSystemService(Context.WIFI_SERVICE);
-        wifiManager.setWifiEnabled(false);
 
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
@@ -137,14 +137,15 @@ public class TestDescriptionFormLayout {
                         isDisplayed()));
         navigationMenuItemView.perform(click());
 
+        onView(withId(R.id.button_no_image_upload))
+                .perform(click());
+
         onView(withId(R.id.search_location))
                 .check(matches(isDisplayed()));
 
 
         onView(withId(R.id.locationField))
                 .check(matches(isDisplayed()));
-
-
 
 
     }

@@ -33,11 +33,13 @@ import java.util.concurrent.TimeoutException;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static android.support.test.uiautomator.Until.findObject;
 import static junit.framework.Assert.assertEquals;
 
@@ -147,31 +149,17 @@ public class TestDownloadService {
 
     }
 
-//    @Test
-//    public void buttonStartsService(){
-//        final UiDevice mDevice =
-//                UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-//        final int timeOut = 1000 * 60;
-//
-//        Intents.init();
-//
-//
-//        // Go to FragmentDownloadPdf
-//       mActivityTestRule.getActivity().getSupportFragmentManager()
-//               .beginTransaction()
-//               .replace(R.id.content_frame, new FragmentDownloadPdfGuide())
-//               .commit();
-//
-//       onView(withId(R.id.downloadGuideBtn))
-//               .perform(click());
-//
-//
-//        intended(hasAction(Intent.ACTION_SCREEN_ON));
-//
-////        intended(hasComponent(DownloadService.class.getName()));
-//        Intents.release();
-//
-//    }
+    /**
+     * Access to the internet must be manually disabled on a device before this test is  run
+     */
+    @Test
+    public void testCaseNoInternet(){
+        mockServiceLaunch();
+        // Assert that an explanatory toast message is displayed to a user
+        // Will also indicate if the service will have stopped itself since
+        // stopSelf() is called immediately after Toast is displayed
+        isToastMessageDisplayed(R.string.internet_unavailable);
+    }
 
     // Reference: https://stackoverflow.com/questions/9530921/list-all-the-files-from-all-the-folder-in-a-single-list?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
     private List<File> getAllFilesByName(File parentDir, String fileName) {
@@ -195,5 +183,10 @@ public class TestDownloadService {
             file.delete();
         }
 
+    }
+
+    // Reference: https://stackoverflow.com/questions/28390574/checking-toast-message-in-android-espresso?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+    public void isToastMessageDisplayed(int textId) {
+        onView(withText(textId)).inRoot(new ToastMatcher()).check(matches(isDisplayed()));
     }
 }
