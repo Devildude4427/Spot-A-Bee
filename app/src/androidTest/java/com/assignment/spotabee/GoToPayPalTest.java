@@ -173,10 +173,11 @@ public class GoToPayPalTest {
             linearLayout.perform(click());
 
 
-            // Make sure we are still in description form after allowing time
-            // for intent to potentially launch
-            Thread.sleep(10000);
+            // Make sure we are still in description form
             onView(withClassName(Matchers.endsWith("DonationLogin")));
+
+            // Assert an error message is displayed
+            TestHelpers.isToastMessageDisplayed(R.string.error_toast_message_pay_pal);
             Intents.release();
         } catch (Exception e){
 

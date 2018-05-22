@@ -31,8 +31,7 @@ public class Flower {
 
     private AppDatabase db;
 
-    private final String OBSCENE_NUMBER_MESSAGE = "That is an obscene number of bees to be spotted\n" +
-            "on one bunch of flowers! Please enter a number less than pr equal to 50.";
+    private String obsceneNumMessage;
 
     private final String TAG = "Flower debug";
 
@@ -41,7 +40,7 @@ public class Flower {
                   double latitude, double longitude,String description,
                   Context context) throws ObsceneNumberException{
         if(numOfBees > 50){
-            throw new ObsceneNumberException(OBSCENE_NUMBER_MESSAGE);
+            throw new ObsceneNumberException(obsceneNumMessage);
         }
         this.species = species;
         this.date = date;
@@ -50,6 +49,7 @@ public class Flower {
         this.latitude = latitude;
         this.longitude = longitude;
         this.description = description;
+        this.obsceneNumMessage = context.getString(R.string.obscene_number_message);
 
         db = AppDatabase.getAppDatabase(context);
     }
@@ -86,7 +86,7 @@ public class Flower {
         if (numOfBees <= 50){
             this.numOfBees = numOfBees;
         } else {
-            throw new ObsceneNumberException(OBSCENE_NUMBER_MESSAGE);
+            throw new ObsceneNumberException(obsceneNumMessage);
         }
     }
 
@@ -113,6 +113,7 @@ public class Flower {
     public void setDescription(String description) {
         this.description = description;
     }
+
 
     public void commitDataToDB(final Context context) {
         Log.d(TAG, "We are in commitToDB");
@@ -158,4 +159,6 @@ public class Flower {
             }
         });
     }
+
+
 }

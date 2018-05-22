@@ -134,5 +134,6 @@
     <string name="image_b">Image B</string>
     <string name="go_home">Go Home</string>
     <string name="internet_unavailable">Internet connection unavailable.</string>
+    <string name="obscene_number_message">That is an obscene number of bees to be spotted on one bunch of flowers! Please enter a number less than pr equal to 50.</string>
 
 </resources>

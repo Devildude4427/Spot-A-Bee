@@ -158,7 +158,7 @@ public class TestDownloadService {
         // Assert that an explanatory toast message is displayed to a user
         // Will also indicate if the service will have stopped itself since
         // stopSelf() is called immediately after Toast is displayed
-        isToastMessageDisplayed(R.string.internet_unavailable);
+        TestHelpers.isToastMessageDisplayed(R.string.internet_unavailable);
     }
 
     // Reference: https://stackoverflow.com/questions/9530921/list-all-the-files-from-all-the-folder-in-a-single-list?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
@@ -185,8 +185,4 @@ public class TestDownloadService {
 
     }
 
-    // Reference: https://stackoverflow.com/questions/28390574/checking-toast-message-in-android-espresso?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
-    public void isToastMessageDisplayed(int textId) {
-        onView(withText(textId)).inRoot(new ToastMatcher()).check(matches(isDisplayed()));
-    }
 }

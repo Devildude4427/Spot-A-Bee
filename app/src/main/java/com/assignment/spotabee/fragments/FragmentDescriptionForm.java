@@ -258,7 +258,7 @@ public class FragmentDescriptionForm extends Fragment
 
 
         } catch (ObsceneNumberException e){
-            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), getString(R.string.obscene_number_message), Toast.LENGTH_LONG).show();
         }
 
     }
