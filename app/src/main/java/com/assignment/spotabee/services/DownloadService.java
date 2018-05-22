@@ -82,7 +82,7 @@ public class DownloadService extends Service {
             Toast.makeText(getContextOfApplication(),
                     R.string.internet_unavailable,
                     Toast.LENGTH_SHORT).show();
-          stopSelf();
+            stopSelf();
         } else {
             downloadManager = (DownloadManager) getBaseContext().getSystemService(DOWNLOAD_SERVICE);
             DownloadManager.Request request = new DownloadManager.Request(uri);
