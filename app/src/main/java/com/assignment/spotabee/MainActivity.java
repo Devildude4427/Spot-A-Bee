@@ -141,12 +141,12 @@ public class MainActivity extends AppCompatActivity
                     .penaltyDeath()
                     .build());
         }
-        
+
         preferences = getSharedPreferences("com.assignment.spotabee", MODE_PRIVATE);
         if (!preferences.contains("firstrun")) {
             preferences.edit().putBoolean("firstrun", true).apply();
         }
-        
+
         setContentView(R.layout.activity_main);
         if(savedInstanceState != null) {
             currentFragment = getSupportFragmentManager().getFragment(savedInstanceState, KeyChain.getCurrentFragmentKey());
@@ -243,6 +243,7 @@ public class MainActivity extends AppCompatActivity
             navigationView.setNavigationItemSelectedListener(this);
 
             downloadReceiver = new DownloadReceiver();
+//            IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
             IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
             registerReceiver(downloadReceiver, filter);
         }
