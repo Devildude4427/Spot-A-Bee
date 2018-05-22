@@ -36,8 +36,10 @@ import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
+import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.assignment.spotabee.TestHelpers.childAtPosition;
@@ -79,24 +81,32 @@ public class TestDescriptionFormLayout {
                         isDisplayed()));
         navigationMenuItemView.perform(click());
 
-        onView(withId(R.id.button_no_image_upload))
-                .perform(click());
-
-       onView(withId(R.id.numOfBees))
-               .check(matches(isDisplayed()));
+        onView(withId(R.id.numOfBees))
+                .check(matches(isDisplayed()))
+                .check(matches(isEnabled()))
+                .check(matches(withHint(R.string.number_of_bees_spotted_on_the_flower)));
 
 
         onView(withId(R.id.flowerField))
-                .check(matches(isDisplayed()));
+                .check(matches(isDisplayed()))
+                .check(matches(isEnabled()))
+                .check(matches(withHint(R.string.flower_type)));
 
         onView(withId(R.id.descriptionField))
-                .check(matches(isDisplayed()));
+                .check(matches(isDisplayed()))
+                .check(matches(isEnabled()))
+                .check(matches(withHint(R.string.any_further_details)));
 
+        onView(withId(R.id.button_no_image_upload))
+                .perform(click());
 
         onView(withId(R.id.addressSpinner))
                 .check((doesNotExist()));
 
         onView(withId(R.id.location_n_search))
+                .check((doesNotExist()));
+
+        onView(withId(R.id.locationField))
                 .check((doesNotExist()));
 
     }
@@ -145,7 +155,9 @@ public class TestDescriptionFormLayout {
 
 
         onView(withId(R.id.locationField))
-                .check(matches(isDisplayed()));
+                .check(matches(
+                        isDisplayed()
+                ));
 
 
     }

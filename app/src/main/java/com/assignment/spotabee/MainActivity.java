@@ -243,15 +243,10 @@ public class MainActivity extends AppCompatActivity
             navigationView.setNavigationItemSelectedListener(this);
 
             downloadReceiver = new DownloadReceiver();
-//            IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
             IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
             registerReceiver(downloadReceiver, filter);
         }
 
-//        getSupportFragmentManager()
-//                .beginTransaction()
-//                .replace(R.id.content_frame, new FragmentDescriptionForm())
-//                .commit();
 
     }
 

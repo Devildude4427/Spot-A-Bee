@@ -152,13 +152,8 @@ public class TestDescriptionForm {
         InstrumentationRegistry.getTargetContext().deleteDatabase("AppDatabase");
     }
 
-
-
-    @Test
-    public void doesSubmissionSave(){
-
+    private void addDescriptiveFields(){
         String testFlowerType = "Alliums";
-        String testNumberOfBees = "2";
         String testDescriptiveDetails = "None";
         String testAddress = "Cardiff Queens Street";
 
@@ -183,13 +178,6 @@ public class TestDescriptionForm {
                 );
 
 
-        onView(withId(R.id.numOfBees))
-                .perform(
-                        scrollTo(),
-                        typeText(testNumberOfBees),
-                        closeSoftKeyboard()
-                );
-
         onView(withId(R.id.descriptionField))
                 .perform(
                         scrollTo(),
@@ -197,10 +185,27 @@ public class TestDescriptionForm {
                         closeSoftKeyboard()
                 );
 
+    }
+
+
+    @Test
+    public void doesSubmissionSave(){
+
+        String testNumberOfBees = "2";
+
+        addDescriptiveFields();
+
+        onView(withId(R.id.numOfBees))
+                .perform(
+                        scrollTo(),
+                        typeText(testNumberOfBees),
+                        closeSoftKeyboard()
+                );
+
+
 
         onView(withId(R.id.submit))
                 .perform(scrollTo(), click());
-
 
 
         assertEquals(1, database.databaseDao()
@@ -221,37 +226,13 @@ public class TestDescriptionForm {
         String testDescriptiveDetails = "None";
         String testAddress = "Cardiff Queens Street";
 
-        onView(withId(R.id.locationField))
-                .perform(
-                        scrollTo(),
-                        typeText(testAddress),
-                        closeSoftKeyboard()
-                );
 
-        onView(withId(R.id.search_location))
-                .perform(scrollTo(), click());
-
-
-
-        onView(withId(R.id.flowerField))
-                .perform(
-                        scrollTo(),
-                        typeText(testFlowerType),
-                        closeSoftKeyboard()
-                );
-
+        addDescriptiveFields();
 
         onView(withId(R.id.numOfBees))
                 .perform(
                         scrollTo(),
                         typeText(testNumberOfBees),
-                        closeSoftKeyboard()
-                );
-
-        onView(withId(R.id.descriptionField))
-                .perform(
-                        scrollTo(),
-                        typeText(testDescriptiveDetails),
                         closeSoftKeyboard()
                 );
 
@@ -264,8 +245,11 @@ public class TestDescriptionForm {
         // Asserts that the submission does not save since the ObsceneNumberException
         // would have been caught
 
+        TestHelpers.isToastMessageDisplayed(R.string.obscene_number_message);
+
         assertEquals(0, database.databaseDao()
                 .getAllDescriptions().size());
+
 
     }
 
