@@ -10,9 +10,9 @@ For code style, the group agreed to abide by CheckStyle's Oracle rules. There ma
 
 ## Authors
 
-* **Ryan Christian** - *Entire Project* - [RyanChristian4427](https://github.com/RyanChristian4427)
-* **Lauren Heymer** - ** - 
-* **Zoila Garmin** - *Most Graphics* - 
+* **Ryan Christian** - *All Around Developer* - [Ryan Christian](https://github.com/RyanChristian4427)
+* **Lauren Heymer** - *All Around Developer* - [Lauren Heymer](https://gitlab.cs.cf.ac.uk/c1769948)
+* **Zoila Garmin** - *Most Graphics* - No longer has a profile to link to, as she has dropped out
 
 ## License
 
