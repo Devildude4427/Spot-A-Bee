@@ -26,12 +26,12 @@ To run the web server on in development mode, simply navigate to the root of the
 
 ### And coding style tests
 
-For code style, the group agreed to abide by CheckStyle's Oracle rules. There may have been a few violations, but by and large, we followed those rules exactly. 
+For code style, the group agreed to abide by CheckStyle's Oracle rules. There may have been a few violations, but by and large, that is the code style used. 
 
 ## Authors
 
-* **Ryan Christian** - *All Around Developer* - [Ryan Christian](https://github.com/RyanChristian4427)
-* **Lauren Heymer** - *All Around Developer* - [Lauren Heymer](https://gitlab.cs.cf.ac.uk/c1769948)
+* **Ryan Christian** - *General Developer* - [Ryan Christian](https://github.com/RyanChristian4427)
+* **Lauren Heymer** - *General Developer* - [Lauren Heymer](https://gitlab.cs.cf.ac.uk/c1769948)
 * **Zoila Garmin** - *Most Graphics* - No longer has a profile to link to, as she has dropped out
 
 ## License
@@ -40,4 +40,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Thanks to the guys over at Spot-a-bee for this project, as it was very fun to work on. Their link [Spot-a-bee](https://spotabee.buzz/home)
+* Thanks to the guys over at Spot-a-bee for this project, as it was very fun to work on. Their website: [Spot-a-bee](https://spotabee.buzz/home)
