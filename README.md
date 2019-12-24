@@ -31,8 +31,8 @@ For code style, the group agreed to abide by CheckStyle's Oracle rules. There ma
 ## Authors
 
 * **Ryan Christian** - *General Developer* - [Ryan Christian](https://github.com/RyanChristian4427)
-* **Lauren Heymer** - *General Developer* - [Lauren Heymer](https://gitlab.cs.cf.ac.uk/c1769948)
-* **Zoila Garmin** - *Most Graphics* - No longer has a profile to link to, as she has dropped out
+* **Lauren Heymer** - *General Developer* - [Lauren Heymer](https://github.com/renHeymer)
+* **Zoila Garmin** - *Most Graphics*
 
 ## License
 
